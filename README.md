@@ -445,7 +445,7 @@ App 內建模擬資料（`SampleData.kt`），可直接瀏覽所有功能畫面�
 - **B1229003** — UI/UX開發（Android App / UI）
 - **B1229026** — 後端開發（API / Server）
 - **B1229042** — AI開發（AI 相關）
-- **B1229067** — 介面開發（Android App / UI / API 串接）
+- **B1229067** — APP統整（Android App / UI / API 串接）
 
 ---
 
