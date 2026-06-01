@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/chatRow"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:layout_marginBottom="8dp">
+
+    <!-- Phase Divider (hidden by default) -->
+    <LinearLayout
+        android:id="@+id/phaseDivider"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:layout_marginTop="12dp"
+        android:layout_marginBottom="12dp"
+        android:visibility="gone">
+
+        <View
+            android:layout_width="0dp"
+            android:layout_height="1dp"
+            android:layout_weight="1"
+            android:background="#E0E0E0" />
+
+        <TextView
+            android:id="@+id/tvPhaseLabel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingStart="10dp"
+            android:paddingEnd="10dp"
+            android:paddingTop="2dp"
+            android:paddingBottom="2dp"
+            android:textSize="9sp"
+            android:textStyle="bold"
+            android:letterSpacing="0.12" />
+
+        <View
+            android:layout_width="0dp"
+            android:layout_height="1dp"
+            android:layout_weight="1"
+            android:background="#E0E0E0" />
+    </LinearLayout>
+
+    <!-- Bubble Container -->
+    <LinearLayout
+        android:id="@+id/bubbleContainer"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:maxWidth="280dp">
+
+        <!-- Meta Row: Sender + Time (for "them" messages) -->
+        <LinearLayout
+            android:id="@+id/metaRow"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:layout_marginBottom="3dp">
+
+            <TextView
+                android:id="@+id/tvSenderName"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="10sp"
+                android:textStyle="bold"
+                android:textColor="#999999" />
+
+            <TextView
+                android:id="@+id/tvMsgTime"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="9sp"
+                android:textColor="#CCCCCC"
+                android:layout_marginStart="5dp" />
+        </LinearLayout>
+
+        <!-- Bubble -->
+        <TextView
+            android:id="@+id/tvBubbleText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="10dp"
+            android:textSize="13sp"
+            android:lineSpacingMultiplier="1.45" />
+
+        <!-- Reason Chip -->
+        <TextView
+            android:id="@+id/tvReasonChip"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="9sp"
+            android:textStyle="bold"
+            android:paddingStart="8dp"
+            android:paddingEnd="8dp"
+            android:paddingTop="3dp"
+            android:paddingBottom="3dp"
+            android:layout_marginTop="4dp"
+            android:visibility="gone" />
+
+        <!-- My Time Row (for "me" messages) -->
+        <TextView
+            android:id="@+id/tvMyTime"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="9sp"
+            android:textColor="#CCCCCC"
+            android:layout_marginTop="3dp"
+            android:visibility="gone" />
+    </LinearLayout>
+</LinearLayout>

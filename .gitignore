@@ -1,0 +1,28 @@
+# Android Studio / IntelliJ IDEA
+.idea/
+*.iml
+.gradle/
+local.properties
+
+# Build outputs
+build/
+app/build/
+
+# APK (release/ 目錄中的除外)
+*.apk
+!release/*.apk
+
+# Misc
+*.log
+*.tmp
+.DS_Store
+Thumbs.db
+
+# Kotlin
+*.class
+
+# Zip
+app.zip
+
+# Reference files (not needed in repo)
+readMe參考檔案/

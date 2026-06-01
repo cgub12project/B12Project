@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <style name="Theme.FraudDetector" parent="Theme.MaterialComponents.Light.NoActionBar">
+        <item name="colorPrimary">@color/blue</item>
+        <item name="colorPrimaryDark">@color/blue_dk</item>
+        <item name="colorAccent">@color/blue</item>
+        <item name="android:windowBackground">@color/bg</item>
+        <item name="android:statusBarColor">@color/blue_dk</item>
+        <item name="android:navigationBarColor">@color/white</item>
+    </style>
+
+    <style name="Theme.FraudDetector.Splash" parent="Theme.MaterialComponents.Light.NoActionBar">
+        <item name="colorPrimary">@color/blue</item>
+        <item name="android:windowBackground">@color/blue</item>
+        <item name="android:statusBarColor">@color/blue_dk</item>
+    </style>
+</resources>

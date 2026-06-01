@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- 1. Splash -->
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/bg_gradient_blue">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center"
+        android:orientation="vertical">
+
+        <!-- App Logo -->
+        <ImageView
+            android:id="@+id/splashLogo"
+            android:layout_width="96dp"
+            android:layout_height="96dp"
+            android:src="@mipmap/ic_launcher"
+            android:contentDescription="App Logo"
+            android:background="@drawable/bg_card_white"
+            android:padding="10dp"
+            android:clipToOutline="true" />
+
+        <!-- App Name -->
+        <TextView
+            android:id="@+id/splashBrand"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:text="@string/splash_brand"
+            android:textColor="#FFFFFF"
+            android:textSize="26sp"
+            android:textStyle="bold"
+            android:letterSpacing="0.15" />
+
+        <!-- Tagline -->
+        <TextView
+            android:id="@+id/splashTagline"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="6dp"
+            android:text="@string/splash_tagline"
+            android:textColor="#73FFFFFF"
+            android:textSize="10sp"
+            android:letterSpacing="0.28"
+            android:textAllCaps="true" />
+
+        <!-- Loading Progress Bar -->
+        <ProgressBar
+            android:id="@+id/splashProgress"
+            style="?android:attr/progressBarStyleHorizontal"
+            android:layout_width="120dp"
+            android:layout_height="3dp"
+            android:layout_marginTop="40dp"
+            android:max="100"
+            android:progressTint="#F5B731"
+            android:progressBackgroundTint="#26FFFFFF" />
+
+        <!-- Status Text -->
+        <TextView
+            android:id="@+id/splashStatus"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="14dp"
+            android:text="INITIALIZING SHIELD..."
+            android:textColor="#4DFFFFFF"
+            android:textSize="9sp"
+            android:letterSpacing="0.12" />
+
+    </LinearLayout>
+
+    <!-- Version pinned to bottom -->
+    <TextView
+        android:id="@+id/splashVersion"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|center_horizontal"
+        android:layout_marginBottom="40dp"
+        android:text="@string/app_version"
+        android:textColor="#2EFFFFFF"
+        android:textSize="9sp"
+        android:letterSpacing="0.2" />
+
+</FrameLayout>

@@ -19,6 +19,7 @@
 - [安裝與執行](#安裝與執行)
 - [實作進度](#實作進度)
 - [UML 分析文件](#uml-分析文件)
+- [繳交文件清單](#繳交文件清單)
 - [作者](#作者)
 
 ---
@@ -440,16 +441,48 @@ App 內建模擬資料（`SampleData.kt`），可直接瀏覽所有功能畫面�
 
 ---
 
-## 作者
+## 繳交文件清單
 
-- **B1229003** — UI/UX開發（Android App / UI）
-- **B1229026** — 後端開發（API / Server）
-- **B1229042** — AI開發（AI 相關）
-- **B1229067** — APP統整（Android App / UI / API 串接）
+本 Repository 包含以下繳交項目：
+
+| # | 項目 | 位置 | 說明 |
+|---|------|------|------|
+| 1 | 原始程式碼（含完整註解） | [`app/src/`](app/src/) | 36 個 Kotlin 原始碼 + 28 個 XML 佈局檔，皆附有詳細中文註解 |
+| 2 | 可執行檔案 + 安裝說明 | [`release/app-debug.apk`](release/app-debug.apk)、[`INSTALL.md`](INSTALL.md) | Debug APK + 完整的安裝、執行、測試說明文件 |
+| 3 | 書面報告文件 | [`docs/`](docs/) | 第一次、第二次書面報告 PDF |
+| 4 | 簡報檔案 | [`presentations/`](presentations/) | 簡報 .pptx 檔案 |
+| 5 | README.md | 本文件 | 完整的專題說明文件 |
+
+### Repository 結構
+
+```
+B12Project/
+├── README.md                          # 專題完整說明文件
+├── INSTALL.md                         # 安裝、執行、測試說明
+├── .gitignore                         # Git 忽略規則
+├── build.gradle.kts                   # 專案層級 Gradle 配置
+├── settings.gradle.kts                # Gradle 設定
+├── gradle.properties                  # Gradle 屬性
+├── gradlew / gradlew.bat             # Gradle Wrapper 腳本
+├── gradle/wrapper/                    # Gradle Wrapper JAR
+├── docs/                              # 書面報告文件
+│   ├── 閃騙俠_第一次書面報告.pdf
+│   └── 閃騙俠_第二次書面報告.pdf
+├── presentations/                     # 簡報檔案
+│   └── FLASH_第二次報告_簡報.pptx
+├── release/                           # 可執行檔案
+│   └── app-debug.apk
+└── app/                               # App 模組原始碼
+    ├── build.gradle.kts
+    ├── proguard-rules.pro
+    └── src/main/
+        ├── AndroidManifest.xml
+        ├── java/com/frauddetector/    # Kotlin 原始碼（含完整註解）
+        └── res/                       # XML 佈局與資源檔
+```
 
 ---
 
-## 指導教授
+## 作者
 
-- **李春良 教授**
-
+- **B1229067** — 介面開發（Android App / UI / API 串接）

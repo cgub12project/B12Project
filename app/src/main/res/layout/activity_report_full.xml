@@ -1,0 +1,209 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- 14. 完整回報頁 -->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <!-- Top Bar -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:padding="16dp">
+
+        <ImageButton
+            android:id="@+id/btnReportBack"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:src="@drawable/ic_chevron_left"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:contentDescription="Back" />
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:text="@string/report_fraud_title"
+            android:textSize="18sp"
+            android:textStyle="bold" />
+
+        <View
+            android:layout_width="40dp"
+            android:layout_height="0dp" />
+    </LinearLayout>
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="16dp">
+
+            <!-- Fraud Type Section -->
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/fraud_type_section"
+                android:textSize="10sp"
+                android:textColor="@color/lbl3"
+                android:letterSpacing="0.08"
+                android:layout_marginBottom="10dp" />
+
+            <com.google.android.material.chip.ChipGroup
+                android:id="@+id/chipGroupFraudType"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="14dp"
+                xmlns:app="http://schemas.android.com/apk/res-auto"
+                app:singleSelection="true" />
+
+            <!-- Event Info Section -->
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/event_info_section"
+                android:textSize="10sp"
+                android:textColor="@color/lbl3"
+                android:letterSpacing="0.08"
+                android:layout_marginBottom="10dp" />
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="12dp">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/etReportDate"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="@string/event_date"
+                    android:inputType="date"
+                    android:focusable="false"
+                    android:clickable="true" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="12dp">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/etReportTime"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="@string/event_time"
+                    android:inputType="time"
+                    android:focusable="false"
+                    android:clickable="true" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="14dp">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/etReportAmount"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="@string/amount_hint"
+                    android:inputType="number" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <!-- Description Section -->
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/description_section"
+                android:textSize="10sp"
+                android:textColor="@color/lbl3"
+                android:letterSpacing="0.08"
+                android:layout_marginBottom="10dp" />
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="12dp">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/etFraudContact"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="@string/fraud_contact_hint" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="14dp">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/etEventDetail"
+                    android:layout_width="match_parent"
+                    android:layout_height="80dp"
+                    android:hint="@string/event_detail_hint"
+                    android:gravity="top"
+                    android:inputType="textMultiLine" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <!-- Attachment Section -->
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/attachment_section"
+                android:textSize="10sp"
+                android:textColor="@color/lbl3"
+                android:letterSpacing="0.08"
+                android:layout_marginBottom="10dp" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnAddEvidence"
+                style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/add_evidence"
+                android:layout_marginBottom="10dp" />
+
+            <!-- Anonymous Toggle -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                android:layout_marginBottom="14dp">
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/anonymous_report"
+                    android:textSize="12sp" />
+
+                <com.google.android.material.switchmaterial.SwitchMaterial
+                    android:id="@+id/switchAnonymous"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:checked="true" />
+            </LinearLayout>
+
+            <!-- Submit Button -->
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnSubmitReport"
+                android:layout_width="match_parent"
+                android:layout_height="52dp"
+                android:text="@string/submit_report"
+                android:layout_marginTop="4dp" />
+
+            <View
+                android:layout_width="0dp"
+                android:layout_height="20dp" />
+        </LinearLayout>
+    </ScrollView>
+</LinearLayout>

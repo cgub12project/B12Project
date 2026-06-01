@@ -1,0 +1,198 @@
+/**
+ * RegisterActivity.kt — 使用者註冊頁面
+ *
+ * 所屬模組：ui/auth（認證模組）
+ *
+ * 本 Activity 提供新使用者註冊功能，包含：
+ * - 顯示名稱、Email、密碼、確認密碼等表單欄位
+ * - 密碼強度即時指示器（弱/中/強 三段式視覺化）
+ * - 前端表單驗證（Email 格式、密碼長度、密碼一致性、條款勾選）
+ * - 呼叫後端 /api/v1/auth/register API 完成註冊
+ * - 註冊成功後自動儲存 JWT Token 並返回登入頁
+ */
+package com.frauddetector.ui.auth
+
+import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
+import android.text.Editable
+import android.text.TextWatcher
+import android.view.View
+import android.widget.CheckBox
+import android.widget.LinearLayout
+import android.widget.TextView
+import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
+import com.frauddetector.R
+import com.frauddetector.network.ApiClient
+import com.frauddetector.network.RegisterRequest
+import com.frauddetector.network.TokenManager
+import com.frauddetector.network.TokenResponse
+import com.frauddetector.ui.dialog.ResultDialog
+import com.google.android.material.button.MaterialButton
+import com.google.android.material.textfield.TextInputEditText
+import com.google.android.material.textfield.TextInputLayout
+import android.util.Log
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
+
+/**
+ * 註冊頁面 Activity。
+ *
+ * 提供完整的使用者註冊表單，含密碼強度即時分析與後端 API 串接。
+ * 密碼強度依據三個條件評分：長度 >= 8、大小寫混合、包含特殊字元。
+ */
+class RegisterActivity : AppCompatActivity() {
+
+    /**
+     * 初始化註冊頁面 UI、密碼強度監聽器與註冊按鈕事件。
+     */
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setContentView(R.layout.activity_register)
+
+        // 取得表單 UI 元件參照
+        val etDisplayName = findViewById<TextInputEditText>(R.id.etRegDisplayName)
+        val etPassword = findViewById<TextInputEditText>(R.id.etRegPassword)
+        val strengthBar = findViewById<LinearLayout>(R.id.passwordStrengthBar)  // 密碼強度指示器容器
+        val seg1 = findViewById<View>(R.id.pwSeg1)   // 強度第一段（弱）
+        val seg2 = findViewById<View>(R.id.pwSeg2)   // 強度第二段（中）
+        val seg3 = findViewById<View>(R.id.pwSeg3)   // 強度第三段（強）
+        val tvStrength = findViewById<TextView>(R.id.tvPwStrength)  // 強度文字標籤
+
+        // 密碼強度即時指示器：監聽密碼輸入並根據條件評分
+        // 評分標準：1) 長度 >= 8  2) 大小寫混合  3) 包含特殊字元
+        etPassword.addTextChangedListener(object : TextWatcher {
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
+            override fun afterTextChanged(s: Editable?) {
+                val pw = s?.toString() ?: ""
+                if (pw.isEmpty()) {
+                    strengthBar.visibility = View.GONE
+                    return
+                }
+                strengthBar.visibility = View.VISIBLE
+                val hasLen = pw.length >= 8
+                val hasMix = pw.any { it.isUpperCase() } && pw.any { it.isLowerCase() }
+                val hasSpecial = pw.any { !it.isLetterOrDigit() }
+                val score = listOf(hasLen, hasMix, hasSpecial).count { it }
+
+                val weakColor = 0xFFb91c3a.toInt()
+                val medColor = 0xFFa16207.toInt()
+                val strongColor = 0xFF166534.toInt()
+                val defaultColor = 0xFFE0E0E0.toInt()
+
+                when (score) {
+                    0, 1 -> {
+                        seg1.setBackgroundColor(weakColor)
+                        seg2.setBackgroundColor(defaultColor)
+                        seg3.setBackgroundColor(defaultColor)
+                        tvStrength.text = "弱"
+                    }
+                    2 -> {
+                        seg1.setBackgroundColor(medColor)
+                        seg2.setBackgroundColor(medColor)
+                        seg3.setBackgroundColor(defaultColor)
+                        tvStrength.text = "中等"
+                    }
+                    3 -> {
+                        seg1.setBackgroundColor(strongColor)
+                        seg2.setBackgroundColor(strongColor)
+                        seg3.setBackgroundColor(strongColor)
+                        tvStrength.text = "強"
+                    }
+                }
+            }
+        })
+
+        // Back to login
+        findViewById<TextView>(R.id.tvBackToLogin).setOnClickListener {
+            finish()
+        }
+
+        // ── 註冊按鈕 — 前端驗證後呼叫後端 /api/v1/auth/register API ──
+        val btnRegister = findViewById<MaterialButton>(R.id.btnRegister)
+        btnRegister.setOnClickListener {
+            val displayName = etDisplayName.text.toString().trim()
+            val email = findViewById<TextInputEditText>(R.id.etRegEmail).text.toString().trim()
+            val pw = etPassword.text.toString()
+            val confirmPw = findViewById<TextInputEditText>(R.id.etRegConfirmPassword).text.toString()
+            val termsChecked = findViewById<CheckBox>(R.id.cbTerms).isChecked
+
+            val tilName = findViewById<TextInputLayout>(R.id.tilRegDisplayName)
+            val tilEmail = findViewById<TextInputLayout>(R.id.tilRegEmail)
+            val tilPw = findViewById<TextInputLayout>(R.id.tilRegPassword)
+            val tilConfirm = findViewById<TextInputLayout>(R.id.tilRegConfirmPassword)
+
+            // 前端表單驗證：逐欄檢查並設定錯誤提示
+            var valid = true
+            tilName.error = null; tilEmail.error = null; tilPw.error = null; tilConfirm.error = null
+
+            if (displayName.isEmpty()) {
+                tilName.error = "請輸入顯示名稱"
+                valid = false
+            }
+            if (email.isEmpty() || !android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
+                tilEmail.error = "請輸入有效電子信箱"
+                valid = false
+            }
+            if (pw.length < 8) {
+                tilPw.error = "密碼至少 8 個字元"
+                valid = false
+            }
+            if (pw != confirmPw) {
+                tilConfirm.error = "兩次密碼不一致"
+                valid = false
+            }
+            if (!termsChecked) {
+                Toast.makeText(this, "請同意服務條款與隱私政策", Toast.LENGTH_SHORT).show()
+                valid = false
+            }
+            if (!valid) return@setOnClickListener
+
+            // 禁用按鈕，顯示載入狀態
+            btnRegister.isEnabled = false
+            btnRegister.text = "註冊中..."
+
+            val request = RegisterRequest(email, pw, displayName)
+            Log.d("Register", "Sending register request: email=$email, displayName=$displayName")
+            ApiClient.authApi.register(request).enqueue(object : Callback<TokenResponse> {
+                override fun onResponse(call: Call<TokenResponse>, response: Response<TokenResponse>) {
+                    Log.d("Register", "onResponse: code=${response.code()}, body=${response.body()}")
+                    if (isFinishing || isDestroyed) return
+                    btnRegister.isEnabled = true
+                    btnRegister.text = getString(R.string.register)
+
+                    if (response.isSuccessful) {
+                        val token = response.body()
+                        if (token != null) {
+                            TokenManager(this@RegisterActivity).saveTokens(
+                                token.accessToken, token.refreshToken
+                            )
+                        }
+                        ResultDialog.newInstance(
+                            true, "註冊成功！", "帳號已建立。\n請使用電子信箱登入。"
+                        ).show(supportFragmentManager, "reg_ok")
+                        Handler(Looper.getMainLooper()).postDelayed({ finish() }, 1500)
+                    } else {
+                        val msg = ApiClient.parseError(response.errorBody()?.string())
+                        ResultDialog.newInstance(false, "註冊失敗", msg)
+                            .show(supportFragmentManager, "result")
+                    }
+                }
+
+                override fun onFailure(call: Call<TokenResponse>, t: Throwable) {
+                    Log.e("Register", "onFailure: ${t.message}", t)
+                    if (isFinishing || isDestroyed) return
+                    btnRegister.isEnabled = true
+                    btnRegister.text = getString(R.string.register)
+                    ResultDialog.newInstance(
+                        false, "連線失敗",
+                        "無法連線至伺服器，請檢查網路後再試。\n\n${t.localizedMessage}"
+                    ).show(supportFragmentManager, "result")
+                }
+            })
+        }
+    }
+}
