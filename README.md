@@ -371,18 +371,20 @@ FLASH-App/
 - Android SDK 34
 - 實體裝置或模擬器（API 26+）
 
-### 建置步驟
+### 快速開始
 
 ```bash
-git clone <repository-url>
-cd FLASH-App
+git clone https://github.com/cgub12project/B12Project.git
+cd B12Project
 ```
 
 以 Android Studio 開啟專案，等待 Gradle Sync 完成後，選擇裝置並點擊 **Run**。
 
+或直接安裝預先建置的 APK：[`release/app-debug.apk`](release/app-debug.apk)
+
 ### 測試帳號
 
-App 內建模擬資料（`SampleData.kt`），可直接瀏覽所有功能畫面。如需測試 API 串接，可透過後端 API 註冊帳號。
+App 內建模擬資料（`SampleData.kt`），可直接瀏覽所有功能畫面。如需測試 API 串接，可透過 App 註冊頁面建立新帳號。
 
 ### 權限
 
@@ -390,6 +392,8 @@ App 內建模擬資料（`SampleData.kt`），可直接瀏覽所有功能畫面�
 |------|------|
 | `INTERNET` | 網路存取（API 通訊） |
 | `USE_BIOMETRIC` | 生物辨識快速登入 |
+
+> 完整的安裝方式（Android Studio / APK 直裝 / 命令列建置）、操作說明、功能測試指南與常見問題排除，請參閱 **[INSTALL.md](INSTALL.md)**。
 
 ---
 
