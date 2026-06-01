@@ -1,0 +1,342 @@
+[
+    {
+        "merged": "C:\\Users\\jason\\.gradle\\daemon\\8.7\\com.frauddetector.app-debug-54:\\drawable_ic_key_set.xml.flat",
+        "source": "C:\\Users\\jason\\.gradle\\daemon\\8.7\\com.frauddetector.app-main-56:\\drawable\\ic_key_set.xml"
+    },
+    {
+        "merged": "C:\\Users\\jason\\.gradle\\daemon\\8.7\\com.frauddetector.app-debug-54:\\drawable_ic_shield_set.xml.flat",
+        "source": "C:\\Users\\jason\\.gradle\\daemon\\8.7\\com.frauddetector.app-main-56:\\drawable\\ic_shield_set.xml"
+    },
+    {
+        "merged": "C:\\Users\\jason\\.gradle\\daemon\\8.7\\com.frauddetector.app-debug-54:\\mipmap-xhdpi_ic_launcher.png.flat",
+        "source": "C:\\Users\\jason\\.gradle\\daemon\\8.7\\com.frauddetector.app-main-56:\\mipmap-xhdpi\\ic_launcher.png"
+    },
+    {
+        "merged": "C:\\Users\\jason\\.gradle\\daemon\\8.7\\com.frauddetector.app-debug-54:\\mipmap-xhdpi_ic_launcher_round.png.flat",
+        "source": "C:\\Users\\jason\\.gradle\\daemon\\8.7\\com.frauddetector.app-main-56:\\mipmap-xhdpi\\ic_launcher_round.png"
+    },
+    {
+        "merged": "C:\\Users\\jason\\.gradle\\daemon\\8.7\\com.frauddetector.app-debug-54:\\drawable_ic_chevron_right.xml.flat",
+        "source": "C:\\Users\\jason\\.gradle\\daemon\\8.7\\com.frauddetector.app-main-56:\\drawable\\ic_chevron_right.xml"
+    },
+    {
+        "merged": "C:\\Users\\jason\\.gradle\\daemon\\8.7\\com.frauddetector.app-debug-54:\\drawable_ic_person.xml.flat",
+        "source": "C:\\Users\\jason\\.gradle\\daemon\\8.7\\com.frauddetector.app-main-56:\\drawable\\ic_person.xml"
+    },
+    {
+        "merged": "C:\\Users\\jason\\.gradle\\daemon\\8.7\\com.frauddetector.app-debug-54:\\drawable_bg_btn_share.xml.flat",
+        "source": "C:\\Users\\jason\\.gradle\\daemon\\8.7\\com.frauddetector.app-main-56:\\drawable\\bg_btn_share.xml"
+    },
+    {
+        "merged": "C:\\Users\\jason\\.gradle\\daemon\\8.7\\com.frauddetector.app-debug-54:\\layout_activity_account_detail.xml.flat",
+        "source": "C:\\Users\\jason\\.gradle\\daemon\\8.7\\com.frauddetector.app-main-56:\\layout\\activity_account_detail.xml"
+    },
+    {
+        "merged": "C:\\Users\\jason\\.gradle\\daemon\\8.7\\com.frauddetector.app-debug-54:\\drawable_bg_risk_pill_mid.xml.flat",
+        "source": "C:\\Users\\jason\\.gradle\\daemon\\8.7\\com.frauddetector.app-main-56:\\drawable\\bg_risk_pill_mid.xml"
+    },
+    {
+        "merged": "C:\\Users\\jason\\.gradle\\daemon\\8.7\\com.frauddetector.app-debug-54:\\drawable_ic_lock_set.xml.flat",
+        "source": "C:\\Users\\jason\\.gradle\\daemon\\8.7\\com.frauddetector.app-main-56:\\drawable\\ic_lock_set.xml"
+    },
+    {
+        "merged": "C:\\Users\\jason\\.gradle\\daemon\\8.7\\com.frauddetector.app-debug-54:\\layout_dialog_result.xml.flat",
+        "source": "C:\\Users\\jason\\.gradle\\daemon\\8.7\\com.frauddetector.app-main-56:\\layout\\dialog_result.xml"
+    },
+    {
+        "merged": "C:\\Users\\jason\\.gradle\\daemon\\8.7\\com.frauddetector.app-debug-54:\\layout_activity_forgot_password.xml.flat",
+        "source": "C:\\Users\\jason\\.gradle\\daemon\\8.7\\com.frauddetector.app-main-56:\\layout\\activity_forgot_password.xml"
+    },
+    {
+        "merged": "C:\\Users\\jason\\.gradle\\daemon\\8.7\\com.frauddetector.app-debug-54:\\drawable_ic_email_set.xml.flat",
+        "source": "C:\\Users\\jason\\.gradle\\daemon\\8.7\\com.frauddetector.app-main-56:\\drawable\\ic_email_set.xml"
+    },
+    {
+        "merged": "C:\\Users\\jason\\.gradle\\daemon\\8.7\\com.frauddetector.app-debug-54:\\layout_activity_splash.xml.flat",
+        "source": "C:\\Users\\jason\\.gradle\\daemon\\8.7\\com.frauddetector.app-main-56:\\layout\\activity_splash.xml"
+    },
+    {
+        "merged": "C:\\Users\\jason\\.gradle\\daemon\\8.7\\com.frauddetector.app-debug-54:\\layout_item_settings_nav.xml.flat",
+        "source": "C:\\Users\\jason\\.gradle\\daemon\\8.7\\com.frauddetector.app-main-56:\\layout\\item_settings_nav.xml"
+    },
+    {
+        "merged": "C:\\Users\\jason\\.gradle\\daemon\\8.7\\com.frauddetector.app-debug-54:\\drawable_bg_settings_card.xml.flat",
+        "source": "C:\\Users\\jason\\.gradle\\daemon\\8.7\\com.frauddetector.app-main-56:\\drawable\\bg_settings_card.xml"
+    },
+    {
+        "merged": "C:\\Users\\jason\\.gradle\\daemon\\8.7\\com.frauddetector.app-debug-54:\\drawable_bg_btn_report.xml.flat",
+        "source": "C:\\Users\\jason\\.gradle\\daemon\\8.7\\com.frauddetector.app-main-56:\\drawable\\bg_btn_report.xml"
+    },
+    {
+        "merged": "C:\\Users\\jason\\.gradle\\daemon\\8.7\\com.frauddetector.app-debug-54:\\layout_activity_phone_detail.xml.flat",
+        "source": "C:\\Users\\jason\\.gradle\\daemon\\8.7\\com.frauddetector.app-main-56:\\layout\\activity_phone_detail.xml"
+    },
+    {
+        "merged": "C:\\Users\\jason\\.gradle\\daemon\\8.7\\com.frauddetector.app-debug-54:\\drawable_bg_btn_call.xml.flat",
+        "source": "C:\\Users\\jason\\.gradle\\daemon\\8.7\\com.frauddetector.app-main-56:\\drawable\\bg_btn_call.xml"
+    },
+    {
+        "merged": "com.frauddetector.app-debug-54:/layout_dialog_message_report_bottom_sheet.xml.flat",
+        "source": "com.frauddetector.app-main-56:/layout/dialog_message_report_bottom_sheet.xml"
+    },
+    {
+        "merged": "C:\\Users\\jason\\.gradle\\daemon\\8.7\\com.frauddetector.app-debug-54:\\drawable_bg_card_white.xml.flat",
+        "source": "C:\\Users\\jason\\.gradle\\daemon\\8.7\\com.frauddetector.app-main-56:\\drawable\\bg_card_white.xml"
+    },
+    {
+        "merged": "C:\\Users\\jason\\.gradle\\daemon\\8.7\\com.frauddetector.app-debug-54:\\mipmap-xxxhdpi_ic_launcher.png.flat",
+        "source": "C:\\Users\\jason\\.gradle\\daemon\\8.7\\com.frauddetector.app-main-56:\\mipmap-xxxhdpi\\ic_launcher.png"
+    },
+    {
+        "merged": "C:\\Users\\jason\\.gradle\\daemon\\8.7\\com.frauddetector.app-debug-54:\\drawable_bg_intel_card.xml.flat",
+        "source": "C:\\Users\\jason\\.gradle\\daemon\\8.7\\com.frauddetector.app-main-56:\\drawable\\bg_intel_card.xml"
+    },
+    {
+        "merged": "C:\\Users\\jason\\.gradle\\daemon\\8.7\\com.frauddetector.app-debug-54:\\mipmap-hdpi_ic_launcher_foreground.png.flat",
+        "source": "C:\\Users\\jason\\.gradle\\daemon\\8.7\\com.frauddetector.app-main-56:\\mipmap-hdpi\\ic_launcher_foreground.png"
+    },
+    {
+        "merged": "C:\\Users\\jason\\.gradle\\daemon\\8.7\\com.frauddetector.app-debug-54:\\layout_activity_google_picker.xml.flat",
+        "source": "C:\\Users\\jason\\.gradle\\daemon\\8.7\\com.frauddetector.app-main-56:\\layout\\activity_google_picker.xml"
+    },
+    {
+        "merged": "C:\\Users\\jason\\.gradle\\daemon\\8.7\\com.frauddetector.app-debug-54:\\drawable_ic_launcher_foreground.xml.flat",
+        "source": "C:\\Users\\jason\\.gradle\\daemon\\8.7\\com.frauddetector.app-main-56:\\drawable\\ic_launcher_foreground.xml"
+    },
+    {
+        "merged": "C:\\Users\\jason\\.gradle\\daemon\\8.7\\com.frauddetector.app-debug-54:\\mipmap-xxhdpi_ic_launcher_round.png.flat",
+        "source": "C:\\Users\\jason\\.gradle\\daemon\\8.7\\com.frauddetector.app-main-56:\\mipmap-xxhdpi\\ic_launcher_round.png"
+    },
+    {
+        "merged": "C:\\Users\\jason\\.gradle\\daemon\\8.7\\com.frauddetector.app-debug-54:\\layout_activity_register.xml.flat",
+        "source": "C:\\Users\\jason\\.gradle\\daemon\\8.7\\com.frauddetector.app-main-56:\\layout\\activity_register.xml"
+    },
+    {
+        "merged": "C:\\Users\\jason\\.gradle\\daemon\\8.7\\com.frauddetector.app-debug-54:\\mipmap-mdpi_ic_launcher_round.png.flat",
+        "source": "C:\\Users\\jason\\.gradle\\daemon\\8.7\\com.frauddetector.app-main-56:\\mipmap-mdpi\\ic_launcher_round.png"
+    },
+    {
+        "merged": "C:\\Users\\jason\\.gradle\\daemon\\8.7\\com.frauddetector.app-debug-54:\\drawable_bg_risk_pill_high.xml.flat",
+        "source": "C:\\Users\\jason\\.gradle\\daemon\\8.7\\com.frauddetector.app-main-56:\\drawable\\bg_risk_pill_high.xml"
+    },
+    {
+        "merged": "C:\\Users\\jason\\.gradle\\daemon\\8.7\\com.frauddetector.app-debug-54:\\layout_activity_main.xml.flat",
+        "source": "C:\\Users\\jason\\.gradle\\daemon\\8.7\\com.frauddetector.app-main-56:\\layout\\activity_main.xml"
+    },
+    {
+        "merged": "C:\\Users\\jason\\.gradle\\daemon\\8.7\\com.frauddetector.app-debug-54:\\mipmap-xxhdpi_ic_launcher.png.flat",
+        "source": "C:\\Users\\jason\\.gradle\\daemon\\8.7\\com.frauddetector.app-main-56:\\mipmap-xxhdpi\\ic_launcher.png"
+    },
+    {
+        "merged": "C:\\Users\\jason\\.gradle\\daemon\\8.7\\com.frauddetector.app-debug-54:\\drawable_ic_facebook.xml.flat",
+        "source": "C:\\Users\\jason\\.gradle\\daemon\\8.7\\com.frauddetector.app-main-56:\\drawable\\ic_facebook.xml"
+    },
+    {
+        "merged": "C:\\Users\\jason\\.gradle\\daemon\\8.7\\com.frauddetector.app-debug-54:\\layout_item_evidence.xml.flat",
+        "source": "C:\\Users\\jason\\.gradle\\daemon\\8.7\\com.frauddetector.app-main-56:\\layout\\item_evidence.xml"
+    },
+    {
+        "merged": "C:\\Users\\jason\\.gradle\\daemon\\8.7\\com.frauddetector.app-debug-54:\\drawable_bg_stat_box.xml.flat",
+        "source": "C:\\Users\\jason\\.gradle\\daemon\\8.7\\com.frauddetector.app-main-56:\\drawable\\bg_stat_box.xml"
+    },
+    {
+        "merged": "C:\\Users\\jason\\.gradle\\daemon\\8.7\\com.frauddetector.app-debug-54:\\layout_item_report.xml.flat",
+        "source": "C:\\Users\\jason\\.gradle\\daemon\\8.7\\com.frauddetector.app-main-56:\\layout\\item_report.xml"
+    },
+    {
+        "merged": "C:\\Users\\jason\\.gradle\\daemon\\8.7\\com.frauddetector.app-debug-54:\\layout_dialog_report_bottom_sheet.xml.flat",
+        "source": "C:\\Users\\jason\\.gradle\\daemon\\8.7\\com.frauddetector.app-main-56:\\layout\\dialog_report_bottom_sheet.xml"
+    },
+    {
+        "merged": "C:\\Users\\jason\\.gradle\\daemon\\8.7\\com.frauddetector.app-debug-54:\\mipmap-xxxhdpi_ic_launcher_round.png.flat",
+        "source": "C:\\Users\\jason\\.gradle\\daemon\\8.7\\com.frauddetector.app-main-56:\\mipmap-xxxhdpi\\ic_launcher_round.png"
+    },
+    {
+        "merged": "C:\\Users\\jason\\.gradle\\daemon\\8.7\\com.frauddetector.app-debug-54:\\drawable_bg_score_ring_box.xml.flat",
+        "source": "C:\\Users\\jason\\.gradle\\daemon\\8.7\\com.frauddetector.app-main-56:\\drawable\\bg_score_ring_box.xml"
+    },
+    {
+        "merged": "C:\\Users\\jason\\.gradle\\daemon\\8.7\\com.frauddetector.app-debug-54:\\drawable_ic_launcher_background.xml.flat",
+        "source": "C:\\Users\\jason\\.gradle\\daemon\\8.7\\com.frauddetector.app-main-56:\\drawable\\ic_launcher_background.xml"
+    },
+    {
+        "merged": "C:\\Users\\jason\\.gradle\\daemon\\8.7\\com.frauddetector.app-debug-54:\\layout_activity_login.xml.flat",
+        "source": "C:\\Users\\jason\\.gradle\\daemon\\8.7\\com.frauddetector.app-main-56:\\layout\\activity_login.xml"
+    },
+    {
+        "merged": "C:\\Users\\jason\\.gradle\\daemon\\8.7\\com.frauddetector.app-debug-54:\\drawable_ic_calendar_set.xml.flat",
+        "source": "C:\\Users\\jason\\.gradle\\daemon\\8.7\\com.frauddetector.app-main-56:\\drawable\\ic_calendar_set.xml"
+    },
+    {
+        "merged": "C:\\Users\\jason\\.gradle\\daemon\\8.7\\com.frauddetector.app-debug-54:\\layout_item_chat_bubble.xml.flat",
+        "source": "C:\\Users\\jason\\.gradle\\daemon\\8.7\\com.frauddetector.app-main-56:\\layout\\item_chat_bubble.xml"
+    },
+    {
+        "merged": "C:\\Users\\jason\\.gradle\\daemon\\8.7\\com.frauddetector.app-debug-54:\\drawable_ic_bell_set.xml.flat",
+        "source": "C:\\Users\\jason\\.gradle\\daemon\\8.7\\com.frauddetector.app-main-56:\\drawable\\ic_bell_set.xml"
+    },
+    {
+        "merged": "C:\\Users\\jason\\.gradle\\daemon\\8.7\\com.frauddetector.app-debug-54:\\drawable_bg_gradient_blue_135.xml.flat",
+        "source": "C:\\Users\\jason\\.gradle\\daemon\\8.7\\com.frauddetector.app-main-56:\\drawable\\bg_gradient_blue_135.xml"
+    },
+    {
+        "merged": "C:\\Users\\jason\\.gradle\\daemon\\8.7\\com.frauddetector.app-debug-54:\\drawable_ic_msg_set.xml.flat",
+        "source": "C:\\Users\\jason\\.gradle\\daemon\\8.7\\com.frauddetector.app-main-56:\\drawable\\ic_msg_set.xml"
+    },
+    {
+        "merged": "C:\\Users\\jason\\.gradle\\daemon\\8.7\\com.frauddetector.app-debug-54:\\drawable_ic_google.xml.flat",
+        "source": "C:\\Users\\jason\\.gradle\\daemon\\8.7\\com.frauddetector.app-main-56:\\drawable\\ic_google.xml"
+    },
+    {
+        "merged": "C:\\Users\\jason\\.gradle\\daemon\\8.7\\com.frauddetector.app-debug-54:\\layout_item_phone.xml.flat",
+        "source": "C:\\Users\\jason\\.gradle\\daemon\\8.7\\com.frauddetector.app-main-56:\\layout\\item_phone.xml"
+    },
+    {
+        "merged": "C:\\Users\\jason\\.gradle\\daemon\\8.7\\com.frauddetector.app-debug-54:\\layout_fragment_settings.xml.flat",
+        "source": "C:\\Users\\jason\\.gradle\\daemon\\8.7\\com.frauddetector.app-main-56:\\layout\\fragment_settings.xml"
+    },
+    {
+        "merged": "C:\\Users\\jason\\.gradle\\daemon\\8.7\\com.frauddetector.app-debug-54:\\drawable_bg_btn_block.xml.flat",
+        "source": "C:\\Users\\jason\\.gradle\\daemon\\8.7\\com.frauddetector.app-main-56:\\drawable\\bg_btn_block.xml"
+    },
+    {
+        "merged": "C:\\Users\\jason\\.gradle\\daemon\\8.7\\com.frauddetector.app-debug-54:\\layout_activity_share_warning.xml.flat",
+        "source": "C:\\Users\\jason\\.gradle\\daemon\\8.7\\com.frauddetector.app-main-56:\\layout\\activity_share_warning.xml"
+    },
+    {
+        "merged": "C:\\Users\\jason\\.gradle\\daemon\\8.7\\com.frauddetector.app-debug-54:\\drawable_ic_logout_set.xml.flat",
+        "source": "C:\\Users\\jason\\.gradle\\daemon\\8.7\\com.frauddetector.app-main-56:\\drawable\\ic_logout_set.xml"
+    },
+    {
+        "merged": "C:\\Users\\jason\\.gradle\\daemon\\8.7\\com.frauddetector.app-debug-54:\\drawable_ic_phone_set.xml.flat",
+        "source": "C:\\Users\\jason\\.gradle\\daemon\\8.7\\com.frauddetector.app-main-56:\\drawable\\ic_phone_set.xml"
+    },
+    {
+        "merged": "C:\\Users\\jason\\.gradle\\daemon\\8.7\\com.frauddetector.app-debug-54:\\drawable_ic_chevron_left.xml.flat",
+        "source": "C:\\Users\\jason\\.gradle\\daemon\\8.7\\com.frauddetector.app-main-56:\\drawable\\ic_chevron_left.xml"
+    },
+    {
+        "merged": "C:\\Users\\jason\\.gradle\\daemon\\8.7\\com.frauddetector.app-debug-54:\\mipmap-anydpi-v26_ic_launcher.xml.flat",
+        "source": "C:\\Users\\jason\\.gradle\\daemon\\8.7\\com.frauddetector.app-main-56:\\mipmap-anydpi-v26\\ic_launcher.xml"
+    },
+    {
+        "merged": "C:\\Users\\jason\\.gradle\\daemon\\8.7\\com.frauddetector.app-debug-54:\\mipmap-xhdpi_ic_launcher_foreground.png.flat",
+        "source": "C:\\Users\\jason\\.gradle\\daemon\\8.7\\com.frauddetector.app-main-56:\\mipmap-xhdpi\\ic_launcher_foreground.png"
+    },
+    {
+        "merged": "C:\\Users\\jason\\.gradle\\daemon\\8.7\\com.frauddetector.app-debug-54:\\layout_dialog_quick_login.xml.flat",
+        "source": "C:\\Users\\jason\\.gradle\\daemon\\8.7\\com.frauddetector.app-main-56:\\layout\\dialog_quick_login.xml"
+    },
+    {
+        "merged": "C:\\Users\\jason\\.gradle\\daemon\\8.7\\com.frauddetector.app-debug-54:\\mipmap-hdpi_ic_launcher.png.flat",
+        "source": "C:\\Users\\jason\\.gradle\\daemon\\8.7\\com.frauddetector.app-main-56:\\mipmap-hdpi\\ic_launcher.png"
+    },
+    {
+        "merged": "C:\\Users\\jason\\.gradle\\daemon\\8.7\\com.frauddetector.app-debug-54:\\layout_fragment_email.xml.flat",
+        "source": "C:\\Users\\jason\\.gradle\\daemon\\8.7\\com.frauddetector.app-main-56:\\layout\\fragment_email.xml"
+    },
+    {
+        "merged": "C:\\Users\\jason\\.gradle\\daemon\\8.7\\com.frauddetector.app-debug-54:\\layout_dialog_quick_setup.xml.flat",
+        "source": "C:\\Users\\jason\\.gradle\\daemon\\8.7\\com.frauddetector.app-main-56:\\layout\\dialog_quick_setup.xml"
+    },
+    {
+        "merged": "C:\\Users\\jason\\.gradle\\daemon\\8.7\\com.frauddetector.app-debug-54:\\drawable_bg_avatar_circle.xml.flat",
+        "source": "C:\\Users\\jason\\.gradle\\daemon\\8.7\\com.frauddetector.app-main-56:\\drawable\\bg_avatar_circle.xml"
+    },
+    {
+        "merged": "C:\\Users\\jason\\.gradle\\daemon\\8.7\\com.frauddetector.app-debug-54:\\drawable_bg_gradient_blue.xml.flat",
+        "source": "C:\\Users\\jason\\.gradle\\daemon\\8.7\\com.frauddetector.app-main-56:\\drawable\\bg_gradient_blue.xml"
+    },
+    {
+        "merged": "C:\\Users\\jason\\.gradle\\daemon\\8.7\\com.frauddetector.app-debug-54:\\mipmap-xxxhdpi_ic_launcher_foreground.png.flat",
+        "source": "C:\\Users\\jason\\.gradle\\daemon\\8.7\\com.frauddetector.app-main-56:\\mipmap-xxxhdpi\\ic_launcher_foreground.png"
+    },
+    {
+        "merged": "C:\\Users\\jason\\.gradle\\daemon\\8.7\\com.frauddetector.app-debug-54:\\drawable_bg_card_white_12.xml.flat",
+        "source": "C:\\Users\\jason\\.gradle\\daemon\\8.7\\com.frauddetector.app-main-56:\\drawable\\bg_card_white_12.xml"
+    },
+    {
+        "merged": "C:\\Users\\jason\\.gradle\\daemon\\8.7\\com.frauddetector.app-debug-54:\\layout_activity_thread_detail.xml.flat",
+        "source": "C:\\Users\\jason\\.gradle\\daemon\\8.7\\com.frauddetector.app-main-56:\\layout\\activity_thread_detail.xml"
+    },
+    {
+        "merged": "C:\\Users\\jason\\.gradle\\daemon\\8.7\\com.frauddetector.app-debug-54:\\drawable_bg_plan_badge.xml.flat",
+        "source": "C:\\Users\\jason\\.gradle\\daemon\\8.7\\com.frauddetector.app-main-56:\\drawable\\bg_plan_badge.xml"
+    },
+    {
+        "merged": "C:\\Users\\jason\\.gradle\\daemon\\8.7\\com.frauddetector.app-debug-54:\\drawable_bg_monitoring_bar.xml.flat",
+        "source": "C:\\Users\\jason\\.gradle\\daemon\\8.7\\com.frauddetector.app-main-56:\\drawable\\bg_monitoring_bar.xml"
+    },
+    {
+        "merged": "C:\\Users\\jason\\.gradle\\daemon\\8.7\\com.frauddetector.app-debug-54:\\layout_item_message.xml.flat",
+        "source": "C:\\Users\\jason\\.gradle\\daemon\\8.7\\com.frauddetector.app-main-56:\\layout\\item_message.xml"
+    },
+    {
+        "merged": "C:\\Users\\jason\\.gradle\\daemon\\8.7\\com.frauddetector.app-debug-54:\\mipmap-xxhdpi_ic_launcher_foreground.png.flat",
+        "source": "C:\\Users\\jason\\.gradle\\daemon\\8.7\\com.frauddetector.app-main-56:\\mipmap-xxhdpi\\ic_launcher_foreground.png"
+    },
+    {
+        "merged": "C:\\Users\\jason\\.gradle\\daemon\\8.7\\com.frauddetector.app-debug-54:\\layout_fragment_phone.xml.flat",
+        "source": "C:\\Users\\jason\\.gradle\\daemon\\8.7\\com.frauddetector.app-main-56:\\layout\\fragment_phone.xml"
+    },
+    {
+        "merged": "C:\\Users\\jason\\.gradle\\daemon\\8.7\\com.frauddetector.app-debug-54:\\layout_activity_report_full.xml.flat",
+        "source": "C:\\Users\\jason\\.gradle\\daemon\\8.7\\com.frauddetector.app-main-56:\\layout\\activity_report_full.xml"
+    },
+    {
+        "merged": "C:\\Users\\jason\\.gradle\\daemon\\8.7\\com.frauddetector.app-debug-54:\\layout_fragment_messages.xml.flat",
+        "source": "C:\\Users\\jason\\.gradle\\daemon\\8.7\\com.frauddetector.app-main-56:\\layout\\fragment_messages.xml"
+    },
+    {
+        "merged": "com.frauddetector.app-debug-54:/layout_dialog_report_bottom_sheet.xml.flat",
+        "source": "com.frauddetector.app-main-56:/layout/dialog_report_bottom_sheet.xml"
+    },
+    {
+        "merged": "com.frauddetector.app-debug-54:/layout_activity_login.xml.flat",
+        "source": "com.frauddetector.app-main-56:/layout/activity_login.xml"
+    },
+    {
+        "merged": "C:\\Users\\jason\\.gradle\\daemon\\8.7\\com.frauddetector.app-debug-54:\\mipmap-mdpi_ic_launcher_foreground.png.flat",
+        "source": "C:\\Users\\jason\\.gradle\\daemon\\8.7\\com.frauddetector.app-main-56:\\mipmap-mdpi\\ic_launcher_foreground.png"
+    },
+    {
+        "merged": "C:\\Users\\jason\\.gradle\\daemon\\8.7\\com.frauddetector.app-debug-54:\\mipmap-anydpi-v26_ic_launcher_round.xml.flat",
+        "source": "C:\\Users\\jason\\.gradle\\daemon\\8.7\\com.frauddetector.app-main-56:\\mipmap-anydpi-v26\\ic_launcher_round.xml"
+    },
+    {
+        "merged": "C:\\Users\\jason\\.gradle\\daemon\\8.7\\com.frauddetector.app-debug-54:\\layout_item_settings_toggle.xml.flat",
+        "source": "C:\\Users\\jason\\.gradle\\daemon\\8.7\\com.frauddetector.app-main-56:\\layout\\item_settings_toggle.xml"
+    },
+    {
+        "merged": "C:\\Users\\jason\\.gradle\\daemon\\8.7\\com.frauddetector.app-debug-54:\\drawable_bg_search_box.xml.flat",
+        "source": "C:\\Users\\jason\\.gradle\\daemon\\8.7\\com.frauddetector.app-main-56:\\drawable\\bg_search_box.xml"
+    },
+    {
+        "merged": "C:\\Users\\jason\\.gradle\\daemon\\8.7\\com.frauddetector.app-debug-54:\\drawable_bg_risk_pill_safe.xml.flat",
+        "source": "C:\\Users\\jason\\.gradle\\daemon\\8.7\\com.frauddetector.app-main-56:\\drawable\\bg_risk_pill_safe.xml"
+    },
+    {
+        "merged": "C:\\Users\\jason\\.gradle\\daemon\\8.7\\com.frauddetector.app-debug-54:\\layout_activity_facebook_picker.xml.flat",
+        "source": "C:\\Users\\jason\\.gradle\\daemon\\8.7\\com.frauddetector.app-main-56:\\layout\\activity_facebook_picker.xml"
+    },
+    {
+        "merged": "C:\\Users\\jason\\.gradle\\daemon\\8.7\\com.frauddetector.app-debug-54:\\drawable_bg_facebook_btn.xml.flat",
+        "source": "C:\\Users\\jason\\.gradle\\daemon\\8.7\\com.frauddetector.app-main-56:\\drawable\\bg_facebook_btn.xml"
+    },
+    {
+        "merged": "C:\\Users\\jason\\.gradle\\daemon\\8.7\\com.frauddetector.app-debug-54:\\menu_bottom_nav_menu.xml.flat",
+        "source": "C:\\Users\\jason\\.gradle\\daemon\\8.7\\com.frauddetector.app-main-56:\\menu\\bottom_nav_menu.xml"
+    },
+    {
+        "merged": "C:\\Users\\jason\\.gradle\\daemon\\8.7\\com.frauddetector.app-debug-54:\\drawable_bg_preview_box.xml.flat",
+        "source": "C:\\Users\\jason\\.gradle\\daemon\\8.7\\com.frauddetector.app-main-56:\\drawable\\bg_preview_box.xml"
+    },
+    {
+        "merged": "C:\\Users\\jason\\.gradle\\daemon\\8.7\\com.frauddetector.app-debug-54:\\mipmap-mdpi_ic_launcher.png.flat",
+        "source": "C:\\Users\\jason\\.gradle\\daemon\\8.7\\com.frauddetector.app-main-56:\\mipmap-mdpi\\ic_launcher.png"
+    },
+    {
+        "merged": "C:\\Users\\jason\\.gradle\\daemon\\8.7\\com.frauddetector.app-debug-54:\\mipmap-hdpi_ic_launcher_round.png.flat",
+        "source": "C:\\Users\\jason\\.gradle\\daemon\\8.7\\com.frauddetector.app-main-56:\\mipmap-hdpi\\ic_launcher_round.png"
+    }
+]

@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- 17. 快速登入覆蓋層 (BottomSheet) -->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:gravity="center"
+    android:padding="24dp">
+
+    <!-- Handle -->
+    <View
+        android:layout_width="36dp"
+        android:layout_height="3dp"
+        android:background="#CCCCCC"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginBottom="20dp" />
+
+    <!-- Icon Ring -->
+    <ImageView
+        android:id="@+id/quickLoginIcon"
+        android:layout_width="88dp"
+        android:layout_height="88dp"
+        android:src="@android:drawable/ic_menu_compass"
+        android:contentDescription="Biometric" />
+
+    <TextView
+        android:id="@+id/tvQuickStatus"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="14dp"
+        android:text="@string/quick_login_verifying"
+        android:textSize="15sp"
+        android:textStyle="bold" />
+
+    <TextView
+        android:id="@+id/tvQuickSub"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="4dp"
+        android:text="@string/verifying_identity"
+        android:textSize="9sp"
+        android:textColor="#999999" />
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/btnQuickCancel"
+        style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+        android:layout_width="match_parent"
+        android:layout_height="48dp"
+        android:layout_marginTop="20dp"
+        android:text="@string/cancel" />
+</LinearLayout>

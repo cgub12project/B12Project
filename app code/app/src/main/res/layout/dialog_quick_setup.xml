@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- 19. 快速登入設定提醒 Dialog -->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:gravity="center"
+    android:padding="28dp">
+
+    <!-- Icon -->
+    <ImageView
+        android:layout_width="72dp"
+        android:layout_height="72dp"
+        android:src="@android:drawable/ic_menu_compass"
+        android:contentDescription="Quick Login"
+        android:layout_marginBottom="16dp" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/enable_quick_login_title"
+        android:textSize="18sp"
+        android:textStyle="bold"
+        android:gravity="center"
+        android:layout_marginBottom="8dp" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/enable_quick_login_msg"
+        android:textSize="12sp"
+        android:textColor="#999999"
+        android:gravity="center"
+        android:lineSpacingMultiplier="1.7"
+        android:layout_marginBottom="22dp" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnSetupLater"
+            style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+            android:layout_width="0dp"
+            android:layout_height="48dp"
+            android:layout_weight="1"
+            android:layout_marginEnd="10dp"
+            android:text="@string/later" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnSetupNow"
+            android:layout_width="0dp"
+            android:layout_height="48dp"
+            android:layout_weight="1"
+            android:text="@string/enable_now" />
+    </LinearLayout>
+</LinearLayout>

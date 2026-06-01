@@ -1,0 +1,255 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- 7. 訊息主頁 (Tab 1) -->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <!-- Top Bar -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:padding="16dp">
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/tab_messages"
+                android:textSize="24sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/live_monitoring"
+                android:textSize="11sp"
+                android:textColor="#999999" />
+        </LinearLayout>
+
+        <ImageButton
+            android:id="@+id/btnMarkAllRead"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:src="@android:drawable/checkbox_on_background"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:contentDescription="Mark all read" />
+    </LinearLayout>
+
+    <!-- Intelligence Summary Card -->
+    <LinearLayout
+        android:id="@+id/intelCard"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginBottom="14dp"
+        android:padding="14dp">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/intel_summary"
+            android:textSize="10sp"
+            android:textColor="#999999"
+            android:letterSpacing="0.14"
+            android:layout_marginBottom="12dp" />
+
+        <!-- Stats Row: 高危 / 可疑 / 安全 -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginBottom="12dp">
+
+            <!-- High Risk -->
+            <LinearLayout
+                android:id="@+id/statHigh"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:orientation="vertical"
+                android:gravity="center"
+                android:padding="8dp"
+                android:clickable="true"
+                android:focusable="true">
+
+                <TextView
+                    android:id="@+id/tvHighCount"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="3"
+                    android:textSize="26sp"
+                    android:textStyle="bold"
+                    android:textColor="#b91c3a" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/high_risk"
+                    android:textSize="9sp"
+                    android:textColor="#999999" />
+            </LinearLayout>
+
+            <View
+                android:layout_width="1dp"
+                android:layout_height="match_parent"
+                android:background="#E0E0E0"
+                android:layout_marginTop="8dp"
+                android:layout_marginBottom="8dp" />
+
+            <!-- Suspicious -->
+            <LinearLayout
+                android:id="@+id/statMid"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:orientation="vertical"
+                android:gravity="center"
+                android:padding="8dp"
+                android:clickable="true"
+                android:focusable="true">
+
+                <TextView
+                    android:id="@+id/tvMidCount"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="2"
+                    android:textSize="26sp"
+                    android:textStyle="bold"
+                    android:textColor="#a16207" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/suspicious"
+                    android:textSize="9sp"
+                    android:textColor="#999999" />
+            </LinearLayout>
+
+            <View
+                android:layout_width="1dp"
+                android:layout_height="match_parent"
+                android:background="#E0E0E0"
+                android:layout_marginTop="8dp"
+                android:layout_marginBottom="8dp" />
+
+            <!-- Safe -->
+            <LinearLayout
+                android:id="@+id/statSafe"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:orientation="vertical"
+                android:gravity="center"
+                android:padding="8dp"
+                android:clickable="true"
+                android:focusable="true">
+
+                <TextView
+                    android:id="@+id/tvSafeCount"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="12"
+                    android:textSize="26sp"
+                    android:textStyle="bold"
+                    android:textColor="#166534" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/safe"
+                    android:textSize="9sp"
+                    android:textColor="#999999" />
+            </LinearLayout>
+        </LinearLayout>
+
+        <!-- Scan Status -->
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/monitoring_status"
+            android:textSize="9sp"
+            android:textColor="#166534"
+            android:padding="8dp" />
+    </LinearLayout>
+
+    <!-- Filter Chips (horizontal scroll) -->
+    <HorizontalScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:scrollbars="none"
+        android:paddingStart="16dp"
+        android:paddingEnd="16dp"
+        android:layout_marginBottom="12dp">
+
+        <com.google.android.material.chip.ChipGroup
+            android:id="@+id/chipGroupFilter"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:singleSelection="true"
+            xmlns:app="http://schemas.android.com/apk/res-auto">
+
+            <com.google.android.material.chip.Chip
+                android:id="@+id/chipAll"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/filter_all"
+                android:checked="true" />
+
+            <com.google.android.material.chip.Chip
+                android:id="@+id/chipLine"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="LINE" />
+
+            <com.google.android.material.chip.Chip
+                android:id="@+id/chipSms"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="簡訊" />
+
+            <com.google.android.material.chip.Chip
+                android:id="@+id/chipWhatsApp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="WhatsApp" />
+
+            <com.google.android.material.chip.Chip
+                android:id="@+id/chipMessenger"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Messenger" />
+        </com.google.android.material.chip.ChipGroup>
+    </HorizontalScrollView>
+
+    <!-- Section Header -->
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/latest_alerts"
+        android:textSize="9sp"
+        android:textColor="#999999"
+        android:letterSpacing="0.18"
+        android:paddingStart="16dp"
+        android:paddingBottom="8dp" />
+
+    <!-- Message List -->
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rvMessages"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:paddingStart="16dp"
+        android:paddingEnd="16dp"
+        android:clipToPadding="false"
+        android:paddingBottom="16dp" />
+</LinearLayout>

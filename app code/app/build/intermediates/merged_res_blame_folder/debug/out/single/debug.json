@@ -1,0 +1,114 @@
+[
+    {
+        "merged": "com.frauddetector.app-merged_res-49:/layout_activity_account_detail.xml.flat",
+        "source": "com.frauddetector.app-main-51:/layout/activity_account_detail.xml"
+    },
+    {
+        "merged": "com.frauddetector.app-merged_res-49:/layout_dialog_quick_setup.xml.flat",
+        "source": "com.frauddetector.app-main-51:/layout/dialog_quick_setup.xml"
+    },
+    {
+        "merged": "com.frauddetector.app-merged_res-49:/layout_activity_report_full.xml.flat",
+        "source": "com.frauddetector.app-main-51:/layout/activity_report_full.xml"
+    },
+    {
+        "merged": "com.frauddetector.app-merged_res-49:/menu_bottom_nav_menu.xml.flat",
+        "source": "com.frauddetector.app-main-51:/menu/bottom_nav_menu.xml"
+    },
+    {
+        "merged": "com.frauddetector.app-merged_res-49:/layout_activity_google_picker.xml.flat",
+        "source": "com.frauddetector.app-main-51:/layout/activity_google_picker.xml"
+    },
+    {
+        "merged": "com.frauddetector.app-merged_res-49:/layout_activity_login.xml.flat",
+        "source": "com.frauddetector.app-main-51:/layout/activity_login.xml"
+    },
+    {
+        "merged": "com.frauddetector.app-merged_res-49:/layout_dialog_quick_login.xml.flat",
+        "source": "com.frauddetector.app-main-51:/layout/dialog_quick_login.xml"
+    },
+    {
+        "merged": "com.frauddetector.app-merged_res-49:/layout_item_message.xml.flat",
+        "source": "com.frauddetector.app-main-51:/layout/item_message.xml"
+    },
+    {
+        "merged": "com.frauddetector.app-merged_res-49:/layout_item_phone.xml.flat",
+        "source": "com.frauddetector.app-main-51:/layout/item_phone.xml"
+    },
+    {
+        "merged": "com.frauddetector.app-merged_res-49:/drawable_ic_launcher_foreground.xml.flat",
+        "source": "com.frauddetector.app-main-51:/drawable/ic_launcher_foreground.xml"
+    },
+    {
+        "merged": "com.frauddetector.app-merged_res-49:/drawable_ic_launcher_background.xml.flat",
+        "source": "com.frauddetector.app-main-51:/drawable/ic_launcher_background.xml"
+    },
+    {
+        "merged": "com.frauddetector.app-merged_res-49:/layout_activity_thread_detail.xml.flat",
+        "source": "com.frauddetector.app-main-51:/layout/activity_thread_detail.xml"
+    },
+    {
+        "merged": "com.frauddetector.app-merged_res-49:/layout_item_settings_toggle.xml.flat",
+        "source": "com.frauddetector.app-main-51:/layout/item_settings_toggle.xml"
+    },
+    {
+        "merged": "com.frauddetector.app-merged_res-49:/layout_activity_share_warning.xml.flat",
+        "source": "com.frauddetector.app-main-51:/layout/activity_share_warning.xml"
+    },
+    {
+        "merged": "com.frauddetector.app-merged_res-49:/layout_dialog_result.xml.flat",
+        "source": "com.frauddetector.app-main-51:/layout/dialog_result.xml"
+    },
+    {
+        "merged": "com.frauddetector.app-merged_res-49:/layout_activity_register.xml.flat",
+        "source": "com.frauddetector.app-main-51:/layout/activity_register.xml"
+    },
+    {
+        "merged": "com.frauddetector.app-merged_res-49:/layout_activity_main.xml.flat",
+        "source": "com.frauddetector.app-main-51:/layout/activity_main.xml"
+    },
+    {
+        "merged": "com.frauddetector.app-merged_res-49:/layout_item_settings_nav.xml.flat",
+        "source": "com.frauddetector.app-main-51:/layout/item_settings_nav.xml"
+    },
+    {
+        "merged": "com.frauddetector.app-merged_res-49:/layout_fragment_settings.xml.flat",
+        "source": "com.frauddetector.app-main-51:/layout/fragment_settings.xml"
+    },
+    {
+        "merged": "com.frauddetector.app-merged_res-49:/layout_activity_phone_detail.xml.flat",
+        "source": "com.frauddetector.app-main-51:/layout/activity_phone_detail.xml"
+    },
+    {
+        "merged": "com.frauddetector.app-merged_res-49:/layout_fragment_phone.xml.flat",
+        "source": "com.frauddetector.app-main-51:/layout/fragment_phone.xml"
+    },
+    {
+        "merged": "com.frauddetector.app-merged_res-49:/layout_activity_forgot_password.xml.flat",
+        "source": "com.frauddetector.app-main-51:/layout/activity_forgot_password.xml"
+    },
+    {
+        "merged": "com.frauddetector.app-merged_res-49:/layout_activity_splash.xml.flat",
+        "source": "com.frauddetector.app-main-51:/layout/activity_splash.xml"
+    },
+    {
+        "merged": "com.frauddetector.app-merged_res-49:/mipmap-anydpi-v26_ic_launcher.xml.flat",
+        "source": "com.frauddetector.app-main-51:/mipmap-anydpi-v26/ic_launcher.xml"
+    },
+    {
+        "merged": "com.frauddetector.app-merged_res-49:/layout_dialog_report_bottom_sheet.xml.flat",
+        "source": "com.frauddetector.app-main-51:/layout/dialog_report_bottom_sheet.xml"
+    },
+    {
+        "merged": "com.frauddetector.app-merged_res-49:/layout_activity_facebook_picker.xml.flat",
+        "source": "com.frauddetector.app-main-51:/layout/activity_facebook_picker.xml"
+    },
+    {
+        "merged": "com.frauddetector.app-merged_res-49:/layout_fragment_messages.xml.flat",
+        "source": "com.frauddetector.app-main-51:/layout/fragment_messages.xml"
+    },
+    {
+        "merged": "com.frauddetector.app-merged_res-49:/layout_fragment_email.xml.flat",
+        "source": "com.frauddetector.app-main-51:/layout/fragment_email.xml"
+    }
+]

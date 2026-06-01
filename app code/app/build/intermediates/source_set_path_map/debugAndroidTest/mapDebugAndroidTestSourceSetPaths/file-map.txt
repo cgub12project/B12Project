@@ -1,0 +1,4 @@
+com.frauddetector.test.app-androidTest-0 D:\claude_project\FLASH-App\app\build\generated\res\resValues\androidTest\debug
+com.frauddetector.test.app-mergeDebugAndroidTestResources-1 D:\claude_project\FLASH-App\app\build\intermediates\incremental\debugAndroidTest\mergeDebugAndroidTestResources\merged.dir
+com.frauddetector.test.app-mergeDebugAndroidTestResources-2 D:\claude_project\FLASH-App\app\build\intermediates\incremental\debugAndroidTest\mergeDebugAndroidTestResources\stripped.dir
+com.frauddetector.test.app-debugAndroidTest-3 D:\claude_project\FLASH-App\app\build\intermediates\merged_res\debugAndroidTest\mergeDebugAndroidTestResources

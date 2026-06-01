@@ -1,0 +1,98 @@
+[
+    {
+        "merged": "com.frauddetector.app-mergeDebugResources-48:/layout/activity_google_picker.xml",
+        "source": "com.frauddetector.app-main-51:/layout/activity_google_picker.xml"
+    },
+    {
+        "merged": "com.frauddetector.app-mergeDebugResources-48:/layout/activity_share_warning.xml",
+        "source": "com.frauddetector.app-main-51:/layout/activity_share_warning.xml"
+    },
+    {
+        "merged": "com.frauddetector.app-mergeDebugResources-48:/layout/fragment_messages.xml",
+        "source": "com.frauddetector.app-main-51:/layout/fragment_messages.xml"
+    },
+    {
+        "merged": "com.frauddetector.app-mergeDebugResources-48:/layout/dialog_result.xml",
+        "source": "com.frauddetector.app-main-51:/layout/dialog_result.xml"
+    },
+    {
+        "merged": "com.frauddetector.app-mergeDebugResources-48:/layout/activity_facebook_picker.xml",
+        "source": "com.frauddetector.app-main-51:/layout/activity_facebook_picker.xml"
+    },
+    {
+        "merged": "com.frauddetector.app-mergeDebugResources-48:/layout/activity_forgot_password.xml",
+        "source": "com.frauddetector.app-main-51:/layout/activity_forgot_password.xml"
+    },
+    {
+        "merged": "com.frauddetector.app-mergeDebugResources-48:/layout/activity_splash.xml",
+        "source": "com.frauddetector.app-main-51:/layout/activity_splash.xml"
+    },
+    {
+        "merged": "com.frauddetector.app-mergeDebugResources-48:/layout/activity_thread_detail.xml",
+        "source": "com.frauddetector.app-main-51:/layout/activity_thread_detail.xml"
+    },
+    {
+        "merged": "com.frauddetector.app-mergeDebugResources-48:/layout/activity_main.xml",
+        "source": "com.frauddetector.app-main-51:/layout/activity_main.xml"
+    },
+    {
+        "merged": "com.frauddetector.app-mergeDebugResources-48:/layout/activity_phone_detail.xml",
+        "source": "com.frauddetector.app-main-51:/layout/activity_phone_detail.xml"
+    },
+    {
+        "merged": "com.frauddetector.app-mergeDebugResources-48:/layout/activity_report_full.xml",
+        "source": "com.frauddetector.app-main-51:/layout/activity_report_full.xml"
+    },
+    {
+        "merged": "com.frauddetector.app-mergeDebugResources-48:/layout/item_settings_toggle.xml",
+        "source": "com.frauddetector.app-main-51:/layout/item_settings_toggle.xml"
+    },
+    {
+        "merged": "com.frauddetector.app-mergeDebugResources-48:/layout/dialog_report_bottom_sheet.xml",
+        "source": "com.frauddetector.app-main-51:/layout/dialog_report_bottom_sheet.xml"
+    },
+    {
+        "merged": "com.frauddetector.app-mergeDebugResources-48:/layout/activity_login.xml",
+        "source": "com.frauddetector.app-main-51:/layout/activity_login.xml"
+    },
+    {
+        "merged": "com.frauddetector.app-mergeDebugResources-48:/layout/dialog_quick_login.xml",
+        "source": "com.frauddetector.app-main-51:/layout/dialog_quick_login.xml"
+    },
+    {
+        "merged": "com.frauddetector.app-mergeDebugResources-48:/layout/activity_register.xml",
+        "source": "com.frauddetector.app-main-51:/layout/activity_register.xml"
+    },
+    {
+        "merged": "com.frauddetector.app-mergeDebugResources-48:/layout/item_settings_nav.xml",
+        "source": "com.frauddetector.app-main-51:/layout/item_settings_nav.xml"
+    },
+    {
+        "merged": "com.frauddetector.app-mergeDebugResources-48:/layout/fragment_email.xml",
+        "source": "com.frauddetector.app-main-51:/layout/fragment_email.xml"
+    },
+    {
+        "merged": "com.frauddetector.app-mergeDebugResources-48:/layout/fragment_phone.xml",
+        "source": "com.frauddetector.app-main-51:/layout/fragment_phone.xml"
+    },
+    {
+        "merged": "com.frauddetector.app-mergeDebugResources-48:/layout/item_message.xml",
+        "source": "com.frauddetector.app-main-51:/layout/item_message.xml"
+    },
+    {
+        "merged": "com.frauddetector.app-mergeDebugResources-48:/layout/item_phone.xml",
+        "source": "com.frauddetector.app-main-51:/layout/item_phone.xml"
+    },
+    {
+        "merged": "com.frauddetector.app-mergeDebugResources-48:/layout/fragment_settings.xml",
+        "source": "com.frauddetector.app-main-51:/layout/fragment_settings.xml"
+    },
+    {
+        "merged": "com.frauddetector.app-mergeDebugResources-48:/layout/dialog_quick_setup.xml",
+        "source": "com.frauddetector.app-main-51:/layout/dialog_quick_setup.xml"
+    },
+    {
+        "merged": "com.frauddetector.app-mergeDebugResources-48:/layout/activity_account_detail.xml",
+        "source": "com.frauddetector.app-main-51:/layout/activity_account_detail.xml"
+    }
+]

@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="black">#FF000000</color>
+    <color name="white">#FFFFFFFF</color>
+
+    <!-- Brand -->
+    <color name="blue">#FF2196F3</color>
+    <color name="blue_dk">#FF1976D2</color>
+    <color name="blue_lt">#1A2196F3</color>
+    <color name="gold">#FFF5B731</color>
+
+    <!-- Risk Levels -->
+    <color name="risk_high">#FFFF3B30</color>
+    <color name="risk_high_lt">#1AFF3B30</color>
+    <color name="risk_mid">#FFFF9500</color>
+    <color name="risk_mid_lt">#1AFF9500</color>
+    <color name="risk_safe">#FF34C759</color>
+    <color name="risk_safe_lt">#1A34C759</color>
+
+    <!-- Backgrounds -->
+    <color name="bg">#FFF2F2F7</color>
+    <color name="card">#FFFFFFFF</color>
+    <color name="card2">#FFF9F9FB</color>
+
+    <!-- Labels -->
+    <color name="lbl">#FF000000</color>
+    <color name="lbl2">#993C3C43</color>
+    <color name="lbl3">#5C3C3C43</color>
+    <color name="lbl4">#2E3C3C43</color>
+    <color name="sep">#383C3C43</color>
+    <color name="sep2">#1A3C3C43</color>
+</resources>

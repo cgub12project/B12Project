@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- 回報電話號碼 BottomSheet -->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="18dp">
+
+    <!-- Handle -->
+    <View
+        android:layout_width="36dp"
+        android:layout_height="3dp"
+        android:background="#CCCCCC"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginBottom="16dp" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/report_number_title"
+        android:textSize="16sp"
+        android:textStyle="bold"
+        android:layout_marginBottom="2dp" />
+
+    <TextView
+        android:id="@+id/tvModalNumber"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="+886-800-XXX-XXX"
+        android:textSize="10sp"
+        android:textColor="#999999"
+        android:layout_marginBottom="14dp" />
+
+    <!-- 詐騙類型（必選） -->
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/fraud_type_required"
+        android:textSize="8sp"
+        android:textColor="#999999"
+        android:letterSpacing="0.18"
+        android:layout_marginBottom="7dp" />
+
+    <com.google.android.material.chip.ChipGroup
+        android:id="@+id/chipGroupModalType"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="8dp"
+        app:singleSelection="true" />
+
+    <!-- 其他類型說明（選擇「其他」時顯示） -->
+    <EditText
+        android:id="@+id/etOtherType"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="@string/other_type_hint"
+        android:inputType="text"
+        android:padding="10dp"
+        android:textSize="12sp"
+        android:visibility="gone"
+        android:layout_marginBottom="14dp" />
+
+    <!-- 描述詐騙情況（必填） -->
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/report_content_label"
+        android:textSize="8sp"
+        android:textColor="#999999"
+        android:letterSpacing="0.18"
+        android:layout_marginBottom="7dp" />
+
+    <EditText
+        android:id="@+id/etContent"
+        android:layout_width="match_parent"
+        android:layout_height="88dp"
+        android:hint="@string/report_content_hint"
+        android:gravity="top"
+        android:inputType="textMultiLine"
+        android:padding="10dp"
+        android:textSize="12sp"
+        android:layout_marginBottom="14dp" />
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/btnModalSubmit"
+        android:layout_width="match_parent"
+        android:layout_height="52dp"
+        android:text="@string/submit" />
+
+</LinearLayout>

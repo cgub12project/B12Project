@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- 18. 操作結果 Dialog -->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:gravity="center"
+    android:padding="28dp">
+
+    <!-- Result Icon -->
+    <ImageView
+        android:id="@+id/resultIcon"
+        android:layout_width="72dp"
+        android:layout_height="72dp"
+        android:src="@android:drawable/ic_dialog_info"
+        android:contentDescription="Result" />
+
+    <TextView
+        android:id="@+id/tvResultTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:text="@string/operation_success"
+        android:textSize="18sp"
+        android:textStyle="bold"
+        android:gravity="center" />
+
+    <TextView
+        android:id="@+id/tvResultMsg"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="6dp"
+        android:text="@string/operation_done"
+        android:textSize="12sp"
+        android:textColor="#999999"
+        android:gravity="center"
+        android:lineSpacingMultiplier="1.7"
+        android:layout_marginBottom="22dp" />
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/btnResultOk"
+        android:layout_width="match_parent"
+        android:layout_height="52dp"
+        android:text="@string/confirm" />
+</LinearLayout>

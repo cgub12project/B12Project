@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- 1. Splash 啟動畫面 -->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:gravity="center"
+    android:orientation="vertical"
+    android:background="#1a1208">
+
+    <!-- App Logo -->
+    <ImageView
+        android:id="@+id/splashLogo"
+        android:layout_width="88dp"
+        android:layout_height="88dp"
+        android:src="@android:drawable/ic_menu_view"
+        android:contentDescription="App Logo" />
+
+    <!-- App Name -->
+    <TextView
+        android:id="@+id/splashBrand"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:text="詐騙感知"
+        android:textColor="#FFFFFF"
+        android:textSize="32sp"
+        android:textStyle="bold" />
+
+    <!-- Tagline -->
+    <TextView
+        android:id="@+id/splashTagline"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="6dp"
+        android:text="@string/app_subtitle"
+        android:textColor="#4DFFFFFF"
+        android:textSize="9sp"
+        android:letterSpacing="0.3" />
+
+    <!-- Loading Progress Bar -->
+    <ProgressBar
+        android:id="@+id/splashProgress"
+        style="?android:attr/progressBarStyleHorizontal"
+        android:layout_width="120dp"
+        android:layout_height="3dp"
+        android:layout_marginTop="40dp"
+        android:max="100" />
+
+    <!-- Status Text -->
+    <TextView
+        android:id="@+id/splashStatus"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="14dp"
+        android:text="INITIALIZING SHIELD..."
+        android:textColor="#40FFFFFF"
+        android:textSize="9sp"
+        android:letterSpacing="0.12" />
+
+    <!-- Version -->
+    <TextView
+        android:id="@+id/splashVersion"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="80dp"
+        android:text="@string/app_version"
+        android:textColor="#26FFFFFF"
+        android:textSize="8sp"
+        android:letterSpacing="0.2" />
+
+</LinearLayout>

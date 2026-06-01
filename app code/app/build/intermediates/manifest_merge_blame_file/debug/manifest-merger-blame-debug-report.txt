@@ -1,0 +1,206 @@
+1<?xml version="1.0" encoding="utf-8"?>
+2<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+3    package="com.frauddetector"
+4    android:versionCode="1"
+5    android:versionName="6.0" >
+6
+7    <uses-sdk
+8        android:minSdkVersion="26"
+9        android:targetSdkVersion="34" />
+10
+11    <uses-permission android:name="android.permission.INTERNET" />
+11-->D:\claude_project\ui-ux-pro-max-skill-2.2.1\ui-ux-pro-max-skill-2.2.1\FraudDetector\app\src\main\AndroidManifest.xml:4:5-67
+11-->D:\claude_project\ui-ux-pro-max-skill-2.2.1\ui-ux-pro-max-skill-2.2.1\FraudDetector\app\src\main\AndroidManifest.xml:4:22-64
+12    <uses-permission android:name="android.permission.USE_BIOMETRIC" />
+12-->D:\claude_project\ui-ux-pro-max-skill-2.2.1\ui-ux-pro-max-skill-2.2.1\FraudDetector\app\src\main\AndroidManifest.xml:5:5-72
+12-->D:\claude_project\ui-ux-pro-max-skill-2.2.1\ui-ux-pro-max-skill-2.2.1\FraudDetector\app\src\main\AndroidManifest.xml:5:22-69
+13    <!-- suppress DeprecatedClassUsageInspection -->
+14    <uses-permission android:name="android.permission.USE_FINGERPRINT" />
+14-->[androidx.biometric:biometric:1.1.0] C:\Users\jason\.gradle\caches\transforms-3\ca3ef3fb257fc42589b8fa369921e292\transformed\biometric-1.1.0\AndroidManifest.xml:27:5-74
+14-->[androidx.biometric:biometric:1.1.0] C:\Users\jason\.gradle\caches\transforms-3\ca3ef3fb257fc42589b8fa369921e292\transformed\biometric-1.1.0\AndroidManifest.xml:27:22-71
+15
+16    <permission
+16-->[androidx.core:core:1.12.0] C:\Users\jason\.gradle\caches\transforms-3\2ccd268e0ca2e1cd10ec650ac8067a3e\transformed\core-1.12.0\AndroidManifest.xml:22:5-24:47
+17        android:name="com.frauddetector.DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION"
+17-->[androidx.core:core:1.12.0] C:\Users\jason\.gradle\caches\transforms-3\2ccd268e0ca2e1cd10ec650ac8067a3e\transformed\core-1.12.0\AndroidManifest.xml:23:9-81
+18        android:protectionLevel="signature" />
+18-->[androidx.core:core:1.12.0] C:\Users\jason\.gradle\caches\transforms-3\2ccd268e0ca2e1cd10ec650ac8067a3e\transformed\core-1.12.0\AndroidManifest.xml:24:9-44
+19
+20    <uses-permission android:name="com.frauddetector.DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION" />
+20-->[androidx.core:core:1.12.0] C:\Users\jason\.gradle\caches\transforms-3\2ccd268e0ca2e1cd10ec650ac8067a3e\transformed\core-1.12.0\AndroidManifest.xml:26:5-97
+20-->[androidx.core:core:1.12.0] C:\Users\jason\.gradle\caches\transforms-3\2ccd268e0ca2e1cd10ec650ac8067a3e\transformed\core-1.12.0\AndroidManifest.xml:26:22-94
+21
+22    <application
+22-->D:\claude_project\ui-ux-pro-max-skill-2.2.1\ui-ux-pro-max-skill-2.2.1\FraudDetector\app\src\main\AndroidManifest.xml:7:5-58:19
+23        android:allowBackup="true"
+23-->D:\claude_project\ui-ux-pro-max-skill-2.2.1\ui-ux-pro-max-skill-2.2.1\FraudDetector\app\src\main\AndroidManifest.xml:8:9-35
+24        android:appComponentFactory="androidx.core.app.CoreComponentFactory"
+24-->[androidx.core:core:1.12.0] C:\Users\jason\.gradle\caches\transforms-3\2ccd268e0ca2e1cd10ec650ac8067a3e\transformed\core-1.12.0\AndroidManifest.xml:28:18-86
+25        android:debuggable="true"
+26        android:extractNativeLibs="false"
+27        android:icon="@mipmap/ic_launcher"
+27-->D:\claude_project\ui-ux-pro-max-skill-2.2.1\ui-ux-pro-max-skill-2.2.1\FraudDetector\app\src\main\AndroidManifest.xml:9:9-43
+28        android:label="@string/app_name"
+28-->D:\claude_project\ui-ux-pro-max-skill-2.2.1\ui-ux-pro-max-skill-2.2.1\FraudDetector\app\src\main\AndroidManifest.xml:10:9-41
+29        android:supportsRtl="true"
+29-->D:\claude_project\ui-ux-pro-max-skill-2.2.1\ui-ux-pro-max-skill-2.2.1\FraudDetector\app\src\main\AndroidManifest.xml:11:9-35
+30        android:theme="@style/Theme.FraudDetector" >
+30-->D:\claude_project\ui-ux-pro-max-skill-2.2.1\ui-ux-pro-max-skill-2.2.1\FraudDetector\app\src\main\AndroidManifest.xml:12:9-51
+31
+32        <!-- Splash -->
+33        <activity
+33-->D:\claude_project\ui-ux-pro-max-skill-2.2.1\ui-ux-pro-max-skill-2.2.1\FraudDetector\app\src\main\AndroidManifest.xml:15:9-23:20
+34            android:name="com.frauddetector.ui.auth.SplashActivity"
+34-->D:\claude_project\ui-ux-pro-max-skill-2.2.1\ui-ux-pro-max-skill-2.2.1\FraudDetector\app\src\main\AndroidManifest.xml:16:13-51
+35            android:exported="true"
+35-->D:\claude_project\ui-ux-pro-max-skill-2.2.1\ui-ux-pro-max-skill-2.2.1\FraudDetector\app\src\main\AndroidManifest.xml:17:13-36
+36            android:theme="@style/Theme.FraudDetector.Splash" >
+36-->D:\claude_project\ui-ux-pro-max-skill-2.2.1\ui-ux-pro-max-skill-2.2.1\FraudDetector\app\src\main\AndroidManifest.xml:18:13-62
+37            <intent-filter>
+37-->D:\claude_project\ui-ux-pro-max-skill-2.2.1\ui-ux-pro-max-skill-2.2.1\FraudDetector\app\src\main\AndroidManifest.xml:19:13-22:29
+38                <action android:name="android.intent.action.MAIN" />
+38-->D:\claude_project\ui-ux-pro-max-skill-2.2.1\ui-ux-pro-max-skill-2.2.1\FraudDetector\app\src\main\AndroidManifest.xml:20:17-69
+38-->D:\claude_project\ui-ux-pro-max-skill-2.2.1\ui-ux-pro-max-skill-2.2.1\FraudDetector\app\src\main\AndroidManifest.xml:20:25-66
+39
+40                <category android:name="android.intent.category.LAUNCHER" />
+40-->D:\claude_project\ui-ux-pro-max-skill-2.2.1\ui-ux-pro-max-skill-2.2.1\FraudDetector\app\src\main\AndroidManifest.xml:21:17-77
+40-->D:\claude_project\ui-ux-pro-max-skill-2.2.1\ui-ux-pro-max-skill-2.2.1\FraudDetector\app\src\main\AndroidManifest.xml:21:27-74
+41            </intent-filter>
+42        </activity>
+43
+44        <!-- Login -->
+45        <activity android:name="com.frauddetector.ui.auth.LoginActivity" />
+45-->D:\claude_project\ui-ux-pro-max-skill-2.2.1\ui-ux-pro-max-skill-2.2.1\FraudDetector\app\src\main\AndroidManifest.xml:26:9-59
+45-->D:\claude_project\ui-ux-pro-max-skill-2.2.1\ui-ux-pro-max-skill-2.2.1\FraudDetector\app\src\main\AndroidManifest.xml:26:19-56
+46
+47        <!-- Register -->
+48        <activity android:name="com.frauddetector.ui.auth.RegisterActivity" />
+48-->D:\claude_project\ui-ux-pro-max-skill-2.2.1\ui-ux-pro-max-skill-2.2.1\FraudDetector\app\src\main\AndroidManifest.xml:29:9-62
+48-->D:\claude_project\ui-ux-pro-max-skill-2.2.1\ui-ux-pro-max-skill-2.2.1\FraudDetector\app\src\main\AndroidManifest.xml:29:19-59
+49
+50        <!-- Forgot Password (3 steps) -->
+51        <activity android:name="com.frauddetector.ui.auth.ForgotPasswordActivity" />
+51-->D:\claude_project\ui-ux-pro-max-skill-2.2.1\ui-ux-pro-max-skill-2.2.1\FraudDetector\app\src\main\AndroidManifest.xml:32:9-68
+51-->D:\claude_project\ui-ux-pro-max-skill-2.2.1\ui-ux-pro-max-skill-2.2.1\FraudDetector\app\src\main\AndroidManifest.xml:32:19-65
+52
+53        <!-- Google Account Picker -->
+54        <activity android:name="com.frauddetector.ui.auth.GooglePickerActivity" />
+54-->D:\claude_project\ui-ux-pro-max-skill-2.2.1\ui-ux-pro-max-skill-2.2.1\FraudDetector\app\src\main\AndroidManifest.xml:35:9-66
+54-->D:\claude_project\ui-ux-pro-max-skill-2.2.1\ui-ux-pro-max-skill-2.2.1\FraudDetector\app\src\main\AndroidManifest.xml:35:19-63
+55
+56        <!-- Facebook Account Picker -->
+57        <activity android:name="com.frauddetector.ui.auth.FacebookPickerActivity" />
+57-->D:\claude_project\ui-ux-pro-max-skill-2.2.1\ui-ux-pro-max-skill-2.2.1\FraudDetector\app\src\main\AndroidManifest.xml:38:9-68
+57-->D:\claude_project\ui-ux-pro-max-skill-2.2.1\ui-ux-pro-max-skill-2.2.1\FraudDetector\app\src\main\AndroidManifest.xml:38:19-65
+58
+59        <!-- Main (with Bottom Navigation) -->
+60        <activity android:name="com.frauddetector.ui.main.MainActivity" />
+60-->D:\claude_project\ui-ux-pro-max-skill-2.2.1\ui-ux-pro-max-skill-2.2.1\FraudDetector\app\src\main\AndroidManifest.xml:41:9-58
+60-->D:\claude_project\ui-ux-pro-max-skill-2.2.1\ui-ux-pro-max-skill-2.2.1\FraudDetector\app\src\main\AndroidManifest.xml:41:19-55
+61
+62        <!-- Thread Detail -->
+63        <activity android:name="com.frauddetector.ui.detail.ThreadDetailActivity" />
+63-->D:\claude_project\ui-ux-pro-max-skill-2.2.1\ui-ux-pro-max-skill-2.2.1\FraudDetector\app\src\main\AndroidManifest.xml:44:9-68
+63-->D:\claude_project\ui-ux-pro-max-skill-2.2.1\ui-ux-pro-max-skill-2.2.1\FraudDetector\app\src\main\AndroidManifest.xml:44:19-65
+64
+65        <!-- Account Threat Profile -->
+66        <activity android:name="com.frauddetector.ui.detail.AccountDetailActivity" />
+66-->D:\claude_project\ui-ux-pro-max-skill-2.2.1\ui-ux-pro-max-skill-2.2.1\FraudDetector\app\src\main\AndroidManifest.xml:47:9-69
+66-->D:\claude_project\ui-ux-pro-max-skill-2.2.1\ui-ux-pro-max-skill-2.2.1\FraudDetector\app\src\main\AndroidManifest.xml:47:19-66
+67
+68        <!-- Phone Detail -->
+69        <activity android:name="com.frauddetector.ui.detail.PhoneDetailActivity" />
+69-->D:\claude_project\ui-ux-pro-max-skill-2.2.1\ui-ux-pro-max-skill-2.2.1\FraudDetector\app\src\main\AndroidManifest.xml:50:9-67
+69-->D:\claude_project\ui-ux-pro-max-skill-2.2.1\ui-ux-pro-max-skill-2.2.1\FraudDetector\app\src\main\AndroidManifest.xml:50:19-64
+70
+71        <!-- Full Report -->
+72        <activity android:name="com.frauddetector.ui.detail.ReportFullActivity" />
+72-->D:\claude_project\ui-ux-pro-max-skill-2.2.1\ui-ux-pro-max-skill-2.2.1\FraudDetector\app\src\main\AndroidManifest.xml:53:9-66
+72-->D:\claude_project\ui-ux-pro-max-skill-2.2.1\ui-ux-pro-max-skill-2.2.1\FraudDetector\app\src\main\AndroidManifest.xml:53:19-63
+73
+74        <!-- Share Warning -->
+75        <activity android:name="com.frauddetector.ui.detail.ShareWarningActivity" />
+75-->D:\claude_project\ui-ux-pro-max-skill-2.2.1\ui-ux-pro-max-skill-2.2.1\FraudDetector\app\src\main\AndroidManifest.xml:56:9-68
+75-->D:\claude_project\ui-ux-pro-max-skill-2.2.1\ui-ux-pro-max-skill-2.2.1\FraudDetector\app\src\main\AndroidManifest.xml:56:19-65
+76
+77        <provider
+77-->[androidx.emoji2:emoji2:1.2.0] C:\Users\jason\.gradle\caches\transforms-3\6f6fec51fc0bf858d6900b90dd62d6da\transformed\emoji2-1.2.0\AndroidManifest.xml:24:9-32:20
+78            android:name="androidx.startup.InitializationProvider"
+78-->[androidx.emoji2:emoji2:1.2.0] C:\Users\jason\.gradle\caches\transforms-3\6f6fec51fc0bf858d6900b90dd62d6da\transformed\emoji2-1.2.0\AndroidManifest.xml:25:13-67
+79            android:authorities="com.frauddetector.androidx-startup"
+79-->[androidx.emoji2:emoji2:1.2.0] C:\Users\jason\.gradle\caches\transforms-3\6f6fec51fc0bf858d6900b90dd62d6da\transformed\emoji2-1.2.0\AndroidManifest.xml:26:13-68
+80            android:exported="false" >
+80-->[androidx.emoji2:emoji2:1.2.0] C:\Users\jason\.gradle\caches\transforms-3\6f6fec51fc0bf858d6900b90dd62d6da\transformed\emoji2-1.2.0\AndroidManifest.xml:27:13-37
+81            <meta-data
+81-->[androidx.emoji2:emoji2:1.2.0] C:\Users\jason\.gradle\caches\transforms-3\6f6fec51fc0bf858d6900b90dd62d6da\transformed\emoji2-1.2.0\AndroidManifest.xml:29:13-31:52
+82                android:name="androidx.emoji2.text.EmojiCompatInitializer"
+82-->[androidx.emoji2:emoji2:1.2.0] C:\Users\jason\.gradle\caches\transforms-3\6f6fec51fc0bf858d6900b90dd62d6da\transformed\emoji2-1.2.0\AndroidManifest.xml:30:17-75
+83                android:value="androidx.startup" />
+83-->[androidx.emoji2:emoji2:1.2.0] C:\Users\jason\.gradle\caches\transforms-3\6f6fec51fc0bf858d6900b90dd62d6da\transformed\emoji2-1.2.0\AndroidManifest.xml:31:17-49
+84            <meta-data
+84-->[androidx.lifecycle:lifecycle-process:2.6.2] C:\Users\jason\.gradle\caches\transforms-3\b8d11ad8426ba34454d5792641948162\transformed\lifecycle-process-2.6.2\AndroidManifest.xml:29:13-31:52
+85                android:name="androidx.lifecycle.ProcessLifecycleInitializer"
+85-->[androidx.lifecycle:lifecycle-process:2.6.2] C:\Users\jason\.gradle\caches\transforms-3\b8d11ad8426ba34454d5792641948162\transformed\lifecycle-process-2.6.2\AndroidManifest.xml:30:17-78
+86                android:value="androidx.startup" />
+86-->[androidx.lifecycle:lifecycle-process:2.6.2] C:\Users\jason\.gradle\caches\transforms-3\b8d11ad8426ba34454d5792641948162\transformed\lifecycle-process-2.6.2\AndroidManifest.xml:31:17-49
+87            <meta-data
+87-->[androidx.profileinstaller:profileinstaller:1.3.0] C:\Users\jason\.gradle\caches\transforms-3\90a5c045bb237d34bfde7528c354fcd3\transformed\profileinstaller-1.3.0\AndroidManifest.xml:29:13-31:52
+88                android:name="androidx.profileinstaller.ProfileInstallerInitializer"
+88-->[androidx.profileinstaller:profileinstaller:1.3.0] C:\Users\jason\.gradle\caches\transforms-3\90a5c045bb237d34bfde7528c354fcd3\transformed\profileinstaller-1.3.0\AndroidManifest.xml:30:17-85
+89                android:value="androidx.startup" />
+89-->[androidx.profileinstaller:profileinstaller:1.3.0] C:\Users\jason\.gradle\caches\transforms-3\90a5c045bb237d34bfde7528c354fcd3\transformed\profileinstaller-1.3.0\AndroidManifest.xml:31:17-49
+90        </provider>
+91
+92        <uses-library
+92-->[androidx.window:window:1.0.0] C:\Users\jason\.gradle\caches\transforms-3\f70026d7d26498e4069a90e8f33ac7ca\transformed\window-1.0.0\AndroidManifest.xml:25:9-27:40
+93            android:name="androidx.window.extensions"
+93-->[androidx.window:window:1.0.0] C:\Users\jason\.gradle\caches\transforms-3\f70026d7d26498e4069a90e8f33ac7ca\transformed\window-1.0.0\AndroidManifest.xml:26:13-54
+94            android:required="false" />
+94-->[androidx.window:window:1.0.0] C:\Users\jason\.gradle\caches\transforms-3\f70026d7d26498e4069a90e8f33ac7ca\transformed\window-1.0.0\AndroidManifest.xml:27:13-37
+95        <uses-library
+95-->[androidx.window:window:1.0.0] C:\Users\jason\.gradle\caches\transforms-3\f70026d7d26498e4069a90e8f33ac7ca\transformed\window-1.0.0\AndroidManifest.xml:28:9-30:40
+96            android:name="androidx.window.sidecar"
+96-->[androidx.window:window:1.0.0] C:\Users\jason\.gradle\caches\transforms-3\f70026d7d26498e4069a90e8f33ac7ca\transformed\window-1.0.0\AndroidManifest.xml:29:13-51
+97            android:required="false" />
+97-->[androidx.window:window:1.0.0] C:\Users\jason\.gradle\caches\transforms-3\f70026d7d26498e4069a90e8f33ac7ca\transformed\window-1.0.0\AndroidManifest.xml:30:13-37
+98
+99        <receiver
+99-->[androidx.profileinstaller:profileinstaller:1.3.0] C:\Users\jason\.gradle\caches\transforms-3\90a5c045bb237d34bfde7528c354fcd3\transformed\profileinstaller-1.3.0\AndroidManifest.xml:34:9-52:20
+100            android:name="androidx.profileinstaller.ProfileInstallReceiver"
+100-->[androidx.profileinstaller:profileinstaller:1.3.0] C:\Users\jason\.gradle\caches\transforms-3\90a5c045bb237d34bfde7528c354fcd3\transformed\profileinstaller-1.3.0\AndroidManifest.xml:35:13-76
+101            android:directBootAware="false"
+101-->[androidx.profileinstaller:profileinstaller:1.3.0] C:\Users\jason\.gradle\caches\transforms-3\90a5c045bb237d34bfde7528c354fcd3\transformed\profileinstaller-1.3.0\AndroidManifest.xml:36:13-44
+102            android:enabled="true"
+102-->[androidx.profileinstaller:profileinstaller:1.3.0] C:\Users\jason\.gradle\caches\transforms-3\90a5c045bb237d34bfde7528c354fcd3\transformed\profileinstaller-1.3.0\AndroidManifest.xml:37:13-35
+103            android:exported="true"
+103-->[androidx.profileinstaller:profileinstaller:1.3.0] C:\Users\jason\.gradle\caches\transforms-3\90a5c045bb237d34bfde7528c354fcd3\transformed\profileinstaller-1.3.0\AndroidManifest.xml:38:13-36
+104            android:permission="android.permission.DUMP" >
+104-->[androidx.profileinstaller:profileinstaller:1.3.0] C:\Users\jason\.gradle\caches\transforms-3\90a5c045bb237d34bfde7528c354fcd3\transformed\profileinstaller-1.3.0\AndroidManifest.xml:39:13-57
+105            <intent-filter>
+105-->[androidx.profileinstaller:profileinstaller:1.3.0] C:\Users\jason\.gradle\caches\transforms-3\90a5c045bb237d34bfde7528c354fcd3\transformed\profileinstaller-1.3.0\AndroidManifest.xml:40:13-42:29
+106                <action android:name="androidx.profileinstaller.action.INSTALL_PROFILE" />
+106-->[androidx.profileinstaller:profileinstaller:1.3.0] C:\Users\jason\.gradle\caches\transforms-3\90a5c045bb237d34bfde7528c354fcd3\transformed\profileinstaller-1.3.0\AndroidManifest.xml:41:17-91
+106-->[androidx.profileinstaller:profileinstaller:1.3.0] C:\Users\jason\.gradle\caches\transforms-3\90a5c045bb237d34bfde7528c354fcd3\transformed\profileinstaller-1.3.0\AndroidManifest.xml:41:25-88
+107            </intent-filter>
+108            <intent-filter>
+108-->[androidx.profileinstaller:profileinstaller:1.3.0] C:\Users\jason\.gradle\caches\transforms-3\90a5c045bb237d34bfde7528c354fcd3\transformed\profileinstaller-1.3.0\AndroidManifest.xml:43:13-45:29
+109                <action android:name="androidx.profileinstaller.action.SKIP_FILE" />
+109-->[androidx.profileinstaller:profileinstaller:1.3.0] C:\Users\jason\.gradle\caches\transforms-3\90a5c045bb237d34bfde7528c354fcd3\transformed\profileinstaller-1.3.0\AndroidManifest.xml:44:17-85
+109-->[androidx.profileinstaller:profileinstaller:1.3.0] C:\Users\jason\.gradle\caches\transforms-3\90a5c045bb237d34bfde7528c354fcd3\transformed\profileinstaller-1.3.0\AndroidManifest.xml:44:25-82
+110            </intent-filter>
+111            <intent-filter>
+111-->[androidx.profileinstaller:profileinstaller:1.3.0] C:\Users\jason\.gradle\caches\transforms-3\90a5c045bb237d34bfde7528c354fcd3\transformed\profileinstaller-1.3.0\AndroidManifest.xml:46:13-48:29
+112                <action android:name="androidx.profileinstaller.action.SAVE_PROFILE" />
+112-->[androidx.profileinstaller:profileinstaller:1.3.0] C:\Users\jason\.gradle\caches\transforms-3\90a5c045bb237d34bfde7528c354fcd3\transformed\profileinstaller-1.3.0\AndroidManifest.xml:47:17-88
+112-->[androidx.profileinstaller:profileinstaller:1.3.0] C:\Users\jason\.gradle\caches\transforms-3\90a5c045bb237d34bfde7528c354fcd3\transformed\profileinstaller-1.3.0\AndroidManifest.xml:47:25-85
+113            </intent-filter>
+114            <intent-filter>
+114-->[androidx.profileinstaller:profileinstaller:1.3.0] C:\Users\jason\.gradle\caches\transforms-3\90a5c045bb237d34bfde7528c354fcd3\transformed\profileinstaller-1.3.0\AndroidManifest.xml:49:13-51:29
+115                <action android:name="androidx.profileinstaller.action.BENCHMARK_OPERATION" />
+115-->[androidx.profileinstaller:profileinstaller:1.3.0] C:\Users\jason\.gradle\caches\transforms-3\90a5c045bb237d34bfde7528c354fcd3\transformed\profileinstaller-1.3.0\AndroidManifest.xml:50:17-95
+115-->[androidx.profileinstaller:profileinstaller:1.3.0] C:\Users\jason\.gradle\caches\transforms-3\90a5c045bb237d34bfde7528c354fcd3\transformed\profileinstaller-1.3.0\AndroidManifest.xml:50:25-92
+116            </intent-filter>
+117        </receiver>
+118    </application>
+119
+120</manifest>
