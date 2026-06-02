@@ -4,7 +4,7 @@
 ![Kotlin](https://img.shields.io/badge/Kotlin-1.9-blue)
 ![Version](https://img.shields.io/badge/Version-6.0-orange)
 
-**Fraud Linked Alert System Hub** — 一款 AI 驅動的 Android 詐騙防護 App，能即時監控使用者的訊息、郵件及來電，透過後端 AI 引擎分析詐騙風險，並提供社群情報共享、詐騙回報與警告分享功能。
+**Fraud Locator And Scam Hunter** — 一款 AI 驅動的 Android 詐騙防護 App，能即時監控使用者的訊息、郵件及來電，透過後端 AI 引擎分析詐騙風險，並提供社群情報共享、詐騙回報與警告分享功能。
 
 ## 目錄
 
