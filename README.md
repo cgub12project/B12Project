@@ -490,3 +490,4 @@ B12Project/
 ## 作者
 
 - **B1229067** — 介面開發（Android App / UI / API 串接）
+- **B1229026** — 後端開發（FastAPI / 資料庫）
