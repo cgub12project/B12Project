@@ -489,5 +489,13 @@ B12Project/
 
 ## 作者
 
-- **B1229067** — 介面開發（Android App / UI / API 串接）
-- **B1229026** — 後端開發（FastAPI / 資料庫）
+- **B1229003** — UI/UX開發（Android App / UI）
+- **B1229026** — 後端開發（API / Server）
+- **B1229042** — AI開發（AI 相關）
+- **B1229067** — APP統整（Android App / UI / API 串接）
+
+---
+
+## 指導教授
+
+- **李春良 教授**
