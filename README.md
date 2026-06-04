@@ -491,7 +491,7 @@ B12Project/
 
 - **B1229003** — UI/UX開發（Android App / UI）
 - **B1229026** — 後端開發（API / Server）
-- **B1229042** — AI開發（AI 相關）
+- **B1229041** — AI開發（AI 模型訓練部署）
 - **B1229067** — APP統整（Android App / UI / API 串接）
 
 ---
