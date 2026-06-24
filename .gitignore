@@ -21,8 +21,8 @@ Thumbs.db
 # Kotlin
 *.class
 
-# Zip
-app.zip
+# Zip / backup
+*.zip
 
-# Reference files (not needed in repo)
+# Old dev references
 readMe參考檔案/
