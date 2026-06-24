@@ -197,4 +197,9 @@
     <string name="submitting">提交中…</string>
     <string name="oauth_hint_msg">曾用 Google / Facebook 登入？尚未設定密碼，請點右側設定。</string>
     <string name="oauth_hint_action">設定密碼 →</string>
+
+    <!-- Facebook SDK -->
+    <string name="facebook_app_id">1572372551121145</string>
+    <string name="facebook_client_token">2a0cc544e722064cebe4bb181b884a6d</string>
+    <string name="fb_login_protocol_scheme">fb1572372551121145</string>
 </resources>

@@ -87,10 +87,18 @@ data class ResetPasswordRequest(
  * 用於第三方身份提供者（Google、Facebook 等）的登入流程。
  */
 data class OAuthRequest(
-    /** 第三方身份提供者名稱，例如 "google"、"facebook" */
+    /** 第三方身份提供者名稱："google" 或 "facebook" */
     val provider: String,
-    /** 從第三方身份提供者取得的存取權杖（Access Token 或 ID Token） */
-    val token: String
+    /** 第三方平台的使用者唯一 ID */
+    @SerializedName("provider_user_id") val providerUserId: String,
+    /** 使用者的 email */
+    val email: String,
+    /** 使用者的顯示名稱（選填） */
+    @SerializedName("display_name") val displayName: String? = null,
+    /** 使用者的大頭照 URL（選填） */
+    @SerializedName("avatar_url") val avatarUrl: String? = null,
+    /** 第三方平台的 Access Token / ID Token（選填，供後端驗證） */
+    @SerializedName("access_token") val accessToken: String? = null
 )
 
 // ══════════════════════════════════════════════════════════

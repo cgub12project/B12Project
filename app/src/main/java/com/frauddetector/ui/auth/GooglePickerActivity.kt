@@ -123,10 +123,11 @@ class GooglePickerActivity : AppCompatActivity() {
                         val idToken = googleIdTokenCredential.idToken
                         val googleEmail = googleIdTokenCredential.id
                         val googleName = googleIdTokenCredential.displayName ?: ""
+                        val googlePhoto = googleIdTokenCredential.profilePictureUri?.toString()
 
                         TokenManager(this@GooglePickerActivity).saveUserInfo(googleEmail, googleName)
                         Log.d(TAG, "Got ID token, sending to backend...")
-                        sendTokenToBackend(idToken)
+                        sendTokenToBackend(idToken, googleEmail, googleName, googlePhoto)
                     } catch (e: GoogleIdTokenParsingException) {
                         Log.e(TAG, "Invalid Google ID token", e)
                         showError("Google 驗證失敗", "無法解析 Google 憑證，請重試。")
@@ -147,8 +148,15 @@ class GooglePickerActivity : AppCompatActivity() {
      *
      * @param idToken Google 核發的 ID Token 字串
      */
-    private fun sendTokenToBackend(idToken: String) {
-        val request = OAuthRequest(provider = "google", token = idToken)
+    private fun sendTokenToBackend(idToken: String, email: String, name: String, photoUrl: String?) {
+        val request = OAuthRequest(
+            provider = "google",
+            providerUserId = email,
+            email = email,
+            displayName = name.ifBlank { null },
+            avatarUrl = photoUrl,
+            accessToken = idToken
+        )
 
         ApiClient.authApi.oauthLogin(request).enqueue(object : Callback<TokenResponse> {
             override fun onResponse(call: Call<TokenResponse>, response: Response<TokenResponse>) {

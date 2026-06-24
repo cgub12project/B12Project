@@ -26,9 +26,9 @@ object ApiConfig {
      * - 正式上線後應替換為固定的生產環境網址（例如 https://api.flash-app.com/）
      * - 網址結尾必須包含斜線（/），否則 Retrofit 可能無法正確拼接路徑
      */
-    const val BASE_URL = "https://surge-supposed-jaguar-arrangement.trycloudflare.com/"
+    const val BASE_URL = "https://paste-year-ships-fixtures.trycloudflare.com/"
 
     // 備用網址（已停用）：
-//      const val BASE_URL = "https://llltrycloudflare.com/"
+//      const val BASE_URL = "https://surge-supposed-jaguar-arrangement.trycloudflare.com/"
 
 }
