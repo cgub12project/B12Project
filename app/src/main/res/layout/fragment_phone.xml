@@ -31,7 +31,7 @@
                 android:layout_height="wrap_content"
                 android:text="@string/phone_subtitle"
                 android:textSize="11sp"
-                android:textColor="#999999" />
+                android:textColor="#8C8480" />
         </LinearLayout>
 
         <ImageButton
@@ -72,6 +72,20 @@
             android:textSize="13sp"
             android:singleLine="true" />
     </LinearLayout>
+
+    <!-- Offline Cache Banner -->
+    <TextView
+        android:id="@+id/tvPhoneOfflineBanner"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="⚠ 離線資料，最後更新於 X 分鐘前"
+        android:textSize="11sp"
+        android:textStyle="bold"
+        android:textColor="#C46B4A"
+        android:paddingStart="16dp"
+        android:paddingEnd="16dp"
+        android:paddingBottom="8dp"
+        android:visibility="gone" />
 
     <!-- Section Header -->
     <TextView

@@ -41,8 +41,8 @@ data class RegisterRequest(
     val email: String,
     /** 新使用者的密碼 */
     val password: String,
-    /** 使用者的顯示名稱；對應後端欄位 display_name */
-    @SerializedName("display_name") val displayName: String
+    /** 使用者的顯示名稱；對應後端欄位 name */
+    @SerializedName("name") val displayName: String
 )
 
 /**
@@ -70,13 +70,11 @@ data class VerifyOtpRequest(
 /**
  * 重設密碼請求 — 對應 POST /api/v1/auth/reset-password 的請求 body。
  *
- * 在 OTP 驗證通過後，使用者可透過此請求設定新密碼。
+ * 使用 [VerifyOtpResponse.resetToken]（一次性權杖）設定新密碼，不再需要 email/otp。
  */
 data class ResetPasswordRequest(
-    /** 使用者的電子郵件地址 */
-    val email: String,
-    /** 已通過驗證的 OTP 驗證碼 */
-    val otp: String,
+    /** verify-otp 取得的一次性重設權杖；對應後端欄位 reset_token */
+    @SerializedName("reset_token") val resetToken: String,
     /** 使用者設定的新密碼；對應後端欄位 new_password */
     @SerializedName("new_password") val newPassword: String
 )
@@ -84,21 +82,31 @@ data class ResetPasswordRequest(
 /**
  * OAuth 登入請求 — 對應 POST /api/v1/auth/oauth 的請求 body。
  *
- * 用於第三方身份提供者（Google、Facebook 等）的登入流程。
+ * 後端會以 idToken（Google）或 accessToken（Facebook）向第三方驗證並取得使用者資料，
+ * 客戶端不再需要自行提供 email / name / provider_user_id。
  */
 data class OAuthRequest(
     /** 第三方身份提供者名稱："google" 或 "facebook" */
     val provider: String,
-    /** 第三方平台的使用者唯一 ID */
-    @SerializedName("provider_user_id") val providerUserId: String,
-    /** 使用者的 email */
-    val email: String,
-    /** 使用者的顯示名稱（選填） */
-    @SerializedName("display_name") val displayName: String? = null,
-    /** 使用者的大頭照 URL（選填） */
-    @SerializedName("avatar_url") val avatarUrl: String? = null,
-    /** 第三方平台的 Access Token / ID Token（選填，供後端驗證） */
+    /** Google ID Token（provider = "google" 時使用） */
+    @SerializedName("id_token") val idToken: String? = null,
+    /** Facebook Access Token（provider = "facebook" 時使用） */
     @SerializedName("access_token") val accessToken: String? = null
+)
+
+/**
+ * 換發權杖請求 — 對應 POST /api/v1/auth/refresh 的請求 body。
+ */
+data class RefreshTokenRequest(
+    @SerializedName("refresh_token") val refreshToken: String
+)
+
+/**
+ * 更改密碼請求 — 對應 POST /api/v1/auth/change-password 的請求 body（需登入）。
+ */
+data class ChangePasswordRequest(
+    @SerializedName("old_password") val oldPassword: String,
+    @SerializedName("new_password") val newPassword: String
 )
 
 // ══════════════════════════════════════════════════════════
@@ -117,7 +125,36 @@ data class TokenResponse(
     /** JWT 刷新權杖，用於在 access_token 過期後取得新的 Token；對應後端欄位 refresh_token */
     @SerializedName("refresh_token") val refreshToken: String,
     /** Token 類型，通常為 "bearer"；對應後端欄位 token_type */
-    @SerializedName("token_type") val tokenType: String
+    @SerializedName("token_type") val tokenType: String,
+    /** access_token 的有效秒數；對應後端欄位 expires_in */
+    @SerializedName("expires_in") val expiresIn: Int = 0,
+    /** 登入成功的使用者資料（後端權威來源，取代客戶端自行拼湊的 email/name） */
+    val user: UserOut? = null
+)
+
+/**
+ * 使用者資料 — 對應後端 UserOut，登入/註冊/OAuth 成功回應中的 user 欄位，
+ * 也是 GET /api/v1/users/me 的回應格式。
+ */
+data class UserOut(
+    val id: Int,
+    val email: String,
+    val name: String,
+    @SerializedName("avatar_url") val avatarUrl: String? = null,
+    @SerializedName("email_verified") val emailVerified: Boolean = false,
+    @SerializedName("created_at") val createdAt: String? = null
+)
+
+/**
+ * OTP 驗證回應 — 對應 POST /api/v1/auth/verify-otp 的回應 body。
+ *
+ * 驗證成功後回傳一次性 [resetToken]，用於下一步 [ResetPasswordRequest]。
+ */
+data class VerifyOtpResponse(
+    val success: Boolean = true,
+    val message: String? = null,
+    /** 一次性重設密碼權杖；對應後端欄位 reset_token */
+    @SerializedName("reset_token") val resetToken: String
 )
 
 /**
@@ -130,4 +167,12 @@ data class TokenResponse(
 data class ErrorDetail(
     /** 錯誤訊息文字；若為驗證錯誤（422）則此欄位可能為 null */
     val detail: String?
+)
+
+/**
+ * 通用訊息回應 — forgot-password / reset-password / change-password / logout 共用。
+ */
+data class MessageResponse(
+    val success: Boolean = true,
+    val message: String? = null
 )

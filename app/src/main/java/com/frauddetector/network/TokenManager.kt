@@ -54,6 +54,14 @@ class TokenManager(context: Context) {
         set(value) = prefs.edit().putString("user_name", value).apply()
 
     /**
+     * 快速登入（生物辨識）是否啟用 — 本地快取，與後端 user_settings.quick_login 同步。
+     * SplashActivity 用此值判斷是否需要在進入主畫面前跳出生物辨識驗證。
+     */
+    var quickLoginEnabled: Boolean
+        get() = prefs.getBoolean("quick_login_enabled", false)
+        set(value) = prefs.edit().putBoolean("quick_login_enabled", value).apply()
+
+    /**
      * 一次性儲存 access_token 與 refresh_token。
      * 登入成功或 Token 刷新後呼叫此方法。
      *

@@ -3,8 +3,13 @@
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.USE_BIOMETRIC" />
+    <uses-permission android:name="android.permission.READ_CALL_LOG" />
+    <uses-permission android:name="android.permission.READ_PHONE_STATE" />
+    <uses-permission android:name="android.permission.READ_SMS" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" android:maxSdkVersion="28" />
 
     <application
+        android:name=".FlashApplication"
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:roundIcon="@mipmap/ic_launcher_round"
@@ -72,11 +77,30 @@
         <!-- Phone Detail -->
         <activity android:name=".ui.detail.PhoneDetailActivity" />
 
+        <!-- Blocked Numbers List -->
+        <activity android:name=".ui.detail.BlockedNumbersActivity" />
+
         <!-- Full Report -->
         <activity android:name=".ui.detail.ReportFullActivity" />
 
         <!-- Share Warning -->
         <activity android:name=".ui.detail.ShareWarningActivity" />
+
+        <!-- My Reports -->
+        <activity android:name=".ui.detail.MyReportsActivity" />
+
+        <!-- Suspect Accounts List -->
+        <activity android:name=".ui.detail.SuspectAccountsActivity" />
+
+        <!-- Notification Listener Service -->
+        <service
+            android:name=".service.NotificationCaptureService"
+            android:exported="true"
+            android:permission="android.permission.BIND_NOTIFICATION_LISTENER_SERVICE">
+            <intent-filter>
+                <action android:name="android.service.notification.NotificationListenerService" />
+            </intent-filter>
+        </service>
 
     </application>
 </manifest>

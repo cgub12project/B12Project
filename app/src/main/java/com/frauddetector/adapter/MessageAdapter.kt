@@ -56,29 +56,26 @@ class MessageAdapter(
 
         // Left border color based on risk level
         val borderColor = when (item.level) {
-            "high" -> Color.parseColor("#FF3B30")
-            "mid" -> Color.parseColor("#FF9500")
-            else -> Color.parseColor("#34C759")
+            "high" -> Color.parseColor("#A63D2F")
+            "mid" -> Color.parseColor("#C46B4A")
+            else -> Color.parseColor("#7A9E7E")
         }
-        val bg = GradientDrawable().apply {
-            setColor(Color.WHITE)
-            cornerRadius = 14f * holder.itemView.resources.displayMetrics.density
-        }
-        holder.itemView.background = bg
         holder.itemView.apply {
-            val pad = (3 * resources.displayMetrics.density).toInt()
-            val borderBg = GradientDrawable().apply {
-                setColor(Color.WHITE)
-                cornerRadius = 14f * resources.displayMetrics.density
+            val dp = resources.displayMetrics.density
+            val pad = (3 * dp).toInt()
+            // 卡片左側要跟色條貼合、不能有圓角，右側維持圓角
+            val rightRadius = 14f * dp
+            val cardBg = GradientDrawable().apply {
+                setColor(Color.parseColor("#FDFAF4"))
+                cornerRadii = floatArrayOf(0f, 0f, rightRadius, rightRadius, rightRadius, rightRadius, 0f, 0f)
                 setStroke(1, Color.parseColor("#10000000"))
             }
-            background = borderBg
-            // Use foreground for border-left effect
+            background = cardBg
+            // Use foreground for border-left effect（純方形，不畫圓角，緊貼卡片左邊）
             foreground = object : android.graphics.drawable.Drawable() {
                 override fun draw(canvas: android.graphics.Canvas) {
                     val paint = android.graphics.Paint().apply { color = borderColor }
-                    val r = 14f * resources.displayMetrics.density
-                    canvas.drawRoundRect(0f, 0f, pad.toFloat(), bounds.height().toFloat(), r, r, paint)
+                    canvas.drawRect(0f, 0f, pad.toFloat(), bounds.height().toFloat(), paint)
                 }
                 override fun setAlpha(alpha: Int) {}
                 override fun setColorFilter(cf: android.graphics.ColorFilter?) {}
@@ -87,19 +84,19 @@ class MessageAdapter(
             }
         }
 
-        // Avatar tint
+        // Avatar tint（LINE/簡訊等品牌色維持不變，只調整中性色調）
         val avatarBg = GradientDrawable().apply {
             shape = GradientDrawable.RECTANGLE
             cornerRadius = 12f * holder.itemView.resources.displayMetrics.density
             when (item.app) {
                 "LINE" -> setColor(Color.parseColor("#06C755"))
-                "簡訊" -> setColor(Color.parseColor("#1A2196F3"))
-                else -> setColor(Color.parseColor("#F0F0F5"))
+                "簡訊" -> setColor(Color.parseColor("#1A4A7FA5"))
+                else -> setColor(Color.parseColor("#F0EDE8"))
             }
         }
         holder.ivAvatar.background = avatarBg
         holder.ivAvatar.setColorFilter(
-            if (item.app == "LINE") Color.WHITE else Color.parseColor("#666666")
+            if (item.app == "LINE") Color.WHITE else Color.parseColor("#8C8480")
         )
 
         // Tags
@@ -113,9 +110,9 @@ class MessageAdapter(
                 chipStartPadding = 4f
                 chipEndPadding = 4f
                 val tagColor = when {
-                    item.level == "high" && tag != "安全" -> Color.parseColor("#FF3B30")
-                    item.level == "mid" && tag != "安全" -> Color.parseColor("#FF9500")
-                    else -> Color.parseColor("#34C759")
+                    item.level == "high" && tag != "安全" -> Color.parseColor("#A63D2F")
+                    item.level == "mid" && tag != "安全" -> Color.parseColor("#C46B4A")
+                    else -> Color.parseColor("#7A9E7E")
                 }
                 setTextColor(tagColor)
                 chipBackgroundColor = android.content.res.ColorStateList.valueOf(
@@ -144,6 +141,16 @@ class MessageAdapter(
     fun updateItems(newItems: List<AlertItem>) {
         items = newItems
         filteredItems = items.toList()
+        notifyDataSetChanged()
+    }
+
+    fun getItemAt(position: Int): AlertItem = filteredItems[position]
+
+    fun getAllItems(): List<AlertItem> = items
+
+    fun removeItem(id: String) {
+        items = items.filterNot { it.id == id }
+        filteredItems = filteredItems.filterNot { it.id == id }
         notifyDataSetChanged()
     }
 }

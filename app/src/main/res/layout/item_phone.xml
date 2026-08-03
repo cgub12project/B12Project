@@ -3,65 +3,115 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:orientation="horizontal"
-    android:padding="12dp"
     android:layout_marginBottom="8dp"
-    android:gravity="center_vertical"
-    android:clickable="true"
-    android:focusable="true">
+    android:orientation="vertical">
 
-    <!-- Avatar -->
-    <ImageView
-        android:id="@+id/ivPhoneAvatar"
-        android:layout_width="42dp"
-        android:layout_height="42dp"
-        android:src="@android:drawable/sym_action_call"
-        android:contentDescription="Phone" />
-
-    <!-- Info -->
     <LinearLayout
-        android:layout_width="0dp"
+        android:id="@+id/phoneRow"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_weight="1"
+        android:clickable="true"
+        android:focusable="true"
         android:orientation="vertical"
-        android:layout_marginStart="10dp">
+        android:padding="14dp">
 
         <TextView
             android:id="@+id/tvPhoneNum"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="+886-800-XXX-XXX"
-            android:textSize="13sp"
+            android:textSize="30sp"
             android:textStyle="bold" />
 
         <TextView
             android:id="@+id/tvPhoneType"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
             android:text="詐騙電話 · 假冒政府機關"
-            android:textSize="10sp"
-            android:layout_marginBottom="3dp" />
+            android:textSize="13sp"
+            android:textStyle="bold" />
 
         <TextView
             android:id="@+id/tvPhoneReport"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
             android:text="社群舉報 2,847 次 · 最近 2 小時前"
-            android:textSize="9sp"
-            android:textColor="#999999" />
+            android:textColor="#8C8480"
+            android:textSize="11sp" />
+
+        <TextView
+            android:id="@+id/tvPhoneFormatWarning"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:text="⚠ 非常規台灣電話格式"
+            android:textColor="#C46B4A"
+            android:textSize="11sp"
+            android:textStyle="bold"
+            android:visibility="gone" />
     </LinearLayout>
 
-    <!-- Risk Badge -->
-    <TextView
-        android:id="@+id/tvPhoneBadge"
-        android:layout_width="wrap_content"
+    <!-- Expand-in-place action panel（點擊列表項目後往下展開） -->
+    <LinearLayout
+        android:id="@+id/expandPanel"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="詐騙"
-        android:textSize="10sp"
-        android:textStyle="bold"
-        android:textColor="#FFFFFF"
-        android:paddingStart="10dp"
-        android:paddingEnd="10dp"
-        android:paddingTop="4dp"
-        android:paddingBottom="4dp" />
+        android:gravity="center"
+        android:orientation="horizontal"
+        android:paddingStart="14dp"
+        android:paddingTop="8dp"
+        android:paddingEnd="14dp"
+        android:paddingBottom="14dp"
+        android:visibility="gone">
+
+        <ImageView
+            android:id="@+id/btnPhoneBlock"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_weight="1"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:clickable="true"
+            android:contentDescription="@string/block"
+            android:focusable="true"
+            android:scaleType="fitCenter"
+            android:src="@drawable/ic_action_block" />
+
+        <ImageView
+            android:id="@+id/btnPhoneReport"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_weight="1"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:clickable="true"
+            android:contentDescription="@string/report"
+            android:focusable="true"
+            android:scaleType="fitCenter"
+            android:src="@drawable/ic_action_report" />
+
+        <ImageView
+            android:id="@+id/btnPhoneDial"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_weight="1"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:clickable="true"
+            android:contentDescription="@string/dial"
+            android:focusable="true"
+            android:scaleType="fitCenter"
+            android:src="@drawable/ic_action_dial" />
+
+        <ImageView
+            android:id="@+id/btnPhoneMore"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_weight="1"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:clickable="true"
+            android:contentDescription="@string/more"
+            android:focusable="true"
+            android:scaleType="fitCenter"
+            android:src="@drawable/ic_action_more" />
+    </LinearLayout>
 </LinearLayout>

@@ -19,7 +19,7 @@ import android.os.Looper
 import android.util.Log
 import android.widget.ImageButton
 import android.widget.Toast
-import androidx.appcompat.app.AppCompatActivity
+import com.frauddetector.ui.BaseActivity
 import androidx.credentials.CredentialManager
 import androidx.credentials.CustomCredential
 import androidx.credentials.GetCredentialRequest
@@ -47,7 +47,7 @@ import retrofit2.Response
  * 使用 Credential Manager 啟動 Google 帳號選擇流程，
  * 取得 ID Token 後透過後端 OAuth API 完成登入。
  */
-class GooglePickerActivity : AppCompatActivity() {
+class GooglePickerActivity : BaseActivity() {
 
     companion object {
         private const val TAG = "GoogleSignIn"
@@ -121,13 +121,9 @@ class GooglePickerActivity : AppCompatActivity() {
                         val googleIdTokenCredential =
                             GoogleIdTokenCredential.createFrom(credential.data)
                         val idToken = googleIdTokenCredential.idToken
-                        val googleEmail = googleIdTokenCredential.id
-                        val googleName = googleIdTokenCredential.displayName ?: ""
-                        val googlePhoto = googleIdTokenCredential.profilePictureUri?.toString()
 
-                        TokenManager(this@GooglePickerActivity).saveUserInfo(googleEmail, googleName)
                         Log.d(TAG, "Got ID token, sending to backend...")
-                        sendTokenToBackend(idToken, googleEmail, googleName, googlePhoto)
+                        sendTokenToBackend(idToken)
                     } catch (e: GoogleIdTokenParsingException) {
                         Log.e(TAG, "Invalid Google ID token", e)
                         showError("Google 驗證失敗", "無法解析 Google 憑證，請重試。")
@@ -144,27 +140,21 @@ class GooglePickerActivity : AppCompatActivity() {
 
     /**
      * 將 Google ID Token 發送至後端 /api/v1/auth/oauth API。
-     * 後端驗證成功後回傳 JWT Token，儲存後導航至主畫面。
+     * 後端會自行向 Google 驗證 idToken 並取得使用者資料（email/name），
+     * 驗證成功後回傳 JWT Token + 使用者資料，儲存後導航至主畫面。
      *
      * @param idToken Google 核發的 ID Token 字串
      */
-    private fun sendTokenToBackend(idToken: String, email: String, name: String, photoUrl: String?) {
-        val request = OAuthRequest(
-            provider = "google",
-            providerUserId = email,
-            email = email,
-            displayName = name.ifBlank { null },
-            avatarUrl = photoUrl,
-            accessToken = idToken
-        )
+    private fun sendTokenToBackend(idToken: String) {
+        val request = OAuthRequest(provider = "google", idToken = idToken)
 
         ApiClient.authApi.oauthLogin(request).enqueue(object : Callback<TokenResponse> {
             override fun onResponse(call: Call<TokenResponse>, response: Response<TokenResponse>) {
                 if (response.isSuccessful && response.body() != null) {
                     val token = response.body()!!
-                    TokenManager(this@GooglePickerActivity).saveTokens(
-                        token.accessToken, token.refreshToken
-                    )
+                    val tm = TokenManager(this@GooglePickerActivity)
+                    tm.saveTokens(token.accessToken, token.refreshToken)
+                    token.user?.let { tm.saveUserInfo(it.email, it.name) }
                     ResultDialog.newInstance(true, "Google 登入成功", "歡迎回來！正在載入您的資料...")
                         .show(supportFragmentManager, "login_ok")
 

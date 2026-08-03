@@ -32,7 +32,7 @@
                 android:layout_height="wrap_content"
                 android:text="@string/email_subtitle"
                 android:textSize="11sp"
-                android:textColor="#999999" />
+                android:textColor="#8C8480" />
         </LinearLayout>
 
         <ImageButton
@@ -42,6 +42,39 @@
             android:src="@android:drawable/ic_menu_search"
             android:background="?attr/selectableItemBackgroundBorderless"
             android:contentDescription="Search" />
+    </LinearLayout>
+
+    <!-- Search Box (toggled by btnEmailSearch) -->
+    <LinearLayout
+        android:id="@+id/emailSearchBox"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginBottom="12dp"
+        android:padding="12dp"
+        android:background="@drawable/bg_search_box"
+        android:visibility="gone">
+
+        <ImageView
+            android:layout_width="17dp"
+            android:layout_height="17dp"
+            android:src="@android:drawable/ic_menu_search"
+            android:contentDescription="Search" />
+
+        <EditText
+            android:id="@+id/etEmailSearch"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:layout_marginStart="10dp"
+            android:hint="搜尋寄件者、主旨或內容"
+            android:background="@android:color/transparent"
+            android:inputType="text"
+            android:textSize="13sp"
+            android:singleLine="true" />
     </LinearLayout>
 
     <!-- Provider Tabs -->
@@ -57,27 +90,8 @@
             android:id="@+id/chipGroupProvider"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            app:singleSelection="true">
-
-            <com.google.android.material.chip.Chip
-                android:id="@+id/chipProviderAll"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="全部"
-                android:checked="true" />
-
-            <com.google.android.material.chip.Chip
-                android:id="@+id/chipGmail"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Gmail" />
-
-            <com.google.android.material.chip.Chip
-                android:id="@+id/chipOutlook"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Outlook" />
-        </com.google.android.material.chip.ChipGroup>
+            app:singleSelection="true" />
+        <!-- Chips 由 EmailFragment 動態產生 -->
     </HorizontalScrollView>
 
     <!-- Section Header -->

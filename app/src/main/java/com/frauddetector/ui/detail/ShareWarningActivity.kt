@@ -5,31 +5,46 @@
  *
  * 本 Activity 提供詐騙警告的分享功能，功能包含：
  * - 自動生成警告文字（包含號碼、詐騙類型、舉報次數等資訊）
- * - 警告預覽區塊（顯示即將分享的完整文字內容）
- * - 多平台一鍵分享：LINE、WhatsApp、Messenger、SMS
- * - 複製到剪貼簿功能
- * - 儲存警告圖片功能（開發中）
- *
- * 透過 Intent Extra 接收電話號碼、詐騙類型與舉報次數等參數。
+ * - 多平台一鍵分享：LINE、WhatsApp、Messenger（Intent.ACTION_SEND 指定套件）、簡訊（ACTION_SENDTO）
+ * - 複製到剪貼簿
+ * - 儲存警告卡片截圖至相簿（MediaStore）
  */
 package com.frauddetector.ui.detail
 
+import android.content.ActivityNotFoundException
 import android.content.ClipData
 import android.content.ClipboardManager
+import android.content.ContentValues
 import android.content.Context
+import android.content.Intent
+import android.content.pm.PackageManager
+import android.graphics.Bitmap
+import android.graphics.Canvas
+import android.graphics.Color
+import android.net.Uri
+import android.os.Build
 import android.os.Bundle
+import android.provider.MediaStore
+import android.view.View
 import android.widget.ImageButton
 import android.widget.LinearLayout
 import android.widget.TextView
 import android.widget.Toast
-import androidx.appcompat.app.AppCompatActivity
+import androidx.activity.result.contract.ActivityResultContracts
+import com.frauddetector.ui.BaseActivity
+import androidx.core.content.ContextCompat
 import com.frauddetector.R
-import com.frauddetector.ui.dialog.ResultDialog
 import com.google.android.material.button.MaterialButton
 
-class ShareWarningActivity : AppCompatActivity() {
+class ShareWarningActivity : BaseActivity() {
 
     private lateinit var warningText: String
+
+    private val requestStoragePermission = registerForActivityResult(
+        ActivityResultContracts.RequestPermission()
+    ) { granted ->
+        if (granted) saveWarningImage() else Toast.makeText(this, "未授予儲存權限，無法儲存圖片", Toast.LENGTH_SHORT).show()
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -56,22 +71,18 @@ class ShareWarningActivity : AppCompatActivity() {
         // Back
         findViewById<ImageButton>(R.id.btnShareBack).setOnClickListener { finish() }
 
-        // Share platforms
+        // Share platforms — Intent.ACTION_SEND 指定套件，未安裝時提示使用者
         findViewById<LinearLayout>(R.id.btnShareLine).setOnClickListener {
-            ResultDialog.newInstance(true, "已開啟 LINE", "正在跳轉至 LINE...")
-                .show(supportFragmentManager, "share")
+            shareToApp("jp.naver.line.android", "LINE")
         }
         findViewById<LinearLayout>(R.id.btnShareWhatsApp).setOnClickListener {
-            ResultDialog.newInstance(true, "已開啟 WhatsApp", "正在跳轉至 WhatsApp...")
-                .show(supportFragmentManager, "share")
+            shareToApp("com.whatsapp", "WhatsApp")
         }
         findViewById<LinearLayout>(R.id.btnShareMessenger).setOnClickListener {
-            ResultDialog.newInstance(true, "已開啟 Messenger", "正在跳轉至 Messenger...")
-                .show(supportFragmentManager, "share")
+            shareToApp("com.facebook.orca", "Messenger")
         }
         findViewById<LinearLayout>(R.id.btnShareSms).setOnClickListener {
-            ResultDialog.newInstance(true, "已開啟簡訊", "正在跳轉至簡訊...")
-                .show(supportFragmentManager, "share")
+            shareViaSms()
         }
 
         // Copy text
@@ -83,7 +94,88 @@ class ShareWarningActivity : AppCompatActivity() {
 
         // Save image
         findViewById<MaterialButton>(R.id.btnSaveImage).setOnClickListener {
-            Toast.makeText(this, "圖片已儲存至相簿", Toast.LENGTH_SHORT).show()
+            if (needsStoragePermission()) {
+                requestStoragePermission.launch(android.Manifest.permission.WRITE_EXTERNAL_STORAGE)
+            } else {
+                saveWarningImage()
+            }
         }
+    }
+
+    /** 指定套件分享；若裝置未安裝該 App 則提示，而非直接崩潰 */
+    private fun shareToApp(packageName: String, appLabel: String) {
+        val intent = Intent(Intent.ACTION_SEND).apply {
+            type = "text/plain"
+            putExtra(Intent.EXTRA_TEXT, warningText)
+            setPackage(packageName)
+        }
+        try {
+            startActivity(intent)
+        } catch (e: ActivityNotFoundException) {
+            Toast.makeText(this, "裝置未安裝 $appLabel，改用「複製文字」分享", Toast.LENGTH_SHORT).show()
+        }
+    }
+
+    private fun shareViaSms() {
+        val intent = Intent(Intent.ACTION_SENDTO, Uri.parse("smsto:")).apply {
+            putExtra("sms_body", warningText)
+        }
+        try {
+            startActivity(intent)
+        } catch (e: ActivityNotFoundException) {
+            Toast.makeText(this, "找不到簡訊 App", Toast.LENGTH_SHORT).show()
+        }
+    }
+
+    /** API 28 以下需要 WRITE_EXTERNAL_STORAGE 執行時權限；API 29+ 走 Scoped Storage 不需要 */
+    private fun needsStoragePermission(): Boolean {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) return false
+        return ContextCompat.checkSelfPermission(this, android.Manifest.permission.WRITE_EXTERNAL_STORAGE) !=
+            PackageManager.PERMISSION_GRANTED
+    }
+
+    /** 將警告預覽卡片截圖並儲存至相簿（MediaStore） */
+    private fun saveWarningImage() {
+        val box = findViewById<LinearLayout>(R.id.sharePreviewBox)
+        if (box.width <= 0 || box.height <= 0) {
+            Toast.makeText(this, "畫面尚未準備好，請稍後再試", Toast.LENGTH_SHORT).show()
+            return
+        }
+
+        val bitmap = Bitmap.createBitmap(box.width, box.height, Bitmap.Config.ARGB_8888)
+        val canvas = Canvas(bitmap)
+        (box.background ?: android.graphics.drawable.ColorDrawable(Color.WHITE)).apply {
+            setBounds(0, 0, box.width, box.height)
+            draw(canvas)
+        }
+        box.draw(canvas)
+
+        val saved = try {
+            val filename = "FLASH_Warning_${System.currentTimeMillis()}.png"
+            val contentValues = ContentValues().apply {
+                put(MediaStore.Images.Media.DISPLAY_NAME, filename)
+                put(MediaStore.Images.Media.MIME_TYPE, "image/png")
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                    put(MediaStore.Images.Media.RELATIVE_PATH, "Pictures/FLASH")
+                }
+            }
+            val uri = contentResolver.insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, contentValues)
+            if (uri != null) {
+                contentResolver.openOutputStream(uri)?.use { out ->
+                    bitmap.compress(Bitmap.CompressFormat.PNG, 100, out)
+                }
+                true
+            } else {
+                false
+            }
+        } catch (e: Exception) {
+            false
+        }
+
+        Toast.makeText(
+            this,
+            if (saved) "圖片已儲存至相簿" else "儲存失敗，請稍後再試",
+            Toast.LENGTH_SHORT
+        ).show()
     }
 }

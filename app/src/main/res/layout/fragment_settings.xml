@@ -81,6 +81,23 @@
             </LinearLayout>
         </LinearLayout>
 
+        <!-- 顯示 Section -->
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="顯示"
+            android:textSize="11sp"
+            android:textColor="@color/lbl3"
+            android:letterSpacing="0.08"
+            android:textAllCaps="true"
+            android:paddingStart="16dp"
+            android:paddingTop="8dp"
+            android:paddingBottom="8dp" />
+
+        <!-- 文字大小 -->
+        <include layout="@layout/item_settings_nav"
+            android:id="@+id/settingFontSize" />
+
         <!-- 監控設定 Section -->
         <TextView
             android:layout_width="match_parent"
@@ -164,6 +181,18 @@
         <!-- 隱私與資料 -->
         <include layout="@layout/item_settings_nav"
             android:id="@+id/settingPrivacy" />
+
+        <!-- 我的回報紀錄 -->
+        <include layout="@layout/item_settings_nav"
+            android:id="@+id/settingMyReports" />
+
+        <!-- 可疑帳號列表 -->
+        <include layout="@layout/item_settings_nav"
+            android:id="@+id/settingSuspectAccounts" />
+
+        <!-- 封鎖名單 -->
+        <include layout="@layout/item_settings_nav"
+            android:id="@+id/settingBlockedNumbers" />
 
         <!-- 登出 -->
         <include layout="@layout/item_settings_nav"

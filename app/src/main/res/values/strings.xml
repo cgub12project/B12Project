@@ -107,6 +107,8 @@
     <string name="threat_profile">THREAT PROFILE</string>
     <string name="back_to_thread">返回對話</string>
     <string name="risk_score">詐騙風險分</string>
+    <string name="account_risk_score_label">帳號風險評分</string>
+    <string name="conversation_risk_score_label">近期對話風險評分</string>
     <string name="suspect_msgs">可疑訊息</string>
     <string name="contact_days">接觸天數</string>
     <string name="triggered_rules">觸發規則</string>
@@ -123,6 +125,7 @@
     <string name="block">封鎖</string>
     <string name="report">回報</string>
     <string name="share">分享</string>
+    <string name="more">更多</string>
 
     <!-- Report Full -->
     <string name="report_fraud_title">回報詐騙</string>
@@ -179,8 +182,8 @@
 
     <!-- Report form -->
     <string name="report_account_title">回報此帳號</string>
-    <string name="report_content_label">描述詐騙情況（必填）</string>
-    <string name="report_content_hint">詳細說明對方的話術或詐騙手法，至少 10 個字…</string>
+    <string name="report_content_label">描述詐騙情況（選填）</string>
+    <string name="report_content_hint">詳細說明對方的話術或詐騙手法…</string>
     <string name="other_type_hint">請說明詐騙類型</string>
     <string name="platform_required">社群平台（必選）</string>
     <string name="account_name_label">帳號名稱（必填）</string>

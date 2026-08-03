@@ -31,16 +31,8 @@
                 android:layout_height="wrap_content"
                 android:text="@string/live_monitoring"
                 android:textSize="11sp"
-                android:textColor="#999999" />
+                android:textColor="#8C8480" />
         </LinearLayout>
-
-        <ImageButton
-            android:id="@+id/btnMarkAllRead"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
-            android:src="@android:drawable/checkbox_on_background"
-            android:background="?attr/selectableItemBackgroundBorderless"
-            android:contentDescription="Mark all read" />
     </LinearLayout>
 
     <!-- Intelligence Summary Card -->
@@ -61,7 +53,7 @@
             android:layout_height="wrap_content"
             android:text="@string/intel_summary"
             android:textSize="11sp"
-            android:textColor="#999999"
+            android:textColor="#8C8480"
             android:letterSpacing="0.14"
             android:layout_marginBottom="12dp" />
 
@@ -104,7 +96,7 @@
             <View
                 android:layout_width="1dp"
                 android:layout_height="match_parent"
-                android:background="#E0E0E0"
+                android:background="#C8C4C0"
                 android:layout_marginTop="8dp"
                 android:layout_marginBottom="8dp" />
 
@@ -140,7 +132,7 @@
             <View
                 android:layout_width="1dp"
                 android:layout_height="match_parent"
-                android:background="#E0E0E0"
+                android:background="#C8C4C0"
                 android:layout_marginTop="8dp"
                 android:layout_marginBottom="8dp" />
 
@@ -199,39 +191,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             app:singleSelection="true"
-            xmlns:app="http://schemas.android.com/apk/res-auto">
-
-            <com.google.android.material.chip.Chip
-                android:id="@+id/chipAll"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/filter_all"
-                android:checked="true" />
-
-            <com.google.android.material.chip.Chip
-                android:id="@+id/chipLine"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="LINE" />
-
-            <com.google.android.material.chip.Chip
-                android:id="@+id/chipSms"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="簡訊" />
-
-            <com.google.android.material.chip.Chip
-                android:id="@+id/chipWhatsApp"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="WhatsApp" />
-
-            <com.google.android.material.chip.Chip
-                android:id="@+id/chipMessenger"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Messenger" />
-        </com.google.android.material.chip.ChipGroup>
+            xmlns:app="http://schemas.android.com/apk/res-auto" />
+        <!-- Chips 由 MessagesFragment 動態產生 -->
     </HorizontalScrollView>
 
     <!-- Section Header -->

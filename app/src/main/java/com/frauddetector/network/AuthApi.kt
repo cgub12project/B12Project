@@ -13,6 +13,7 @@ package com.frauddetector.network
 
 import retrofit2.Call
 import retrofit2.http.Body
+import retrofit2.http.Header
 import retrofit2.http.POST
 
 /**
@@ -60,14 +61,14 @@ interface AuthApi {
     /**
      * 驗證 OTP 驗證碼。
      *
-     * 驗證使用者輸入的 OTP 是否與後端發送的一致。
-     * 此步驟通常在重設密碼流程中使用。
+     * 驗證使用者輸入的 OTP 是否與後端發送的一致，
+     * 成功後回傳一次性 reset_token，供下一步 [resetPassword] 使用。
      *
      * @param request [VerifyOtpRequest] 包含 email 與使用者輸入的 otp
-     * @return [Call]<[Void]> 成功時無回應內容
+     * @return [Call]<[VerifyOtpResponse]> 成功時回傳 reset_token
      */
     @POST("api/v1/auth/verify-otp")
-    fun verifyOtp(@Body request: VerifyOtpRequest): Call<Void>
+    fun verifyOtp(@Body request: VerifyOtpRequest): Call<VerifyOtpResponse>
 
     /**
      * 重設密碼。
@@ -92,4 +93,25 @@ interface AuthApi {
      */
     @POST("api/v1/auth/oauth")
     fun oauthLogin(@Body request: OAuthRequest): Call<TokenResponse>
+
+    /**
+     * 以 refresh_token 換發新的權杖組。
+     */
+    @POST("api/v1/auth/refresh")
+    fun refresh(@Body request: RefreshTokenRequest): Call<TokenResponse>
+
+    /**
+     * 更改密碼（需登入，驗證舊密碼後設定新密碼）。
+     */
+    @POST("api/v1/auth/change-password")
+    fun changePassword(
+        @Header("Authorization") token: String,
+        @Body request: ChangePasswordRequest
+    ): Call<MessageResponse>
+
+    /**
+     * 登出。JWT 為無狀態設計，僅供伺服器端記錄；用戶端仍需自行清除本地 Token。
+     */
+    @POST("api/v1/auth/logout")
+    fun logout(@Header("Authorization") token: String): Call<MessageResponse>
 }

@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- 11. 對話詳情 (Thread) -->
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical">
@@ -12,7 +13,7 @@
         android:layout_height="wrap_content"
         android:orientation="vertical"
         android:padding="16dp"
-        android:background="#FFFFFF">
+        android:background="#FDFAF4">
 
         <!-- Back Row -->
         <LinearLayout
@@ -37,7 +38,7 @@
                 android:layout_marginStart="6dp"
                 android:text="@string/back_to_messages"
                 android:textSize="11sp"
-                android:textColor="#2196F3" />
+                android:textColor="#4A7FA5" />
         </LinearLayout>
 
         <!-- Sender Info + Risk Pill -->
@@ -59,7 +60,7 @@
                     android:layout_height="wrap_content"
                     android:text="LINE · 台灣投資達人"
                     android:textSize="10sp"
-                    android:textColor="#999999" />
+                    android:textColor="#8C8480" />
 
                 <TextView
                     android:id="@+id/tvThreadSender"
@@ -113,17 +114,18 @@
                 android:textStyle="bold" />
 
             <TextView
+                android:id="@+id/tvThreadScoreLabel"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/risk_score"
+                android:text="@string/conversation_risk_score_label"
                 android:textSize="9sp"
-                android:textColor="#999999" />
+                android:textColor="#8C8480" />
         </LinearLayout>
 
         <View
             android:layout_width="1dp"
             android:layout_height="match_parent"
-            android:background="#E0E0E0" />
+            android:background="#C8C4C0" />
 
         <LinearLayout
             android:layout_width="0dp"
@@ -145,13 +147,13 @@
                 android:layout_height="wrap_content"
                 android:text="@string/suspect_msgs"
                 android:textSize="9sp"
-                android:textColor="#999999" />
+                android:textColor="#8C8480" />
         </LinearLayout>
 
         <View
             android:layout_width="1dp"
             android:layout_height="match_parent"
-            android:background="#E0E0E0" />
+            android:background="#C8C4C0" />
 
         <LinearLayout
             android:layout_width="0dp"
@@ -173,7 +175,7 @@
                 android:layout_height="wrap_content"
                 android:text="@string/contact_days"
                 android:textSize="9sp"
-                android:textColor="#999999" />
+                android:textColor="#8C8480" />
         </LinearLayout>
     </LinearLayout>
 
@@ -184,7 +186,38 @@
         android:layout_height="wrap_content"
         android:paddingStart="16dp"
         android:paddingEnd="16dp"
-        android:paddingBottom="10dp" />
+        android:paddingBottom="6dp" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:paddingStart="16dp"
+        android:paddingEnd="16dp"
+        android:layout_marginBottom="10dp">
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnReportAccount"
+            style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+            android:layout_width="wrap_content"
+            android:layout_height="36dp"
+            android:layout_marginEnd="8dp"
+            android:text="回報此帳號為詐騙"
+            android:textSize="11sp"
+            app:icon="@android:drawable/ic_dialog_alert"
+            app:iconSize="14dp" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnGroupExplanation"
+            style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+            android:layout_width="wrap_content"
+            android:layout_height="36dp"
+            android:text="查看整體對話判斷"
+            android:textSize="11sp"
+            android:visibility="gone"
+            app:icon="@android:drawable/ic_menu_info_details"
+            app:iconSize="14dp" />
+    </LinearLayout>
 
     <!-- Chat Messages List -->
     <androidx.recyclerview.widget.RecyclerView

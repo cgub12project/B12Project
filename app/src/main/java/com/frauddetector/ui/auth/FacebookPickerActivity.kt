@@ -6,7 +6,7 @@ import android.os.Handler
 import android.os.Looper
 import android.widget.ImageButton
 import android.widget.TextView
-import androidx.appcompat.app.AppCompatActivity
+import com.frauddetector.ui.BaseActivity
 import com.facebook.CallbackManager
 import com.facebook.FacebookCallback
 import com.facebook.FacebookException
@@ -24,7 +24,7 @@ import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 
-class FacebookPickerActivity : AppCompatActivity() {
+class FacebookPickerActivity : BaseActivity() {
 
     private lateinit var callbackManager: CallbackManager
 
@@ -73,10 +73,7 @@ class FacebookPickerActivity : AppCompatActivity() {
                 return@newMeRequest
             }
 
-            val fbUserId = jsonObject.optString("id")
-            val name = jsonObject.optString("name")
             val email = jsonObject.optString("email")
-            val avatarUrl = "https://graph.facebook.com/$fbUserId/picture?type=large"
 
             if (email.isNullOrBlank()) {
                 showError("缺少 Email", "您的 Facebook 帳號未綁定電子信箱，無法使用此方式登入。")
@@ -84,13 +81,7 @@ class FacebookPickerActivity : AppCompatActivity() {
                 return@newMeRequest
             }
 
-            sendOAuthToBackend(
-                fbUserId = fbUserId,
-                email = email,
-                displayName = name,
-                avatarUrl = avatarUrl,
-                fbAccessToken = accessToken.token
-            )
+            sendOAuthToBackend(fbAccessToken = accessToken.token)
         }
         val params = Bundle()
         params.putString("fields", "id,name,email")
@@ -98,21 +89,8 @@ class FacebookPickerActivity : AppCompatActivity() {
         request.executeAsync()
     }
 
-    private fun sendOAuthToBackend(
-        fbUserId: String,
-        email: String,
-        displayName: String?,
-        avatarUrl: String?,
-        fbAccessToken: String
-    ) {
-        val oauthRequest = OAuthRequest(
-            provider = "facebook",
-            providerUserId = fbUserId,
-            email = email,
-            displayName = displayName,
-            avatarUrl = avatarUrl,
-            accessToken = fbAccessToken
-        )
+    private fun sendOAuthToBackend(fbAccessToken: String) {
+        val oauthRequest = OAuthRequest(provider = "facebook", accessToken = fbAccessToken)
 
         ApiClient.authApi.oauthLogin(oauthRequest).enqueue(object : Callback<TokenResponse> {
             override fun onResponse(call: Call<TokenResponse>, response: Response<TokenResponse>) {
@@ -120,9 +98,10 @@ class FacebookPickerActivity : AppCompatActivity() {
                     val token = response.body()!!
                     val tm = TokenManager(this@FacebookPickerActivity)
                     tm.saveTokens(token.accessToken, token.refreshToken)
-                    tm.saveUserInfo(email, displayName)
+                    token.user?.let { tm.saveUserInfo(it.email, it.name) }
 
-                    ResultDialog.newInstance(true, "Facebook 登入成功", "已使用 ${displayName ?: email} 的帳號登入。")
+                    val displayLabel = token.user?.name ?: token.user?.email ?: "Facebook"
+                    ResultDialog.newInstance(true, "Facebook 登入成功", "已使用 $displayLabel 的帳號登入。")
                         .show(supportFragmentManager, "login_ok")
                     Handler(Looper.getMainLooper()).postDelayed({
                         startActivity(

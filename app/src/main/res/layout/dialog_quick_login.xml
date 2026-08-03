@@ -11,7 +11,7 @@
     <View
         android:layout_width="36dp"
         android:layout_height="3dp"
-        android:background="#CCCCCC"
+        android:background="#C8C4C0"
         android:layout_gravity="center_horizontal"
         android:layout_marginBottom="20dp" />
 
@@ -39,7 +39,7 @@
         android:layout_marginTop="4dp"
         android:text="@string/verifying_identity"
         android:textSize="9sp"
-        android:textColor="#999999" />
+        android:textColor="#8C8480" />
 
     <com.google.android.material.button.MaterialButton
         android:id="@+id/btnQuickCancel"

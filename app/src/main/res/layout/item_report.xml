@@ -19,16 +19,16 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:textSize="10sp"
+            android:textSize="11sp"
             android:textStyle="bold"
-            android:textColor="#666666" />
+            android:textColor="#2C2825" />
 
         <TextView
             android:id="@+id/tvReportTime"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textSize="10sp"
-            android:textColor="#999999" />
+            android:textSize="11sp"
+            android:textColor="#8C8480" />
     </LinearLayout>
 
     <!-- Type Badge -->
@@ -36,7 +36,7 @@
         android:id="@+id/tvReportType"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textSize="9sp"
+        android:textSize="10sp"
         android:textStyle="bold"
         android:paddingStart="8dp"
         android:paddingEnd="8dp"
@@ -49,7 +49,7 @@
         android:id="@+id/tvReportDesc"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:textSize="12sp"
-        android:textColor="#666666"
+        android:textSize="13sp"
+        android:textColor="#2C2825"
         android:lineSpacingMultiplier="1.5" />
 </LinearLayout>

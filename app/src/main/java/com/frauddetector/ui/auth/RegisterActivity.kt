@@ -22,7 +22,7 @@ import android.widget.CheckBox
 import android.widget.LinearLayout
 import android.widget.TextView
 import android.widget.Toast
-import androidx.appcompat.app.AppCompatActivity
+import com.frauddetector.ui.BaseActivity
 import com.frauddetector.R
 import com.frauddetector.network.ApiClient
 import com.frauddetector.network.RegisterRequest
@@ -43,7 +43,7 @@ import retrofit2.Response
  * 提供完整的使用者註冊表單，含密碼強度即時分析與後端 API 串接。
  * 密碼強度依據三個條件評分：長度 >= 8、大小寫混合、包含特殊字元。
  */
-class RegisterActivity : AppCompatActivity() {
+class RegisterActivity : BaseActivity() {
 
     /**
      * 初始化註冊頁面 UI、密碼強度監聽器與註冊按鈕事件。
@@ -167,9 +167,9 @@ class RegisterActivity : AppCompatActivity() {
                     if (response.isSuccessful) {
                         val token = response.body()
                         if (token != null) {
-                            TokenManager(this@RegisterActivity).saveTokens(
-                                token.accessToken, token.refreshToken
-                            )
+                            val tm = TokenManager(this@RegisterActivity)
+                            tm.saveTokens(token.accessToken, token.refreshToken)
+                            tm.saveUserInfo(token.user?.email ?: email, token.user?.name ?: displayName)
                         }
                         ResultDialog.newInstance(
                             true, "註冊成功！", "帳號已建立。\n請使用電子信箱登入。"

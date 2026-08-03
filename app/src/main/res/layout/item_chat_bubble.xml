@@ -21,7 +21,7 @@
             android:layout_width="0dp"
             android:layout_height="1dp"
             android:layout_weight="1"
-            android:background="#E0E0E0" />
+            android:background="#C8C4C0" />
 
         <TextView
             android:id="@+id/tvPhaseLabel"
@@ -39,7 +39,7 @@
             android:layout_width="0dp"
             android:layout_height="1dp"
             android:layout_weight="1"
-            android:background="#E0E0E0" />
+            android:background="#C8C4C0" />
     </LinearLayout>
 
     <!-- Bubble Container -->
@@ -65,14 +65,14 @@
                 android:layout_height="wrap_content"
                 android:textSize="10sp"
                 android:textStyle="bold"
-                android:textColor="#999999" />
+                android:textColor="#8C8480" />
 
             <TextView
                 android:id="@+id/tvMsgTime"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textSize="9sp"
-                android:textColor="#CCCCCC"
+                android:textColor="#C8C4C0"
                 android:layout_marginStart="5dp" />
         </LinearLayout>
 
@@ -105,7 +105,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textSize="9sp"
-            android:textColor="#CCCCCC"
+            android:textColor="#C8C4C0"
             android:layout_marginTop="3dp"
             android:visibility="gone" />
     </LinearLayout>

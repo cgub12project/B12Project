@@ -3,107 +3,170 @@
  *
  * 所屬模組：ui/detail（詳情模組）
  *
- * 本 Activity 展示可疑帳號的完整威脅分析檔案，功能包含：
- * - 帳號基本資訊（名稱、識別碼）
- * - 風險環形進度條（0-100 分，搭配顏色編碼）
- * - 統計摘要：可疑訊息數、接觸天數
- * - 觸發規則列表（AI 偵測到的詐騙模式標籤，以紅色 Chip 呈現）
- * - 證據摘要列表（以 [EvidenceAdapter] 顯示各項證據的類型、嚴重度、時間與描述）
- * - 操作按鈕：封鎖回報（開啟 [MessageReportBottomSheet]）、分享警告
- *
- * 資料來源為 [SampleData.getAccountProfiles()]，透過 threadId 查詢。
+ * 透過 [EXTRA_ACCOUNT_ID] 接收帳號 ID，呼叫 GET /api/v1/accounts/{id}
+ * 顯示風險評分、觸發規則、AI 摘要與證據摘要列表。
  */
 package com.frauddetector.ui.detail
 
-import android.content.Intent
 import android.graphics.Color
 import android.os.Bundle
-import android.widget.LinearLayout
+import android.view.View
 import android.widget.ProgressBar
 import android.widget.TextView
-import androidx.appcompat.app.AppCompatActivity
+import android.widget.Toast
+import com.frauddetector.ui.BaseActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.frauddetector.R
 import com.frauddetector.adapter.EvidenceAdapter
-import com.frauddetector.data.SampleData
-import com.frauddetector.ui.dialog.MessageReportBottomSheet
-import com.frauddetector.ui.dialog.ResultDialog
-import com.google.android.material.button.MaterialButton
+import com.frauddetector.data.EvidenceItem
+import com.frauddetector.network.ApiClient
+import com.frauddetector.network.SuspectAccountDetailResponse
+import com.frauddetector.network.TokenManager
+// import com.frauddetector.ui.dialog.MessageReportBottomSheet // 帳號回報功能暫停用，見下方 btnBlockReport 註解
 import com.google.android.material.chip.Chip
 import com.google.android.material.chip.ChipGroup
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
+import java.text.SimpleDateFormat
+import java.util.Locale
+import java.util.concurrent.TimeUnit
 
-/**
- * 帳號威脅檔案 Activity，顯示風險環形圖、觸發規則與證據摘要。
- */
-class AccountDetailActivity : AppCompatActivity() {
+class AccountDetailActivity : BaseActivity() {
+
+    companion object {
+        const val EXTRA_ACCOUNT_ID = "extra_account_id"
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_account_detail)
 
-        val threadId = intent.getStringExtra("threadId") ?: "invest"
-        val profile = SampleData.getAccountProfiles()[threadId] ?: return
+        val accountId = intent.getIntExtra(EXTRA_ACCOUNT_ID, -1)
+        if (accountId <= 0) {
+            Toast.makeText(this, "無法載入帳號檔案", Toast.LENGTH_SHORT).show()
+            finish()
+            return
+        }
 
-        // Populate header
-        findViewById<TextView>(R.id.tvDetName).text = profile.name
-        findViewById<TextView>(R.id.tvDetId).text = profile.identifier
-        findViewById<TextView>(R.id.tvRingVal).text = profile.riskScore.toString()
-        findViewById<TextView>(R.id.tvDetMsgs).text = "${profile.suspectMsgs} 則"
-        findViewById<TextView>(R.id.tvDetDays).text = "${profile.days} 天"
+        findViewById<View>(R.id.btnBackToThread).setOnClickListener { finish() }
 
-        // Progress ring
-        val ring = findViewById<ProgressBar>(R.id.riskRing)
-        ring.progress = profile.riskScore
+        loadDetail(accountId)
+    }
 
-        // Triggered rules
+    private fun loadDetail(accountId: Int) {
+        val token = TokenManager(this).accessToken
+        if (token.isNullOrEmpty()) {
+            Toast.makeText(this, "請先登入", Toast.LENGTH_SHORT).show()
+            finish()
+            return
+        }
+
+        ApiClient.accountApi.getAccountDetail("Bearer $token", accountId)
+            .enqueue(object : Callback<SuspectAccountDetailResponse> {
+                override fun onResponse(
+                    call: Call<SuspectAccountDetailResponse>,
+                    response: Response<SuspectAccountDetailResponse>
+                ) {
+                    val body = response.body()
+                    if (response.isSuccessful && body != null) {
+                        bindDetail(body)
+                    } else {
+                        val msg = ApiClient.parseError(response.errorBody()?.string())
+                        Toast.makeText(this@AccountDetailActivity, "載入失敗：$msg", Toast.LENGTH_SHORT).show()
+                        finish()
+                    }
+                }
+
+                override fun onFailure(call: Call<SuspectAccountDetailResponse>, t: Throwable) {
+                    Toast.makeText(this@AccountDetailActivity, "網路錯誤：${t.message}", Toast.LENGTH_SHORT).show()
+                    finish()
+                }
+            })
+    }
+
+    private fun bindDetail(data: SuspectAccountDetailResponse) {
+        findViewById<TextView>(R.id.tvDetName).text = data.accountName
+        findViewById<TextView>(R.id.tvDetId).text =
+            if (!data.externalAccountId.isNullOrBlank()) "${data.platform}: ${data.externalAccountId}"
+            else data.platform
+
+        findViewById<ProgressBar>(R.id.riskRing).progress = data.riskScore
+        findViewById<TextView>(R.id.tvRingVal).text = data.riskScore.toString()
+        findViewById<TextView>(R.id.tvDetMsgs).text = data.reportCount.toString()
+        findViewById<TextView>(R.id.tvDetDays).text = "${daysBetween(data.createdAt, data.lastReportedAt)} 天"
+
+        // Triggered rules chips
         val chipGroup = findViewById<ChipGroup>(R.id.chipGroupRules)
         chipGroup.removeAllViews()
-        profile.rules.forEach { rule ->
+        val ruleColor = if (data.riskLevel == "high") Color.parseColor("#A63D2F") else Color.parseColor("#C46B4A")
+        data.triggeredRules.forEach { rule ->
             val chip = Chip(this).apply {
                 text = rule
-                textSize = 10f
                 isClickable = false
-                setTextColor(Color.parseColor("#FF3B30"))
+                setTextColor(ruleColor)
                 chipBackgroundColor = android.content.res.ColorStateList.valueOf(
-                    Color.parseColor("#1AFF3B30")
+                    Color.argb(25, Color.red(ruleColor), Color.green(ruleColor), Color.blue(ruleColor))
                 )
                 chipStrokeWidth = 0f
             }
             chipGroup.addView(chip)
         }
 
-        // Evidence RecyclerView
-        val rv = findViewById<RecyclerView>(R.id.rvEvidence)
-        rv.layoutManager = LinearLayoutManager(this)
-        rv.adapter = EvidenceAdapter(profile.evidences)
-
-        // Back
-        findViewById<LinearLayout>(R.id.btnBackToThread).setOnClickListener { finish() }
-
-        // Block & Report
-        findViewById<MaterialButton>(R.id.btnBlockReport).setOnClickListener {
-            val (platform, accountId) = parseIdentifier(profile.identifier)
-            MessageReportBottomSheet.newInstance(
-                accountName = profile.name,
-                platform = platform,
-                accountId = accountId
-            ).show(supportFragmentManager, "report")
+        // AI summary
+        val tvSummary = findViewById<TextView>(R.id.tvAiSummary)
+        if (!data.aiSummary.isNullOrBlank()) {
+            tvSummary.text = "AI 摘要：${data.aiSummary}"
+            tvSummary.visibility = View.VISIBLE
+        } else {
+            tvSummary.visibility = View.GONE
         }
 
-        // Share Warning
-        findViewById<MaterialButton>(R.id.btnShareWarning).setOnClickListener {
-            startActivity(Intent(this, ShareWarningActivity::class.java))
+        // Evidence list
+        val evidenceItems = data.evidenceItems.map {
+            EvidenceItem(
+                type = it.evidenceType,
+                typeClass = if (it.severity == "high") "r" else "a",
+                time = it.occurredAt?.take(10) ?: "",
+                text = it.description
+            )
+        }
+        findViewById<RecyclerView>(R.id.rvEvidence).apply {
+            layoutManager = LinearLayoutManager(this@AccountDetailActivity)
+            adapter = EvidenceAdapter(evidenceItems)
+        }
+
+        // Actions
+        // 「回報」功能暫時停用（見 dev-notes 問題16）：後端 POST /reports/account
+        // 只用 (platform, 帳號顯示名稱) 判斷是否為同一帳號，同名不同人會被誤判成
+        // 同一筆、風險分數互相污染，等後端修好帳號比對邏輯之後再打開。
+        // findViewById<View>(R.id.btnBlockReport).setOnClickListener {
+        //     MessageReportBottomSheet.newInstance(
+        //         data.accountName, data.platform, data.externalAccountId ?: ""
+        //     ).show(supportFragmentManager, "report")
+        // }
+        findViewById<View>(R.id.btnBlockReport).visibility = View.GONE
+        findViewById<View>(R.id.btnShareWarning).setOnClickListener {
+            Toast.makeText(this, "分享功能開發中", Toast.LENGTH_SHORT).show()
         }
     }
 
-    /** 解析 "LINE: @account_id" 格式，回傳 Pair(platform, accountId) */
-    private fun parseIdentifier(identifier: String): Pair<String, String> {
-        val idx = identifier.indexOf(": ")
-        return if (idx >= 0) {
-            Pair(identifier.substring(0, idx).trim(), identifier.substring(idx + 2).trim())
-        } else {
-            Pair("", identifier)
+    /** 計算帳號建檔到最後一次舉報之間的天數（無資料時回傳 0） */
+    private fun daysBetween(createdAt: String?, lastReportedAt: String?): Int {
+        if (createdAt.isNullOrBlank()) return 0
+        return try {
+            val sdf = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss", Locale.getDefault())
+            val start = sdf.parse(createdAt.take(19))?.time ?: return 0
+            val end = if (!lastReportedAt.isNullOrBlank()) {
+                sdf.parse(lastReportedAt.take(19))?.time ?: System.currentTimeMillis()
+            } else {
+                System.currentTimeMillis()
+            }
+            val diff = TimeUnit.MILLISECONDS.toDays(end - start).toInt()
+            if (diff < 1) 1 else diff
+        } catch (e: Exception) {
+            0
         }
     }
 }

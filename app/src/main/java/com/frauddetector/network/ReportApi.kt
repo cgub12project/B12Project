@@ -13,9 +13,11 @@ package com.frauddetector.network
 
 import retrofit2.Call
 import retrofit2.http.Body
+import retrofit2.http.GET
 import retrofit2.http.Header
 import retrofit2.http.POST
 import retrofit2.http.Path
+import retrofit2.http.Query
 
 /**
  * 舉報 API 介面 — 定義所有與詐騙舉報相關的 HTTP 端點。
@@ -35,14 +37,14 @@ interface ReportApi {
      * @param token JWT 存取權杖，格式為 "Bearer {access_token}"
      * @param phoneNumber 被舉報的電話號碼，作為 URL 路徑的一部分
      * @param body [PhoneReportRequest] 包含詐騙類型（fraudType）、內容（content）與描述（description）
-     * @return [Call]<[Void]> 成功時回傳 HTTP 200（無回應內容）
+     * @return [Call]<[ReportSubmitResponse]> 成功時回傳案件編號等資訊
      */
     @POST("api/v1/reports/phone/{phone_number}")
     fun reportPhone(
         @Header("Authorization") token: String,
         @Path("phone_number") phoneNumber: String,
         @Body body: PhoneReportRequest
-    ): Call<Void>
+    ): Call<ReportSubmitResponse>
 
     /**
      * 舉報可疑帳號/訊息。
@@ -52,11 +54,30 @@ interface ReportApi {
      *
      * @param token JWT 存取權杖，格式為 "Bearer {access_token}"
      * @param body [MessageReportBody] 包含詐騙類型、內容、平台、帳號名稱等資訊
-     * @return [Call]<[Void]> 成功時回傳 HTTP 200（無回應內容）
+     * @return [Call]<[ReportSubmitResponse]> 成功時回傳案件編號等資訊
      */
     @POST("api/v1/reports/account")
     fun reportAccount(
         @Header("Authorization") token: String,
         @Body body: MessageReportBody
-    ): Call<Void>
+    ): Call<ReportSubmitResponse>
+
+    /**
+     * 提交完整回報（詐騙類型 + 事件描述 + 附加證據），成功後產生案件編號。
+     */
+    @POST("api/v1/reports/full")
+    fun reportFull(
+        @Header("Authorization") token: String,
+        @Body body: FullReportRequest
+    ): Call<ReportSubmitResponse>
+
+    /**
+     * 查詢個人回報紀錄（合併電話／帳號／完整回報，依時間新到舊排序）。
+     */
+    @GET("api/v1/reports/mine")
+    fun getMyReports(
+        @Header("Authorization") token: String,
+        @Query("limit") limit: Int = 50,
+        @Query("offset") offset: Int = 0
+    ): Call<MyReportsResponse>
 }

@@ -8,7 +8,7 @@
  * - 顯示被回報的電話號碼
  * - 7 種詐騙類型 Chip 單選（假冒政府機關、投資詐騙等）
  * - 選擇「其他」時顯示自填文字欄位
- * - 回報描述文字輸入（至少 10 個字）
+ * - 回報描述文字輸入（選填）
  * - 呼叫 POST /api/v1/reports/phone/{phone_number} API 提交回報
  * - 需要 JWT Token 認證（未登入時提示用戶先登入）
  */
@@ -24,6 +24,7 @@ import android.widget.Toast
 import com.frauddetector.R
 import com.frauddetector.network.ApiClient
 import com.frauddetector.network.PhoneReportRequest
+import com.frauddetector.network.ReportSubmitResponse
 import com.frauddetector.network.TokenManager
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.google.android.material.button.MaterialButton
@@ -105,11 +106,8 @@ class ReportBottomSheet : BottomSheetDialogFragment() {
                 selectedChip.text.toString()
             }
 
+            // 描述為選填欄位，不限制字數（教授要求移除原本至少 10 字的限制）
             val content = etContent.text.toString().trim()
-            if (content.length < 10) {
-                Toast.makeText(requireContext(), "描述至少需要 10 個字", Toast.LENGTH_SHORT).show()
-                return@setOnClickListener
-            }
 
             submitReport(phoneNumber, fraudType, content, btnSubmit)
         }
@@ -146,16 +144,19 @@ class ReportBottomSheet : BottomSheetDialogFragment() {
             "Bearer $token",
             phoneNumber,
             PhoneReportRequest(fraudType = fraudType, content = content)
-        ).enqueue(object : Callback<Void> {
-            override fun onResponse(call: Call<Void>, response: Response<Void>) {
+        ).enqueue(object : Callback<ReportSubmitResponse> {
+            override fun onResponse(
+                call: Call<ReportSubmitResponse>,
+                response: Response<ReportSubmitResponse>
+            ) {
                 if (!isAdded) return
                 dismiss()
                 if (response.isSuccessful) {
-                    ResultDialog.newInstance(
-                        true,
-                        getString(R.string.report_success),
-                        getString(R.string.report_success_msg)
-                    ).show(parentFragmentManager, "result")
+                    val caseNumber = response.body()?.caseNumber
+                    val msg = getString(R.string.report_success_msg) +
+                        (caseNumber?.let { "\n案件編號：$it" } ?: "")
+                    ResultDialog.newInstance(true, getString(R.string.report_success), msg)
+                        .show(parentFragmentManager, "result")
                 } else {
                     val msg = ApiClient.parseError(response.errorBody()?.string())
                     ResultDialog.newInstance(false, getString(R.string.report_failed), msg)
@@ -163,7 +164,7 @@ class ReportBottomSheet : BottomSheetDialogFragment() {
                 }
             }
 
-            override fun onFailure(call: Call<Void>, t: Throwable) {
+            override fun onFailure(call: Call<ReportSubmitResponse>, t: Throwable) {
                 if (!isAdded) return
                 dismiss()
                 ResultDialog.newInstance(

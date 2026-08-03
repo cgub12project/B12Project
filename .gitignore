@@ -26,3 +26,7 @@ Thumbs.db
 
 # Old dev references
 readMe參考檔案/
+
+# Dev notes (local only)
+.claude/
+dev-notes/

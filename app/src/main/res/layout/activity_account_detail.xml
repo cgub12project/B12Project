@@ -111,7 +111,7 @@
                     android:text="91"
                     android:textSize="13sp"
                     android:textStyle="bold"
-                    android:textColor="#FF8A80" />
+                    android:textColor="#E8C4B0" />
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -138,17 +138,17 @@
                     android:text="14 則"
                     android:textSize="22sp"
                     android:textStyle="bold"
-                    android:textColor="#FF8A80" />
+                    android:textColor="#E8C4B0" />
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@string/suspect_msgs"
+                    android:text="@string/report_count"
                     android:textSize="9sp"
                     android:textColor="#66FFFFFF" />
             </LinearLayout>
 
-            <!-- Contact Days -->
+            <!-- Tracked Days -->
             <LinearLayout
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
@@ -165,7 +165,7 @@
                     android:text="12 天"
                     android:textSize="22sp"
                     android:textStyle="bold"
-                    android:textColor="#FFD180" />
+                    android:textColor="#F4F0E8" />
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -205,7 +205,20 @@
                 android:id="@+id/chipGroupRules"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="16dp" />
+                android:layout_marginBottom="12dp" />
+
+            <!-- AI Summary -->
+            <TextView
+                android:id="@+id/tvAiSummary"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/bg_card_white_12"
+                android:padding="12dp"
+                android:textSize="13sp"
+                android:lineSpacingExtra="3dp"
+                android:textColor="#2C2825"
+                android:layout_marginBottom="16dp"
+                android:visibility="gone" />
 
             <!-- Evidence Summary -->
             <TextView

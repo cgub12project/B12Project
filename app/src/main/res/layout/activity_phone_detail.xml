@@ -11,7 +11,7 @@
         android:layout_height="wrap_content"
         android:orientation="vertical"
         android:padding="16dp"
-        android:background="#FFFFFF">
+        android:background="#FDFAF4">
 
         <!-- Back -->
         <LinearLayout
@@ -36,7 +36,7 @@
                 android:layout_marginStart="6dp"
                 android:text="@string/back_to_phone_list"
                 android:textSize="11sp"
-                android:textColor="#2196F3" />
+                android:textColor="#4A7FA5" />
         </LinearLayout>
 
         <!-- Phone Number -->
@@ -63,6 +63,18 @@
             android:paddingTop="4dp"
             android:paddingBottom="4dp"
             android:layout_marginBottom="12dp" />
+
+        <!-- 非常規台灣電話格式提示 -->
+        <TextView
+            android:id="@+id/tvPhoneFormatWarning"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="⚠ 非常規台灣電話格式"
+            android:textColor="#C46B4A"
+            android:textSize="12sp"
+            android:textStyle="bold"
+            android:layout_marginBottom="12dp"
+            android:visibility="gone" />
 
         <!-- Stats Row -->
         <LinearLayout
@@ -94,7 +106,7 @@
                     android:layout_height="wrap_content"
                     android:text="@string/report_count"
                     android:textSize="9sp"
-                    android:textColor="#999999" />
+                    android:textColor="#8C8480" />
             </LinearLayout>
 
             <LinearLayout
@@ -120,7 +132,7 @@
                     android:layout_height="wrap_content"
                     android:text="@string/last_report"
                     android:textSize="9sp"
-                    android:textColor="#999999" />
+                    android:textColor="#8C8480" />
             </LinearLayout>
 
             <LinearLayout
@@ -145,7 +157,7 @@
                     android:layout_height="wrap_content"
                     android:text="@string/fraud_type"
                     android:textSize="9sp"
-                    android:textColor="#999999" />
+                    android:textColor="#8C8480" />
             </LinearLayout>
         </LinearLayout>
 

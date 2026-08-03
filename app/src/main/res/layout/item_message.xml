@@ -50,7 +50,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="08:23"
-                android:textSize="10sp"
+                android:textSize="11sp"
                 android:textColor="@color/lbl3"
                 android:layout_marginStart="4dp" />
         </LinearLayout>
@@ -61,8 +61,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="陳大富 · 可疑帳號"
-            android:textSize="10sp"
-            android:textColor="#999999"
+            android:textSize="11sp"
+            android:textColor="#8C8480"
             android:layout_marginBottom="3dp" />
 
         <!-- Message Preview -->
@@ -71,7 +71,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="哥，上次那個台幣計畫你考慮了嗎..."
-            android:textSize="12sp"
+            android:textSize="13sp"
             android:textColor="@color/lbl2"
             android:singleLine="true"
             android:ellipsize="end"

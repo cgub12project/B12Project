@@ -46,3 +46,45 @@ data class MessageReportBody(
     /** 補充描述（選填），提供更多舉報相關的細節說明；預設為 null */
     val description: String? = null
 )
+
+/**
+ * 完整回報請求 — 對應 POST /api/v1/reports/full 的請求 body。
+ */
+data class FullReportRequest(
+    @SerializedName("fraud_type") val fraudType: String,
+    val content: String,
+    val description: String? = null,
+    @SerializedName("evidence_files") val evidenceFiles: List<String>? = null
+)
+
+// ══════════════════════════════════════════════════════════
+// Response（回應模型）
+// ══════════════════════════════════════════════════════════
+
+/**
+ * 舉報提交回應 — phone/account/full 三種回報端點共用。
+ */
+data class ReportSubmitResponse(
+    val success: Boolean = true,
+    val message: String? = null,
+    @SerializedName("report_id") val reportId: Int? = null,
+    @SerializedName("case_number") val caseNumber: String? = null
+)
+
+data class MyReportItem(
+    val id: Int,
+    /** 回報種類："phone"（電話）/ "account"（帳號）/ "full"（完整回報） */
+    val kind: String,
+    @SerializedName("fraud_type") val fraudType: String,
+    val content: String,
+    /** 顯示用的回報目標描述（電話號碼、帳號資訊等），由後端組好 */
+    val target: String,
+    @SerializedName("case_number") val caseNumber: String? = null,
+    val status: String,
+    @SerializedName("created_at") val createdAt: String
+)
+
+data class MyReportsResponse(
+    val total: Int,
+    val items: List<MyReportItem>
+)

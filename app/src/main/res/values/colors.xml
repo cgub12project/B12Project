@@ -3,30 +3,42 @@
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
 
-    <!-- Brand -->
+    <!-- Brand (legacy, still used in main app) -->
     <color name="blue">#FF2196F3</color>
     <color name="blue_dk">#FF1976D2</color>
     <color name="blue_lt">#1A2196F3</color>
     <color name="gold">#FFF5B731</color>
 
-    <!-- Risk Levels -->
-    <color name="risk_high">#FFFF3B30</color>
-    <color name="risk_high_lt">#1AFF3B30</color>
-    <color name="risk_mid">#FFFF9500</color>
-    <color name="risk_mid_lt">#1AFF9500</color>
-    <color name="risk_safe">#FF34C759</color>
-    <color name="risk_safe_lt">#1A34C759</color>
+    <!-- New Design Palette -->
+    <color name="warm_parchment">#FFF4F0E8</color>
+    <color name="soft_cream">#FFFDFAF4</color>
+    <color name="steel_blue">#FF4A7FA5</color>
+    <color name="steel_blue_dark">#FF3A6A8E</color>
+    <color name="muted_sage">#FF7A9E7E</color>
+    <color name="dusty_terracotta">#FFC46B4A</color>
+    <color name="deep_rust">#FFA63D2F</color>
+    <color name="warm_charcoal">#FF2C2825</color>
+    <color name="warm_grey">#FF8C8480</color>
+    <color name="grey_light">#FFC8C4C0</color>
 
-    <!-- Backgrounds -->
-    <color name="bg">#FFF2F2F7</color>
-    <color name="card">#FFFFFFFF</color>
-    <color name="card2">#FFF9F9FB</color>
+    <!-- Risk Levels (2026-07-28 換成新配色：塵土赤陶/深銹紅/柔和鼠尾草綠) -->
+    <color name="risk_high">#FFA63D2F</color>
+    <color name="risk_high_lt">#1AA63D2F</color>
+    <color name="risk_mid">#FFC46B4A</color>
+    <color name="risk_mid_lt">#1AC46B4A</color>
+    <color name="risk_safe">#FF7A9E7E</color>
+    <color name="risk_safe_lt">#1A7A9E7E</color>
 
-    <!-- Labels -->
-    <color name="lbl">#FF000000</color>
-    <color name="lbl2">#993C3C43</color>
-    <color name="lbl3">#5C3C3C43</color>
-    <color name="lbl4">#2E3C3C43</color>
-    <color name="sep">#383C3C43</color>
-    <color name="sep2">#1A3C3C43</color>
+    <!-- Backgrounds (2026-07-28 換成暖羊皮紙/柔和米白) -->
+    <color name="bg">#FFF4F0E8</color>
+    <color name="card">#FFFDFAF4</color>
+    <color name="card2">#FFFDFAF4</color>
+
+    <!-- Labels (2026-07-28 換成暖炭灰/暖灰) -->
+    <color name="lbl">#FF2C2825</color>
+    <color name="lbl2">#CC8C8480</color>
+    <color name="lbl3">#998C8480</color>
+    <color name="lbl4">#668C8480</color>
+    <color name="sep">#66C8C4C0</color>
+    <color name="sep2">#33C8C4C0</color>
 </resources>

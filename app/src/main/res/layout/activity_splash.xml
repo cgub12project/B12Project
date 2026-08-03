@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- 1. Splash -->
+<!-- 1. Splash — New Design -->
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/bg_gradient_blue">
+    android:background="@color/warm_parchment">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -14,12 +14,10 @@
         <!-- App Logo -->
         <ImageView
             android:id="@+id/splashLogo"
-            android:layout_width="96dp"
-            android:layout_height="96dp"
+            android:layout_width="110dp"
+            android:layout_height="110dp"
             android:src="@mipmap/ic_launcher"
             android:contentDescription="App Logo"
-            android:background="@drawable/bg_card_white"
-            android:padding="10dp"
             android:clipToOutline="true" />
 
         <!-- App Name -->
@@ -27,48 +25,50 @@
             android:id="@+id/splashBrand"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="20dp"
+            android:layout_marginTop="24dp"
             android:text="@string/splash_brand"
-            android:textColor="#FFFFFF"
-            android:textSize="26sp"
+            android:textColor="@color/warm_charcoal"
+            android:textSize="28sp"
             android:textStyle="bold"
-            android:letterSpacing="0.15" />
+            android:letterSpacing="0.08" />
 
         <!-- Tagline -->
         <TextView
             android:id="@+id/splashTagline"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="6dp"
-            android:text="@string/splash_tagline"
-            android:textColor="#73FFFFFF"
-            android:textSize="10sp"
-            android:letterSpacing="0.28"
-            android:textAllCaps="true" />
-
-        <!-- Loading Progress Bar -->
-        <ProgressBar
-            android:id="@+id/splashProgress"
-            style="?android:attr/progressBarStyleHorizontal"
-            android:layout_width="120dp"
-            android:layout_height="3dp"
-            android:layout_marginTop="40dp"
-            android:max="100"
-            android:progressTint="#F5B731"
-            android:progressBackgroundTint="#26FFFFFF" />
-
-        <!-- Status Text -->
-        <TextView
-            android:id="@+id/splashStatus"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="14dp"
-            android:text="INITIALIZING SHIELD..."
-            android:textColor="#4DFFFFFF"
-            android:textSize="9sp"
-            android:letterSpacing="0.12" />
+            android:layout_marginTop="8dp"
+            android:text="Catch scams before they catch you"
+            android:textColor="@color/warm_grey"
+            android:textSize="14sp" />
 
     </LinearLayout>
+
+    <!-- Loading bar pinned to bottom -->
+    <ProgressBar
+        android:id="@+id/splashProgress"
+        style="?android:attr/progressBarStyleHorizontal"
+        android:layout_width="240dp"
+        android:layout_height="3dp"
+        android:layout_gravity="bottom|center_horizontal"
+        android:layout_marginBottom="80dp"
+        android:max="100"
+        android:indeterminate="true"
+        android:indeterminateTint="@color/steel_blue"
+        android:progressBackgroundTint="@color/grey_light" />
+
+    <!-- Status Text (hidden) -->
+    <TextView
+        android:id="@+id/splashStatus"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|center_horizontal"
+        android:layout_marginBottom="60dp"
+        android:text="INITIALIZING SHIELD..."
+        android:textColor="@color/warm_grey"
+        android:textSize="9sp"
+        android:letterSpacing="0.12"
+        android:visibility="gone" />
 
     <!-- Version pinned to bottom -->
     <TextView
@@ -78,8 +78,9 @@
         android:layout_gravity="bottom|center_horizontal"
         android:layout_marginBottom="40dp"
         android:text="@string/app_version"
-        android:textColor="#2EFFFFFF"
+        android:textColor="@color/grey_light"
         android:textSize="9sp"
-        android:letterSpacing="0.2" />
+        android:letterSpacing="0.2"
+        android:visibility="gone" />
 
 </FrameLayout>

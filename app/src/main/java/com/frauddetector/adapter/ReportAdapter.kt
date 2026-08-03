@@ -44,7 +44,7 @@ class ReportAdapter(
         holder.tvType.text = item.type
         holder.tvDesc.text = item.desc
 
-        val riskColor = if (item.typeClass == "r") Color.parseColor("#FF3B30") else Color.parseColor("#FF9500")
+        val riskColor = if (item.typeClass == "r") Color.parseColor("#A63D2F") else Color.parseColor("#C46B4A")
         val riskBg = Color.argb(25, Color.red(riskColor), Color.green(riskColor), Color.blue(riskColor))
 
         // Type badge
@@ -55,18 +55,19 @@ class ReportAdapter(
         }
         holder.tvType.background = typeBg
 
-        // Card with left border
+        // Card with left border（左側貼合不留圓角，右側維持圓角）
+        val rightRadius = 12f * dp
         val cardBg = GradientDrawable().apply {
-            setColor(Color.WHITE)
-            cornerRadius = 12f * dp
-            setStroke((1 * dp).toInt(), Color.parseColor("#1A3C3C43"))
+            setColor(Color.parseColor("#FDFAF4"))
+            cornerRadii = floatArrayOf(0f, 0f, rightRadius, rightRadius, rightRadius, rightRadius, 0f, 0f)
+            setStroke((1 * dp).toInt(), Color.parseColor("#1AC8C4C0"))
         }
         holder.itemView.background = cardBg
         holder.itemView.foreground = object : android.graphics.drawable.Drawable() {
             override fun draw(canvas: android.graphics.Canvas) {
                 val paint = android.graphics.Paint().apply { color = riskColor }
                 val pad = 3f * dp
-                canvas.drawRoundRect(0f, 0f, pad, bounds.height().toFloat(), pad, pad, paint)
+                canvas.drawRect(0f, 0f, pad, bounds.height().toFloat(), paint)
             }
             override fun setAlpha(a: Int) {}
             override fun setColorFilter(cf: android.graphics.ColorFilter?) {}
