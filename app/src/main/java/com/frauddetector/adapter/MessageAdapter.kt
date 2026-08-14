@@ -20,6 +20,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.frauddetector.R
 import com.frauddetector.data.AlertItem
@@ -32,6 +33,8 @@ class MessageAdapter(
 ) : RecyclerView.Adapter<MessageAdapter.VH>() {
 
     private var filteredItems = items.toList()
+    private var currentLevel = "all"
+    private var currentApp = "全部"
 
     class VH(view: View) : RecyclerView.ViewHolder(view) {
         val ivAvatar: ImageView = view.findViewById(R.id.ivAvatar)
@@ -129,19 +132,43 @@ class MessageAdapter(
     override fun getItemCount() = filteredItems.size
 
     fun filterByLevel(level: String) {
-        filteredItems = if (level == "all") items else items.filter { it.level == level }
-        notifyDataSetChanged()
+        currentLevel = level
+        applyFilters()
     }
 
     fun filterByApp(app: String) {
-        filteredItems = if (app == "全部") items else items.filter { it.app == app }
-        notifyDataSetChanged()
+        currentApp = app
+        applyFilters()
+    }
+
+    /**
+     * 依目前的等級/平台篩選條件重新計算 filteredItems，並用 DiffUtil 局部更新畫面。
+     * 即時刷新（見 MessagesFragment 的 InvalidationTracker 觀察者）可能頻繁呼叫到這裡，
+     * 用 notifyDataSetChanged() 會讓整個列表閃爍、捲動位置跳掉，改用 DiffUtil 只更新真正變化的項目。
+     */
+    private fun applyFilters() {
+        val newItems = items
+            .filter { currentLevel == "all" || it.level == currentLevel }
+            .filter { currentApp == "全部" || it.app == currentApp }
+        submitFilteredItems(newItems)
+    }
+
+    private fun submitFilteredItems(newItems: List<AlertItem>) {
+        val diffResult = DiffUtil.calculateDiff(object : DiffUtil.Callback() {
+            override fun getOldListSize() = filteredItems.size
+            override fun getNewListSize() = newItems.size
+            override fun areItemsTheSame(oldItemPosition: Int, newItemPosition: Int) =
+                filteredItems[oldItemPosition].id == newItems[newItemPosition].id
+            override fun areContentsTheSame(oldItemPosition: Int, newItemPosition: Int) =
+                filteredItems[oldItemPosition] == newItems[newItemPosition]
+        })
+        filteredItems = newItems
+        diffResult.dispatchUpdatesTo(this)
     }
 
     fun updateItems(newItems: List<AlertItem>) {
         items = newItems
-        filteredItems = items.toList()
-        notifyDataSetChanged()
+        applyFilters()
     }
 
     fun getItemAt(position: Int): AlertItem = filteredItems[position]

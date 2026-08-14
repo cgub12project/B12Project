@@ -6,6 +6,8 @@
     <uses-permission android:name="android.permission.READ_CALL_LOG" />
     <uses-permission android:name="android.permission.READ_PHONE_STATE" />
     <uses-permission android:name="android.permission.READ_SMS" />
+    <!-- 響鈴時顯示風險標籤懸浮視窗用（CallRiskOverlay），需要使用者到系統設定手動開啟 -->
+    <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" android:maxSdkVersion="28" />
 
     <application
@@ -44,6 +46,18 @@
         <!-- Facebook Account Picker -->
         <activity android:name=".ui.auth.FacebookPickerActivity" />
 
+        <!-- Mail OAuth Callback：後端完成 Gmail/Outlook 授權後，把瀏覽器導回這個深層連結 -->
+        <activity
+            android:name=".ui.auth.MailOAuthCallbackActivity"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <data android:scheme="flashapp" android:host="mail-callback" />
+            </intent-filter>
+        </activity>
+
         <!-- Facebook SDK -->
         <meta-data
             android:name="com.facebook.sdk.ApplicationId"
@@ -80,6 +94,15 @@
         <!-- Blocked Numbers List -->
         <activity android:name=".ui.detail.BlockedNumbersActivity" />
 
+        <!-- Blocked Emails List -->
+        <activity android:name=".ui.detail.BlockedEmailsActivity" />
+
+        <!-- Connected Mail Accounts (Gmail/Outlook) -->
+        <activity android:name=".ui.detail.MailAccountsActivity" />
+
+        <!-- Real Mail Message Detail -->
+        <activity android:name=".ui.detail.MailMessageDetailActivity" />
+
         <!-- Full Report -->
         <activity android:name=".ui.detail.ReportFullActivity" />
 
@@ -99,6 +122,16 @@
             android:permission="android.permission.BIND_NOTIFICATION_LISTENER_SERVICE">
             <intent-filter>
                 <action android:name="android.service.notification.NotificationListenerService" />
+            </intent-filter>
+        </service>
+
+        <!-- Call Screening Service：只有使用者把 FLASH 設為預設來電攔截 App 後系統才會綁定 -->
+        <service
+            android:name=".service.CallBlockingService"
+            android:exported="true"
+            android:permission="android.permission.BIND_SCREENING_SERVICE">
+            <intent-filter>
+                <action android:name="android.telecom.CallScreeningService" />
             </intent-filter>
         </service>
 

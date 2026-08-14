@@ -5,6 +5,7 @@ import androidx.appcompat.app.AlertDialog
 import com.frauddetector.ui.BaseActivity
 import androidx.fragment.app.Fragment
 import com.frauddetector.R
+import com.frauddetector.service.FontScaleManager
 import com.frauddetector.service.PermissionHelper
 import com.google.android.material.bottomnavigation.BottomNavigationView
 
@@ -15,6 +16,13 @@ class MainActivity : BaseActivity() {
         setContentView(R.layout.activity_main)
 
         val bottomNav = findViewById<BottomNavigationView>(R.id.bottomNav)
+
+        // 導覽列 icon 預設固定 24dp，不會跟著文字大小設定縮放（FontScaleManager 只透過
+        // Configuration.fontScale 動 sp 文字），這裡另外依同一個倍率手動調整 icon 尺寸，
+        // 避免字體調到「特大」時文字變大但 icon 沒變、視覺比例失衡
+        val iconScale = FontScaleManager.getScale(this)
+        val baseIconSizePx = (24 * resources.displayMetrics.density).toInt()
+        bottomNav.itemIconSize = (baseIconSizePx * iconScale).toInt()
 
         if (savedInstanceState == null) {
             loadFragment(MessagesFragment())

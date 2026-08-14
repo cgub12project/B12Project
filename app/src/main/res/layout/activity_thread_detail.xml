@@ -196,11 +196,14 @@
         android:paddingEnd="16dp"
         android:layout_marginBottom="10dp">
 
+        <!-- layout_height 改用 wrap_content（原本固定 36dp）：字體調到「特大」（1.5x）時，
+             固定高度裝不下放大後的文字，會被垂直裁掉只剩一半，見使用者黑箱測試回報 -->
         <com.google.android.material.button.MaterialButton
             android:id="@+id/btnReportAccount"
             style="@style/Widget.MaterialComponents.Button.OutlinedButton"
             android:layout_width="wrap_content"
-            android:layout_height="36dp"
+            android:layout_height="wrap_content"
+            android:minHeight="36dp"
             android:layout_marginEnd="8dp"
             android:text="回報此帳號為詐騙"
             android:textSize="11sp"
@@ -211,7 +214,8 @@
             android:id="@+id/btnGroupExplanation"
             style="@style/Widget.MaterialComponents.Button.OutlinedButton"
             android:layout_width="wrap_content"
-            android:layout_height="36dp"
+            android:layout_height="wrap_content"
+            android:minHeight="36dp"
             android:text="查看整體對話判斷"
             android:textSize="11sp"
             android:visibility="gone"

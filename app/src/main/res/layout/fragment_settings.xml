@@ -140,7 +140,8 @@
         <include layout="@layout/item_settings_toggle"
             android:id="@+id/settingQuickLogin" />
 
-        <!-- 通知 Section -->
+        <!-- 通知 Section：底下兩項目前沒有實際發送通知的機制（沒有 WorkManager/推播），
+             先隱藏整個區塊，等真的實作再打開，見 SettingsFragment.kt 的說明註解 -->
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -151,15 +152,18 @@
             android:textAllCaps="true"
             android:paddingStart="16dp"
             android:paddingTop="16dp"
-            android:paddingBottom="8dp" />
+            android:paddingBottom="8dp"
+            android:visibility="gone" />
 
-        <!-- 高危警報通知 -->
+        <!-- 高危警報通知：只有一個跟後端同步的開關，沒有任何實際推播/通知邏輯，先隱藏 -->
         <include layout="@layout/item_settings_toggle"
-            android:id="@+id/settingHighRiskAlert" />
+            android:id="@+id/settingHighRiskAlert"
+            android:visibility="gone" />
 
-        <!-- 每日安全報告 -->
+        <!-- 每日安全報告：同上，只有開關沒有實際產生/發送報告的邏輯，先隱藏 -->
         <include layout="@layout/item_settings_toggle"
-            android:id="@+id/settingDailyReport" />
+            android:id="@+id/settingDailyReport"
+            android:visibility="gone" />
 
         <!-- 帳號 Section -->
         <TextView
@@ -178,21 +182,32 @@
         <include layout="@layout/item_settings_nav"
             android:id="@+id/settingChangePassword" />
 
-        <!-- 隱私與資料 -->
+        <!-- 隱私與資料：點擊只會顯示「尚未實作」Toast，先隱藏，見 SettingsFragment.kt -->
         <include layout="@layout/item_settings_nav"
-            android:id="@+id/settingPrivacy" />
+            android:id="@+id/settingPrivacy"
+            android:visibility="gone" />
 
         <!-- 我的回報紀錄 -->
         <include layout="@layout/item_settings_nav"
             android:id="@+id/settingMyReports" />
 
-        <!-- 可疑帳號列表 -->
+        <!-- 可疑帳號列表：後端帳號比對目前只用 (platform, 顯示名稱) 判斷唯一性，同名不同人會
+             被誤判成同一筆、封鎖/回報會誤傷，等後端修好帳號比對邏輯之後再打開，見 dev-notes 問題16 -->
         <include layout="@layout/item_settings_nav"
-            android:id="@+id/settingSuspectAccounts" />
+            android:id="@+id/settingSuspectAccounts"
+            android:visibility="gone" />
 
         <!-- 封鎖名單 -->
         <include layout="@layout/item_settings_nav"
             android:id="@+id/settingBlockedNumbers" />
+
+        <!-- 封鎖信箱 -->
+        <include layout="@layout/item_settings_nav"
+            android:id="@+id/settingBlockedEmails" />
+
+        <!-- 已連接的信箱 -->
+        <include layout="@layout/item_settings_nav"
+            android:id="@+id/settingMailAccounts" />
 
         <!-- 登出 -->
         <include layout="@layout/item_settings_nav"

@@ -6,7 +6,8 @@
  * 本 BottomSheet 提供可疑社群帳號的詐騙回報功能，已與後端 API 串接。
  * 功能包含：
  * - 7 種詐騙類型 Chip 單選
- * - 5 種社群平台 Chip 單選（LINE/Facebook/Instagram/WhatsApp/Telegram）
+ * - 平台 Chip 單選，選項依呼叫端傳入的 platformOptions 決定（預設 5 個社群平台；
+ *   郵件回報等情境只顯示真正相關的選項，見 [newInstance] 的說明）
  * - 帳號名稱（必填）與帳號 ID（選填）輸入
  * - 回報描述文字輸入（選填）
  * - 支援預填帳號資訊（從 AccountDetailActivity 傳入）
@@ -45,23 +46,39 @@ class MessageReportBottomSheet : BottomSheetDialogFragment() {
         private const val ARG_ACCOUNT_NAME = "account_name"
         private const val ARG_PLATFORM = "platform"
         private const val ARG_ACCOUNT_ID = "account_id"
+        private const val ARG_PLATFORM_OPTIONS = "platform_options"
+        private const val ARG_CONTENT = "content"
 
+        private val DEFAULT_PLATFORMS = listOf("LINE", "Facebook", "Instagram", "WhatsApp", "Telegram")
+
+        /**
+         * @param platformOptions 這次回報要顯示哪些平台 Chip 讓使用者選——預設是社群訊息的
+         * 5 個平台；郵件回報只跟 Gmail 有關，不該讓使用者看到 LINE/Facebook 這些不相關的選項，
+         * EmailFragment.kt 呼叫時會傳 `listOf("Gmail")`，見那邊的說明。
+         * @param content 預填的回報描述——郵件回報用後端 `/mail/messages/{id}/content` 拿到的
+         * `report_text`（已經幫忙組好「寄件者：...主旨：...內文」格式）帶進來，使用者送出前
+         * 還是看得到、可以編輯，不是背著使用者偷塞內容。
+         */
         fun newInstance(
             accountName: String,
             platform: String = "",
-            accountId: String = ""
+            accountId: String = "",
+            platformOptions: List<String> = DEFAULT_PLATFORMS,
+            content: String = ""
         ): MessageReportBottomSheet {
             return MessageReportBottomSheet().apply {
                 arguments = Bundle().also {
                     it.putString(ARG_ACCOUNT_NAME, accountName)
                     it.putString(ARG_PLATFORM, platform)
                     it.putString(ARG_ACCOUNT_ID, accountId)
+                    it.putStringArrayList(ARG_PLATFORM_OPTIONS, ArrayList(platformOptions))
+                    it.putString(ARG_CONTENT, content)
                 }
             }
         }
     }
 
-    private val platforms = listOf("LINE", "Facebook", "Instagram", "WhatsApp", "Telegram")
+    private var platforms: List<String> = DEFAULT_PLATFORMS
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.dialog_message_report_bottom_sheet, container, false)
@@ -73,6 +90,8 @@ class MessageReportBottomSheet : BottomSheetDialogFragment() {
         val preFilledName = arguments?.getString(ARG_ACCOUNT_NAME) ?: ""
         val preFilledPlatform = arguments?.getString(ARG_PLATFORM) ?: ""
         val preFilledId = arguments?.getString(ARG_ACCOUNT_ID) ?: ""
+        val preFilledContent = arguments?.getString(ARG_CONTENT) ?: ""
+        platforms = arguments?.getStringArrayList(ARG_PLATFORM_OPTIONS)?.takeIf { it.isNotEmpty() } ?: DEFAULT_PLATFORMS
 
         // 顯示帳號資訊
         view.findViewById<TextView>(R.id.tvMsgModalAccount).text = preFilledName
@@ -88,6 +107,7 @@ class MessageReportBottomSheet : BottomSheetDialogFragment() {
         // 預填帳號欄位
         etAccountName.setText(preFilledName)
         if (preFilledId.isNotEmpty()) etAccountId.setText(preFilledId)
+        if (preFilledContent.isNotEmpty()) etContent.setText(preFilledContent)
 
         // 建立詐騙類型 Chips
         val fraudTypes = listOf(

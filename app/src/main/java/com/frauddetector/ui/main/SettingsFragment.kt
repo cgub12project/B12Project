@@ -12,6 +12,7 @@
  */
 package com.frauddetector.ui.main
 
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.text.InputType
@@ -23,6 +24,7 @@ import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
 import android.widget.Toast
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AlertDialog
 import androidx.biometric.BiometricManager
 import androidx.fragment.app.Fragment
@@ -38,7 +40,9 @@ import com.frauddetector.network.UserSettingsOut
 import com.frauddetector.network.UserSettingsUpdateRequest
 import com.frauddetector.service.FontScaleManager
 import com.frauddetector.service.PermissionHelper
+import com.frauddetector.ui.detail.BlockedEmailsActivity
 import com.frauddetector.ui.detail.BlockedNumbersActivity
+import com.frauddetector.ui.detail.MailAccountsActivity
 import com.frauddetector.ui.detail.MyReportsActivity
 import com.frauddetector.ui.detail.SuspectAccountsActivity
 import com.frauddetector.ui.auth.LoginActivity
@@ -59,6 +63,53 @@ class SettingsFragment : Fragment() {
     }
 
     private val executor = Executors.newSingleThreadExecutor()
+
+    /** 請求「設為預設來電攔截 App」角色的結果回呼，見 [setupClickListeners] 的 settingCallerId 處理 */
+    private val requestCallScreeningRole = registerForActivityResult(
+        ActivityResultContracts.StartActivityForResult()
+    ) {
+        val ctx = context ?: return@registerForActivityResult
+        val granted = PermissionHelper.isCallScreeningRoleHeld(ctx)
+        val msg = if (granted) {
+            "已設為預設來電攔截 App，封鎖名單裡的號碼現在會被系統真的擋掉"
+        } else {
+            "尚未設定成功，封鎖名單目前仍只會過濾 App 內的清單，不會真的擋掉來電"
+        }
+        Toast.makeText(ctx, msg, Toast.LENGTH_LONG).show()
+        // 這個角色是「真封鎖」的必要條件，設定成功後緊接著問響鈴風險標籤要的另一個權限，
+        // 使用者不用回設定頁再點一次「來電辨識」才會看到下一步
+        if (granted && !PermissionHelper.canDrawOverlays(ctx)) {
+            promptOverlayPermission(ctx)
+        }
+    }
+
+    /**
+     * 響鈴時顯示風險標籤懸浮視窗（[com.frauddetector.service.CallRiskOverlay]）用的
+     * `SYSTEM_ALERT_WINDOW` 權限——跟上面的來電攔截角色是兩個獨立權限，缺一個功能就不完整
+     * （沒有這個權限，CallRiskOverlay.show() 會直接 no-op，電話正常響鈴但不會顯示提醒）。
+     */
+    private val requestOverlayPermission = registerForActivityResult(
+        ActivityResultContracts.StartActivityForResult()
+    ) {
+        val ctx = context ?: return@registerForActivityResult
+        val msg = if (PermissionHelper.canDrawOverlays(ctx)) {
+            "已授權，之後遇到風險號碼來電時會在響鈴當下顯示提醒標籤"
+        } else {
+            "尚未授權，響鈴時不會顯示風險提醒標籤（封鎖名單本身仍會正常運作）"
+        }
+        Toast.makeText(ctx, msg, Toast.LENGTH_LONG).show()
+    }
+
+    private fun promptOverlayPermission(ctx: Context) {
+        AlertDialog.Builder(ctx)
+            .setTitle("再開一個權限，來電時能顯示風險標籤")
+            .setMessage("要在電話「響鈴當下」顯示風險提醒（只是提醒，不會自動擋接聽），需要「顯示在其他應用程式上層」權限，要現在去開啟嗎？")
+            .setPositiveButton("去設定") { _, _ ->
+                requestOverlayPermission.launch(PermissionHelper.createOverlayPermissionRequestIntent(ctx))
+            }
+            .setNegativeButton("先不要", null)
+            .show()
+    }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -148,7 +199,15 @@ class SettingsFragment : Fragment() {
         })
     }
 
-    /** 初始化 9 項設定項目的圖示、標題與副標題 */
+    /**
+     * 初始化設定項目的圖示、標題與副標題。
+     *
+     * `settingHighRiskAlert`／`settingDailyReport`／`settingPrivacy` 這三項在
+     * `fragment_settings.xml` 裡已經設成 `visibility="gone"`（沒有實際的推播/報告產生
+     * 邏輯、或點擊只會顯示「尚未實作」），這裡的初始化與下面 [loadSettingsToggles] 的
+     * 後端同步邏輯先保留不動，之後真的實作了、只要把 XML 的 visibility 拿掉即可，
+     * 不用重新接線。
+     */
     private fun setupSettingsItems(view: View) {
         setupItem(view, R.id.settingMsgMonitor, R.drawable.ic_msg_set,
             getString(R.string.msg_monitoring), getString(R.string.msg_monitoring_sub))
@@ -172,6 +231,10 @@ class SettingsFragment : Fragment() {
             "可疑帳號列表", "查看社群回報的帳號威脅檔案")
         setupItem(view, R.id.settingBlockedNumbers, R.drawable.ic_phone_set,
             "封鎖名單", "查看並解除已封鎖的電話號碼")
+        setupItem(view, R.id.settingBlockedEmails, R.drawable.ic_email_set,
+            "封鎖信箱", "查看並解除已封鎖的郵件寄件人")
+        setupItem(view, R.id.settingMailAccounts, R.drawable.ic_email_set,
+            "已連接的信箱", "連接 Gmail/Outlook 讀取完整信件內容")
         setupItem(view, R.id.settingFontSize, android.R.drawable.ic_menu_zoom,
             "文字大小", "目前：${FontScaleManager.currentLabel(requireContext())}")
         setupItem(view, R.id.settingLogout, R.drawable.ic_logout_set,
@@ -205,6 +268,14 @@ class SettingsFragment : Fragment() {
 
         view.findViewById<View>(R.id.settingBlockedNumbers).setOnClickListener {
             startActivity(Intent(requireContext(), BlockedNumbersActivity::class.java))
+        }
+
+        view.findViewById<View>(R.id.settingBlockedEmails).setOnClickListener {
+            startActivity(Intent(requireContext(), BlockedEmailsActivity::class.java))
+        }
+
+        view.findViewById<View>(R.id.settingMailAccounts).setOnClickListener {
+            startActivity(Intent(requireContext(), MailAccountsActivity::class.java))
         }
 
         view.findViewById<View>(R.id.settingFontSize).setOnClickListener {
@@ -242,9 +313,33 @@ class SettingsFragment : Fragment() {
             }
         }
 
-        // 來電辨識 → 提示需要通話紀錄權限
+        // 來電辨識 → 點一下引導設定「預設來電攔截 App」（真封鎖）+「顯示在其他應用程式上層」
+        // （響鈴風險標籤），兩個是獨立權限，都設定好功能才完整
         view.findViewById<View>(R.id.settingCallerId).setOnClickListener {
-            Toast.makeText(requireContext(), "來電辨識功能透過「電話」分頁的通話紀錄運作", Toast.LENGTH_SHORT).show()
+            val ctx = requireContext()
+            val roleHeld = PermissionHelper.isCallScreeningRoleHeld(ctx)
+            val overlayGranted = PermissionHelper.canDrawOverlays(ctx)
+
+            when {
+                !roleHeld -> {
+                    val intent = PermissionHelper.createCallScreeningRoleRequestIntent(ctx)
+                    if (intent != null) {
+                        requestCallScreeningRole.launch(intent)
+                    } else {
+                        AlertDialog.Builder(ctx)
+                            .setTitle("需要手動設定")
+                            .setMessage("這台裝置的 Android 版本較舊，沒有系統引導畫面，請自行到「設定 → App → 預設應用程式 → 來電辨識與垃圾電話封鎖」把 FLASH 設為預設 App，封鎖名單才會真的擋掉來電。")
+                            .setPositiveButton("知道了", null)
+                            .show()
+                    }
+                }
+                !overlayGranted -> promptOverlayPermission(ctx)
+                else -> Toast.makeText(
+                    ctx,
+                    "已是預設來電攔截 App，且已授權響鈴風險標籤，設定齊全",
+                    Toast.LENGTH_SHORT
+                ).show()
+            }
         }
     }
 
@@ -435,6 +530,14 @@ class SettingsFragment : Fragment() {
         executor.execute {
             val dao = AppDatabase.getInstance(ctx).capturedNotificationDao()
 
+            // 清掉舊版本插入過的郵件測試種子資料（不論這次是否要重新插入其他測試資料都執行）。
+            // 用 notificationKey IS NULL 當安全網——真實通知擷取一定會有 notificationKey，
+            // 不會誤刪使用者真實的本機擷取郵件紀錄。先確認真的有殘留才 DELETE，避免空刪也
+            // 觸發 InvalidationTracker（見 EmailFragment.loadEmails 的同樣處理）。
+            if (dao.getEmailTestSeedCount() > 0) {
+                dao.deleteEmailTestSeed()
+            }
+
             if (dao.getTestDataCount() > 0) {
                 activity?.runOnUiThread {
                     Toast.makeText(ctx, "測試資料已存在，未重複插入", Toast.LENGTH_SHORT).show()
@@ -459,11 +562,18 @@ class SettingsFragment : Fragment() {
                     timestamp = now - 2 * hour, type = "message", packageName = "jp.naver.line.android"),
 
                 // ── LINE 群組 ──
+                // 群組整體風險判斷是把視窗內訊息串接後一次送給後端 AI（見 RagDetector.detectConversationRisk），
+                // 最後一則訊息務必包含明確的金錢/急迫性字眼——實測過後端對「只有社交佐證、沒有具體要求」
+                // 的訊息（例如原本這裡的「新人報到，請問要怎麼開始？」）會給出自相矛盾的結果
+                // （reasons 寫「這是典型的投資詐騙手法」，但 risk_level 卻判成 safe），這是後端 AI 模型
+                // 本身的判斷問題，手機端無法修正，只能靠調整種子資料內容避開。
                 CapturedNotification(app = "LINE", sender = "Jessica", content = "大家快看老師的分析，今天又賺翻了！",
                     timestamp = now - 10 * hour, type = "message", packageName = "jp.naver.line.android", groupName = "投資理財交流群"),
                 CapturedNotification(app = "LINE", sender = "小美", content = "我跟著操作已經賺了20萬，真的很感謝老師",
                     timestamp = now - 9 * hour, type = "message", packageName = "jp.naver.line.android", groupName = "投資理財交流群"),
                 CapturedNotification(app = "LINE", sender = "阿明", content = "新人報到！請問要怎麼開始？",
+                    timestamp = now - 6 * hour, type = "message", packageName = "jp.naver.line.android", groupName = "投資理財交流群"),
+                CapturedNotification(app = "LINE", sender = "投資老師", content = "歡迎！先匯5萬元保證金到822-XXXXXXXX，我馬上幫你開通帳號，名額有限把握機會",
                     timestamp = now - 5 * hour, type = "message", packageName = "jp.naver.line.android", groupName = "投資理財交流群"),
 
                 // ── 簡訊 ── packageName 用 test_seed_sms 而非 sms_history，
@@ -479,21 +589,10 @@ class SettingsFragment : Fragment() {
                 CapturedNotification(app = "WhatsApp", sender = "Unknown +44-7911-123456", content = "Hi, I found your number online. I have a great business opportunity for you.",
                     timestamp = now - 12 * hour, type = "message", packageName = "com.whatsapp"),
                 CapturedNotification(app = "WhatsApp", sender = "Unknown +44-7911-123456", content = "You can earn $5000 per day from home! Just invest $200 to start.",
-                    timestamp = now - 11 * hour, type = "message", packageName = "com.whatsapp"),
+                    timestamp = now - 11 * hour, type = "message", packageName = "com.whatsapp")
 
-                // ── Gmail ──
-                CapturedNotification(app = "Gmail", sender = "service@cathay-bk.com.tw(偽)", content = "【緊急通知】您的國泰世華銀行帳戶出現異常登入，請立即驗證您的身份以避免帳戶被凍結。",
-                    timestamp = now - 4 * hour, type = "email", packageName = "com.google.android.gm"),
-                CapturedNotification(app = "Gmail", sender = "noreply@google.com", content = "Your Google Account security alert: New sign-in from Windows device in Taipei.",
-                    timestamp = now - 20 * hour, type = "email", packageName = "com.google.android.gm"),
-                CapturedNotification(app = "Gmail", sender = "newsletter@medium.com", content = "Top stories for you this week: AI trends, programming tips, and more.",
-                    timestamp = now - 50 * hour, type = "email", packageName = "com.google.android.gm"),
-
-                // ── Outlook ──
-                CapturedNotification(app = "Outlook", sender = "admin@microsoft-verify.cc(偽)", content = "您的 Microsoft 365 訂閱即將到期，請點擊以下連結更新付款資訊，否則將失去所有資料存取權限。",
-                    timestamp = now - 3 * hour, type = "email", packageName = "com.microsoft.office.outlook"),
-                CapturedNotification(app = "Outlook", sender = "hr@company.com", content = "提醒：本月薪資單已上傳至系統，請登入 EIP 查閱。",
-                    timestamp = now - 36 * hour, type = "email", packageName = "com.microsoft.office.outlook")
+                // 郵件（Gmail/Outlook）測試種子資料已移除：現在郵件頁改用真實信箱連接
+                // （Gmail/Outlook API）取得資料，不再需要假資料展示
             )
 
             dao.insertAll(testData)

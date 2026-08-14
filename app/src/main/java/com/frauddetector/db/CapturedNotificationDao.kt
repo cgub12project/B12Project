@@ -103,6 +103,37 @@ interface CapturedNotificationDao {
     @Query("SELECT COUNT(*) FROM captured_notifications WHERE app = 'LINE' AND sender = '陳大富' AND packageName = 'jp.naver.line.android' AND content LIKE '%投資顧問陳大富%'")
     fun getTestDataCount(): Int
 
+    /**
+     * 檢查是否還有舊版本的 Gmail/Outlook 測試種子資料殘留——[deleteEmailTestSeed] 呼叫端
+     * 應該先用這個查詢確認有東西可刪才執行 DELETE，避免每次進郵件頁都對
+     * captured_notifications 發一次寫入，觸發 InvalidationTracker 造成不必要的重新整理迴圈。
+     */
+    @Query("""
+        SELECT COUNT(*) FROM captured_notifications
+        WHERE type = 'email' AND notificationKey IS NULL
+          AND sender IN (
+              'service@cathay-bk.com.tw(偽)', 'noreply@google.com', 'newsletter@medium.com',
+              'admin@microsoft-verify.cc(偽)', 'hr@company.com'
+          )
+    """)
+    fun getEmailTestSeedCount(): Int
+
+    /**
+     * 刪除舊版本插入過的 Gmail/Outlook 測試種子資料（現在郵件頁改用真實信箱連接取得資料，
+     * 不再需要假資料）。用寄件者精準比對舊種子資料的 5 筆固定內容，並加上
+     * notificationKey IS NULL 當安全網——真實通知擷取一定會有 notificationKey，
+     * 這個條件保證不會誤刪使用者真實的本機擷取郵件紀錄。
+     */
+    @Query("""
+        DELETE FROM captured_notifications
+        WHERE type = 'email' AND notificationKey IS NULL
+          AND sender IN (
+              'service@cathay-bk.com.tw(偽)', 'noreply@google.com', 'newsletter@medium.com',
+              'admin@microsoft-verify.cc(偽)', 'hr@company.com'
+          )
+    """)
+    fun deleteEmailTestSeed()
+
     /** 寫入 AI 偵測結果快取（riskLevel/scamType/aiReason/confidence），避免重複呼叫 /rag/detect */
     @Query("UPDATE captured_notifications SET riskLevel = :riskLevel, scamType = :scamType, aiReason = :aiReason, confidence = :confidence WHERE id = :id")
     fun updateRisk(id: Long, riskLevel: String, scamType: String?, aiReason: String?, confidence: Double?)

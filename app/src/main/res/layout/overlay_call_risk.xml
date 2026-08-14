@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- 來電響鈴時的風險標籤懸浮視窗（CallRiskOverlay）。故意做成單一整塊卡片、不用 ConstraintLayout，
+     懸浮視窗的 inflate context 是 applicationContext 不是 Activity，簡單的 LinearLayout 比較不會有相依問題。 -->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal"
+    android:gravity="center_vertical"
+    android:elevation="8dp"
+    android:padding="16dp">
+
+    <TextView
+        android:id="@+id/tvOverlayIcon"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="12dp"
+        android:text="⚠"
+        android:textColor="#FFFFFF"
+        android:textSize="26sp" />
+
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/tvOverlayTitle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textColor="#FFFFFF"
+            android:textSize="15sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/tvOverlayNumber"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="2dp"
+            android:textColor="#FFFFFF"
+            android:textSize="13sp" />
+
+        <TextView
+            android:id="@+id/tvOverlayFraudType"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="2dp"
+            android:textColor="#FFFFFF"
+            android:textSize="12sp"
+            android:alpha="0.9" />
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/tvOverlayDismiss"
+        android:layout_width="36dp"
+        android:layout_height="36dp"
+        android:layout_marginStart="8dp"
+        android:gravity="center"
+        android:text="✕"
+        android:textColor="#FFFFFF"
+        android:textSize="18sp"
+        android:clickable="true"
+        android:focusable="true" />
+
+</LinearLayout>

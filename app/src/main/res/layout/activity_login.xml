@@ -123,14 +123,16 @@
         <com.google.android.material.button.MaterialButton
             android:id="@+id/btnLogin"
             android:layout_width="match_parent"
-            android:layout_height="56dp"
+            android:layout_height="wrap_content"
+            android:minHeight="56dp"
             android:text="Sign in"
             android:textSize="16sp"
             android:textColor="@color/white"
             app:backgroundTint="@color/steel_blue"
             app:cornerRadius="30dp" />
 
-        <!-- Skip Login (testing) -->
+        <!-- Skip Login (testing) — 隱藏，避免在展示/錄影時被看到「測試模式」按鈕。
+             按鈕本體與 LoginActivity.kt 裡的點擊邏輯保留，之後要拿回開發用途只要移除 visibility="gone" 即可。 -->
         <com.google.android.material.button.MaterialButton
             android:id="@+id/btnSkipLogin"
             style="@style/Widget.MaterialComponents.Button.TextButton"
@@ -139,7 +141,8 @@
             android:layout_marginTop="4dp"
             android:text="Skip login (test mode)"
             android:textSize="12sp"
-            android:textColor="@color/grey_light" />
+            android:textColor="@color/grey_light"
+            android:visibility="gone" />
 
         <!-- Divider -->
         <LinearLayout

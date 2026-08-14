@@ -1,0 +1,148 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Reusable list item for emails, with expand-in-place block/report panel -->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginBottom="8dp"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:id="@+id/emailRow"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:padding="12dp"
+        android:gravity="center_vertical"
+        android:clickable="true"
+        android:focusable="true">
+
+        <!-- Avatar -->
+        <ImageView
+            android:id="@+id/ivAvatar"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:src="@android:drawable/sym_action_chat"
+            android:contentDescription="Avatar" />
+
+        <!-- Content -->
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:orientation="vertical"
+            android:layout_marginStart="11dp">
+
+            <!-- Row 1: Sender + Time -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                android:layout_marginBottom="2dp">
+
+                <TextView
+                    android:id="@+id/tvItemName"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:textSize="13sp"
+                    android:textStyle="bold"
+                    android:singleLine="true"
+                    android:ellipsize="end" />
+
+                <TextView
+                    android:id="@+id/tvItemTime"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="11sp"
+                    android:textColor="@color/lbl3"
+                    android:layout_marginStart="4dp" />
+            </LinearLayout>
+
+            <!-- Subject -->
+            <TextView
+                android:id="@+id/tvItemSource"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textSize="11sp"
+                android:textColor="#8C8480"
+                android:layout_marginBottom="3dp" />
+
+            <!-- Preview -->
+            <TextView
+                android:id="@+id/tvItemMsg"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textSize="13sp"
+                android:textColor="@color/lbl2"
+                android:singleLine="true"
+                android:ellipsize="end"
+                android:layout_marginBottom="5dp" />
+
+            <!-- Tags Row — chipSpacingVertical 縮小，理由同 item_message.xml -->
+            <com.google.android.material.chip.ChipGroup
+                android:id="@+id/chipGroupTags"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:chipSpacingVertical="2dp" />
+        </LinearLayout>
+    </LinearLayout>
+
+    <!-- Expand-in-place action panel（點擊列表項目後往下展開，封鎖這個寄件人／查看完整內容） -->
+    <LinearLayout
+        android:id="@+id/expandPanel"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:orientation="horizontal"
+        android:paddingStart="14dp"
+        android:paddingTop="8dp"
+        android:paddingEnd="14dp"
+        android:paddingBottom="14dp"
+        android:visibility="gone">
+
+        <ImageView
+            android:id="@+id/btnEmailBlock"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_marginEnd="24dp"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:clickable="true"
+            android:contentDescription="@string/block"
+            android:focusable="true"
+            android:scaleType="fitCenter"
+            android:src="@drawable/ic_action_block" />
+
+        <!-- 只有透過信箱連接讀到的真實郵件（見 EmailAdapter.kt）才會顯示，
+             通知擷取的項目沒有完整內容可看，這個按鈕預設隱藏 -->
+        <ImageView
+            android:id="@+id/btnEmailDetail"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_marginEnd="24dp"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:clickable="true"
+            android:contentDescription="查看完整內容"
+            android:focusable="true"
+            android:scaleType="fitCenter"
+            android:src="@drawable/ic_action_more"
+            android:visibility="gone" />
+
+        <!-- 回報此寄件人為詐騙：跟 btnEmailDetail 一樣，只有透過信箱連接讀到的真實郵件
+             （sender 是真正的 email 地址，不是顯示名稱）才顯示，避免踩到跟社群帳號回報
+             一樣的「同名不同人誤合併」風險——真實 email 地址本身就是唯一識別碼，沒有這個問題。
+             通知擷取的項目（目前只剩 Outlook）sender 仍是顯示名稱，繼續隱藏。 -->
+        <ImageView
+            android:id="@+id/btnEmailReport"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:clickable="true"
+            android:contentDescription="回報此寄件人為詐騙"
+            android:focusable="true"
+            android:scaleType="fitCenter"
+            android:src="@android:drawable/ic_dialog_alert"
+            android:visibility="gone" />
+    </LinearLayout>
+</LinearLayout>

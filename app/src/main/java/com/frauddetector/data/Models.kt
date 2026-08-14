@@ -120,7 +120,9 @@ data class EmailAlert(
     /** 郵件供應商名稱："Gmail"、"Outlook"、"全部"，用於分頁篩選 */
     val provider: String,     // "Gmail", "Outlook", "全部"
     /** 詐騙標籤列表，例如 ["釣魚郵件", "冒充銀行"] */
-    val tags: List<String>
+    val tags: List<String>,
+    /** 已連接信箱（真實郵件）所屬的帳號 email，用來反查 account_id 做真封鎖；本機通知擷取的項目為空字串 */
+    val accountEmail: String = ""
 ) : Serializable
 
 // ══════════════════════════════════════════════════════════

@@ -118,6 +118,26 @@ object ApiClient {
             .build()
     }
 
+    /**
+     * 信箱連接／同步專用的 OkHttp 客戶端（懶載入），逾時拉長到 90 秒。
+     *
+     * `POST /mail/sync` 會逐封信呼叫本地 LLM 做 AI 判斷，同一時間全系統只服務一個請求，
+     * 信件數量多時可能跑到數十秒；`GET /mail/messages` 帶 `include_preview=true` 時
+     * 也會即時向 Gmail API／Graph API 取回主旨等欄位，一樣可能比一般 API 慢。
+     */
+    private val mailOkHttp: OkHttpClient by lazy {
+        okHttp.newBuilder()
+            .readTimeout(90, TimeUnit.SECONDS)
+            .writeTimeout(90, TimeUnit.SECONDS)
+            .build()
+    }
+
+    private val mailRetrofit: Retrofit by lazy {
+        retrofit.newBuilder()
+            .client(mailOkHttp)
+            .build()
+    }
+
     /** 認證相關 API 介面（懶載入），提供登入、註冊、忘記密碼等端點 */
     val authApi: AuthApi by lazy { retrofit.create(AuthApi::class.java) }
 
@@ -132,6 +152,9 @@ object ApiClient {
 
     /** 電話號碼查詢 API 介面（懶載入，逾時縮短，見 [phoneOkHttp]） */
     val phoneApi: PhoneApi by lazy { phoneRetrofit.create(PhoneApi::class.java) }
+
+    /** Gmail/Outlook 信箱連接 API 介面（懶載入，逾時拉長，見 [mailOkHttp]） */
+    val mailApi: MailApi by lazy { mailRetrofit.create(MailApi::class.java) }
 
     /** 使用者個人資料與設定 API 介面（懶載入） */
     val userApi: UserApi by lazy { retrofit.create(UserApi::class.java) }

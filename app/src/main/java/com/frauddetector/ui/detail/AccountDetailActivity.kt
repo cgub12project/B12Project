@@ -147,9 +147,10 @@ class AccountDetailActivity : BaseActivity() {
         //     ).show(supportFragmentManager, "report")
         // }
         findViewById<View>(R.id.btnBlockReport).visibility = View.GONE
-        findViewById<View>(R.id.btnShareWarning).setOnClickListener {
-            Toast.makeText(this, "分享功能開發中", Toast.LENGTH_SHORT).show()
-        }
+        // 「分享」目前只是假按鈕（點了跳 Toast，沒有實際功能），先隱藏避免展示時被點到。
+        // ShareWarningActivity 本身已經是完整功能，PhoneDetailActivity 有可用的串接範例，
+        // 之後要接上帳號版本的分享警告時參考那邊即可。
+        findViewById<View>(R.id.btnShareWarning).visibility = View.GONE
     }
 
     /** 計算帳號建檔到最後一次舉報之間的天數（無資料時回傳 0） */

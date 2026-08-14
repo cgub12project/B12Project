@@ -28,6 +28,7 @@
                 android:textStyle="bold" />
 
             <TextView
+                android:id="@+id/tvEmailSubtitle"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/email_subtitle"
@@ -93,6 +94,20 @@
             app:singleSelection="true" />
         <!-- Chips 由 EmailFragment 動態產生 -->
     </HorizontalScrollView>
+
+    <!-- Mail Sync Status -->
+    <TextView
+        android:id="@+id/tvMailSyncStatus"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="⏳ 正在同步已連接的信箱，信件較多時可能需要一分鐘…"
+        android:textSize="11sp"
+        android:textStyle="bold"
+        android:textColor="#4A7FA5"
+        android:paddingStart="16dp"
+        android:paddingEnd="16dp"
+        android:paddingBottom="8dp"
+        android:visibility="gone" />
 
     <!-- Section Header -->
     <TextView

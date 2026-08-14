@@ -12,7 +12,7 @@ import java.util.concurrent.Executors
  * 通知監聽服務 — 擷取來自指定 App 的通知並儲存至 Room DB。
  *
  * 支援的訊息類 App：LINE, WhatsApp, Messenger, Google 簡訊, Samsung 簡訊
- * 支援的郵件類 App：Gmail, Outlook
+ * 支援的郵件類 App：Outlook（Gmail 已改用信箱連接的 API 同步取得完整內容，不再走通知擷取）
  */
 class NotificationCaptureService : NotificationListenerService() {
 
@@ -60,7 +60,10 @@ class NotificationCaptureService : NotificationListenerService() {
             "com.android.mms" to Pair("簡訊", "message"),
 
             // ── 郵件類 ──
-            "com.google.android.gm" to Pair("Gmail", "email"),
+            // Gmail 不在這裡：已改用「已連接信箱」的 Gmail API 同步取得完整信件內容，
+            // 不再需要本機通知擷取這條路徑（通知只有摘要片段，且會跟 API 同步的資料
+            // 重複顯示）。目前只有 Gmail 走 API 整合，Outlook 還沒實作，所以 Outlook
+            // 通知擷取先保留。
             "com.microsoft.office.outlook" to Pair("Outlook", "email"),
             "com.yahoo.mobile.client.android.mail" to Pair("Yahoo Mail", "email"),
             "com.samsung.android.email.provider" to Pair("Samsung Email", "email"),
@@ -76,21 +79,38 @@ class NotificationCaptureService : NotificationListenerService() {
     override fun onNotificationPosted(sbn: StatusBarNotification?) {
         sbn ?: return
         val mapping = APP_MAP[sbn.packageName] ?: return
+        val (appName, type) = mapping
 
         val extras = sbn.notification.extras ?: return
+
+        // 摘要通知（例如 Gmail 短時間內收到很多信，系統把它們合併成一則「N 封新郵件」的
+        // 彙總通知）：如果只處理個別通知、直接跳過摘要通知，遇到來源 App 選擇只發摘要、
+        // 不逐封個別發送的情況（實測證實真的會發生），這些信就完全不會被擷取到。
+        // 改成：摘要通知改去讀 EXTRA_TEXT_LINES（InboxStyle 常見欄位，彙總時每行通常對應
+        // 一則被合併的通知），逐行拆開各自存一筆，而不是整個丟棄。
+        // 這個解析方式還沒有拿真實 Gmail 通知洪峰驗證過格式一定符合預期，是最佳猜測寫法，
+        // 之後要用真實裝置製造一次通知洪峰重新確認。
+        if (sbn.notification.flags and Notification.FLAG_GROUP_SUMMARY != 0) {
+            val lines = extras.getCharSequenceArray(Notification.EXTRA_TEXT_LINES)
+            if (lines.isNullOrEmpty()) return // 沒有可拆解的內容，真的沒東西可存
+            lines.forEachIndexed { index, line ->
+                insertFromSummaryLine(appName, type, sbn, line.toString(), index)
+            }
+            return
+        }
+
         val title = extras.getString(Notification.EXTRA_TITLE)
             ?: extras.getCharSequence(Notification.EXTRA_TITLE)?.toString()
             ?: ""
-        val text = extras.getCharSequence(Notification.EXTRA_TEXT)?.toString()
-            ?: extras.getCharSequence(Notification.EXTRA_BIG_TEXT)?.toString()
+        // 優先用 EXTRA_BIG_TEXT（BigTextStyle 展開後的較完整內容），
+        // 沒有的話才退回 EXTRA_TEXT（收合狀態的短預覽）——注意這仍然受限於
+        // 來源 App（Gmail/Outlook 等）自己選擇塞進通知裡多少內容，不代表信件全文。
+        val text = extras.getCharSequence(Notification.EXTRA_BIG_TEXT)?.toString()
+            ?: extras.getCharSequence(Notification.EXTRA_TEXT)?.toString()
             ?: ""
         val subText = extras.getCharSequence(Notification.EXTRA_SUB_TEXT)?.toString() ?: ""
 
-        // 跳過空白通知和系統摘要通知
         if (text.isBlank() && title.isBlank()) return
-        if (sbn.notification.flags and Notification.FLAG_GROUP_SUMMARY != 0) return
-
-        val (appName, type) = mapping
 
         // 解析群組/私訊
         // LINE 群組通知格式: title = "群組名稱", subText/conversationTitle 可能有群組名
@@ -105,15 +125,53 @@ class NotificationCaptureService : NotificationListenerService() {
             timestamp = sbn.postTime,
             type = type,
             packageName = sbn.packageName,
-            groupName = groupName
+            groupName = groupName,
+            notificationKey = sbn.key
         )
 
+        save(notification)
+    }
+
+    /**
+     * 摘要通知拆解出來的單行，格式沒有保證，常見的是「寄件者: 內容」或「寄件者 - 內容」，
+     * 抓不到分隔符號就整行當內容、寄件者退回顯示 App 名稱。
+     * notificationKey 額外加上行號後綴——同一則摘要通知更新時，只要合併的信件組合不變，
+     * 同一行的 key 就會一樣，靠 unique index 擋掉重複；組合一變（新信加入）行號對應的內容
+     * 跟著變，等同於一筆新資料，這是合理的行為（本來就是新信）。
+     */
+    private fun insertFromSummaryLine(appName: String, type: String, sbn: StatusBarNotification, line: String, index: Int) {
+        if (line.isBlank()) return
+        val separator = when {
+            line.contains(": ") -> ": "
+            line.contains(" - ") -> " - "
+            else -> null
+        }
+        val (sender, content) = if (separator != null) {
+            val parts = line.split(separator, limit = 2)
+            Pair(parts[0].trim(), parts.getOrElse(1) { line }.trim())
+        } else {
+            Pair(appName, line)
+        }
+        save(
+            CapturedNotification(
+                app = appName,
+                sender = sender,
+                content = content,
+                timestamp = sbn.postTime,
+                type = type,
+                packageName = sbn.packageName,
+                notificationKey = "${sbn.key}#$index"
+            )
+        )
+    }
+
+    private fun save(notification: CapturedNotification) {
         executor.execute {
             try {
                 AppDatabase.getInstance(applicationContext)
                     .capturedNotificationDao()
                     .insert(notification)
-                Log.d(TAG, "Captured [$appName] ${if (groupName.isNotEmpty()) "($groupName) " else ""}$sender: ${text.take(50)}")
+                Log.d(TAG, "Captured [${notification.app}] ${if (notification.groupName.isNotEmpty()) "(${notification.groupName}) " else ""}${notification.sender}: ${notification.content.take(50)}")
             } catch (e: Exception) {
                 Log.e(TAG, "Failed to save notification", e)
             }

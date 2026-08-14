@@ -131,6 +131,15 @@
             android:letterSpacing="0.18"
             android:layout_marginBottom="7dp" />
 
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="🔒 這裡填寫的內容會存進社群回報資料庫，其他使用者查詢時看得到。請描述詐騙手法就好，不要貼上完整原文或個資（例如對方的真實姓名、電話、帳號等）。"
+            android:textSize="10sp"
+            android:textColor="#5A756B"
+            android:lineSpacingMultiplier="1.3"
+            android:layout_marginBottom="7dp" />
+
         <EditText
             android:id="@+id/etMsgContent"
             android:layout_width="match_parent"

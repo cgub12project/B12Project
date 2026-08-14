@@ -5,6 +5,8 @@ import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.Color
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -15,6 +17,7 @@ import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import androidx.room.InvalidationTracker
 import com.frauddetector.R
 import com.frauddetector.adapter.MessageAdapter
 import com.frauddetector.data.AlertItem
@@ -35,7 +38,34 @@ class MessagesFragment : Fragment() {
 
     private lateinit var adapter: MessageAdapter
     private var currentLevel = "all"
+    private var currentPlatformFilter = "全部"
     private val executor = Executors.newSingleThreadExecutor()
+
+    // 即時刷新：captured_notifications 表只要有任何寫入（背景通知擷取、簡訊匯入、AI 風險快取
+    // 寫回等）就會在主執行緒收到這個回呼。用 debounce 避免短時間內連續好幾則通知造成連續重刷。
+    private val refreshHandler = Handler(Looper.getMainLooper())
+    private var pendingRefresh: Runnable? = null
+    private val dbObserver = object : InvalidationTracker.Observer("captured_notifications") {
+        override fun onInvalidated(tables: Set<String>) {
+            pendingRefresh?.let { refreshHandler.removeCallbacks(it) }
+            val r = Runnable { loadData() }
+            pendingRefresh = r
+            refreshHandler.postDelayed(r, 400)
+        }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        val ctx = context?.applicationContext ?: return
+        AppDatabase.getInstance(ctx).invalidationTracker.addObserver(dbObserver)
+    }
+
+    override fun onPause() {
+        super.onPause()
+        pendingRefresh?.let { refreshHandler.removeCallbacks(it) }
+        val ctx = context?.applicationContext ?: return
+        AppDatabase.getInstance(ctx).invalidationTracker.removeObserver(dbObserver)
+    }
 
     private val requestSmsPermission = registerForActivityResult(
         ActivityResultContracts.RequestPermission()
@@ -214,27 +244,30 @@ class MessagesFragment : Fragment() {
         val chipAll = Chip(requireContext()).apply {
             text = "全部"
             isCheckable = true
-            isChecked = true
+            isChecked = currentPlatformFilter == "全部"
         }
         chipGroup.addView(chipAll)
 
-        // 依實際資料中有的平台動態新增
+        // 依實際資料中有的平台動態新增（即時刷新會重建整個 ChipGroup，
+        // 用 currentPlatformFilter 還原原本選取的 chip，不然使用者選的篩選會被重置回「全部」）
         val platforms = items.map { it.app }.distinct().sortedBy { platformOrder(it) }
         platforms.forEach { platform ->
             val chip = Chip(requireContext()).apply {
                 text = platform
                 isCheckable = true
+                isChecked = platform == currentPlatformFilter
             }
             chipGroup.addView(chip)
         }
 
         chipGroup.setOnCheckedStateChangeListener { _, checkedIds ->
-            if (checkedIds.isEmpty() || checkedIds.first() == chipAll.id) {
-                adapter.filterByApp("全部")
+            currentPlatformFilter = if (checkedIds.isEmpty() || checkedIds.first() == chipAll.id) {
+                "全部"
             } else {
                 val selectedChip = chipGroup.findViewById<Chip>(checkedIds.first())
-                adapter.filterByApp(selectedChip?.text?.toString() ?: "全部")
+                selectedChip?.text?.toString() ?: "全部"
             }
+            adapter.filterByApp(currentPlatformFilter)
         }
     }
 

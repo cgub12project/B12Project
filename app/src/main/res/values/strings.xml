@@ -64,7 +64,8 @@
 
     <!-- Email -->
     <string name="suspicious_emails">可疑郵件</string>
-    <string name="email_subtitle">2 SUSPICIOUS</string>
+    <string name="email_subtitle">0 SUSPICIOUS</string>
+    <string name="mail_risk_score_label">郵件風險評分</string>
 
     <!-- Phone -->
     <string name="phone_subtitle">NUMBER INTEL</string>
@@ -81,7 +82,7 @@
     <string name="email_scan">郵件掃描</string>
     <string name="email_scan_sub">Gmail、Outlook</string>
     <string name="caller_id">來電辨識</string>
-    <string name="caller_id_sub">自動查詢來電號碼風險</string>
+    <string name="caller_id_sub">自動查詢來電號碼風險．點一下設定真實封鎖</string>
     <string name="security_section">安全</string>
     <string name="quick_login">快速登入</string>
     <string name="quick_login_sub">啟用後，您可使用生物辨識進行快速登入</string>
