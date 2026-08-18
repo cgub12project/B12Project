@@ -71,6 +71,12 @@ object RagDetector {
     /** 群組整體對話判斷結果的記憶體快取：conversationKey → (視窗指紋, 上次結果)。 */
     private val conversationCache = mutableMapOf<String, Pair<String, RagDetectResponse>>()
 
+    /** 記憶體快取的持久化備份檔名——只存 fingerprint + 完整 RagDetectResponse 的 JSON，跟 Room 完全無關。 */
+    private const val CONVERSATION_CACHE_PREFS = "rag_conversation_cache"
+
+    private fun conversationCachePrefs(context: Context) =
+        context.applicationContext.getSharedPreferences(CONVERSATION_CACHE_PREFS, Context.MODE_PRIVATE)
+
     /**
      * 對群組對話做整體判斷：把最近 [limit] 則訊息用 [buildConversationText] 串接後，
      * 一次呼叫 /rag/detect 取得整段對話的風險等級與完整解釋（reasons/advice）。
@@ -81,11 +87,14 @@ object RagDetector {
      * 證實這個格式真的能讓 AI 看出「群組裡多人互相佐證同一套話術」這種只看單句
      * 看不出來的模式。
      *
-     * 用「視窗指紋」（訊息數＋最新一筆的 id）記憶體快取結果——同一個對話只要沒有新
+     * 用「視窗指紋」（訊息數＋最新一筆的 id）快取結果——同一個對話只要沒有新
      * 訊息進來，視窗內容就跟上次完全一樣，直接回傳上次結果，不必每次打開同一個
      * 群組對話都重新等一次 API；一有新訊息，指紋跟著變，就會自動重新分析。
-     * 只存在記憶體（App 程序存活期間），不會寫進 DB，符合「即時視窗、不長期累積」
-     * 的設計原則。
+     * 快取分兩層：記憶體 Map（同一次 App 存活期間最快）+ SharedPreferences（2026-08-18
+     * 新增，跨 App 程序重啟仍有效——之前只存記憶體，導致每次重新開 App 所有對話都要
+     * 重新打一次 API）。刻意不用 Room DB 存，因為 DB 目前是 fallbackToDestructiveMigration，
+     * 改 schema 會連帶清空 captured_notifications／cached_phones，SharedPreferences 完全
+     * 獨立、零風險。
      *
      * @param conversationKey 對話識別碼（例如 "$app|$groupName"），用來區分不同對話的快取
      * @return null 代表沒有訊息、未登入或呼叫失敗；呼叫端應 fallback 顯示 "safe"/`--`
@@ -103,6 +112,13 @@ object RagDetector {
             if (cachedFingerprint == fingerprint) return cachedResponse
         }
 
+        loadPersistedConversationEntry(context, conversationKey)?.let { (cachedFingerprint, cachedResponse) ->
+            if (cachedFingerprint == fingerprint) {
+                conversationCache[conversationKey] = fingerprint to cachedResponse
+                return cachedResponse
+            }
+        }
+
         val token = TokenManager(context).accessToken
         if (token.isNullOrEmpty()) return null
 
@@ -112,7 +128,10 @@ object RagDetector {
         return try {
             val response = ApiClient.ragApi.detect("Bearer $token", RagDetectRequest(text)).execute()
             if (response.isSuccessful) {
-                response.body()?.also { conversationCache[conversationKey] = fingerprint to it }
+                response.body()?.also {
+                    conversationCache[conversationKey] = fingerprint to it
+                    persistConversationEntry(context, conversationKey, fingerprint, it)
+                }
             } else {
                 Log.w(TAG, "conversation detect failed: HTTP ${response.code()}")
                 null
@@ -121,6 +140,24 @@ object RagDetector {
             Log.e(TAG, "conversation detect failed", e)
             null
         }
+    }
+
+    private data class PersistedConversationEntry(val fingerprint: String, val response: RagDetectResponse)
+
+    private fun loadPersistedConversationEntry(context: Context, conversationKey: String): Pair<String, RagDetectResponse>? {
+        val json = conversationCachePrefs(context).getString(conversationKey, null) ?: return null
+        return try {
+            val entry = ApiClient.gson.fromJson(json, PersistedConversationEntry::class.java)
+            entry.fingerprint to entry.response
+        } catch (e: Exception) {
+            Log.w(TAG, "failed to parse persisted conversation cache for $conversationKey", e)
+            null
+        }
+    }
+
+    private fun persistConversationEntry(context: Context, conversationKey: String, fingerprint: String, response: RagDetectResponse) {
+        val json = ApiClient.gson.toJson(PersistedConversationEntry(fingerprint, response))
+        conversationCachePrefs(context).edit().putString(conversationKey, json).apply()
     }
 
     /**

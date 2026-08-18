@@ -228,6 +228,15 @@ class MessagesFragment : Fragment() {
             v.findViewById<TextView>(R.id.tvHighCount).text = items.count { it.level == "high" }.toString()
             v.findViewById<TextView>(R.id.tvMidCount).text = items.count { it.level == "mid" }.toString()
             v.findViewById<TextView>(R.id.tvSafeCount).text = items.count { it.level == "safe" }.toString()
+
+            val unanalyzedCount = items.count { it.level == "unanalyzed" }
+            val hint = v.findViewById<TextView>(R.id.tvUnanalyzedHint)
+            if (unanalyzedCount > 0) {
+                hint.text = "$unanalyzedCount 則尚未完成分析，暫不計入安全數量"
+                hint.visibility = View.VISIBLE
+            } else {
+                hint.visibility = View.GONE
+            }
         }
     }
 
@@ -308,13 +317,20 @@ private fun CapturedNotification.toGroupedAlertItem(
     // 組合顯示名稱：如果有群組名就顯示「群組名稱」，否則顯示 sender
     val displayName = if (groupName.isNotEmpty()) groupName else sender
 
-    // source 行顯示：平台 · 群組/私訊 · N 則訊息（群組顯示最新發言者，僅供預覽用）
-    val chatType = if (groupName.isNotEmpty()) "群組 · $sender" else "私訊"
+    // source 行顯示：平台 · 群組/私訊 · N 則訊息
+    // （最新發言者不放這裡，改由卡片的內容標籤直接顯示成「陳大富:」，見 AlertItem.speaker）
+    val chatType = if (groupName.isNotEmpty()) "群組" else "私訊"
     val sourceText = "$app · $chatType · ${msgCount}則訊息"
 
-    val level = riskLevel ?: "safe"
-    val tags = mutableListOf(app, if (groupName.isNotEmpty()) "群組" else "私訊")
-    if (level != "safe" && !scamType.isNullOrBlank()) tags.add(scamType)
+    // 還沒分析完（或分析失敗）不能當「安全」——後端一掛，真的詐騙訊息會被畫成安全的米白卡，
+    // 對防詐 App 是危險預設值。改用獨立的「未分析」灰卡，不計入安全數量。
+    val level = riskLevel ?: "unanalyzed"
+    // 詐騙類型刻意不放進列表卡的標籤（2026-08-17 UI 決定）：卡片本身的顏色已經表達
+    // 風險高低，類型是點進對話詳情才需要的細節，放在列表上只會讓卡片變吵。
+    // 詳情頁仍會顯示（見 ThreadDetailActivity 的 tags 與 詐騙類型 欄位）。
+    // 平台／私訊-群組標籤同理移除（2026-08-18）：sourceText 開頭已經寫「LINE · 群組 · N則訊息」，
+    // 標籤重複顯示同一件事，且標籤底色跟卡片風險色放在一起顯得突兀。
+    val tags = emptyList<String>()
 
     return AlertItem(
         id = "grp_${app}_${conversationKey}",
@@ -325,6 +341,7 @@ private fun CapturedNotification.toGroupedAlertItem(
         level = level,        // 由 /rag/detect 判斷後快取的風險等級
         app = app,
         tags = tags,
-        threadId = ""
+        threadId = "",
+        speaker = if (groupName.isNotEmpty()) sender else ""
     )
 }
