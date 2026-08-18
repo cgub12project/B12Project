@@ -1,10 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!-- 2026-08-18：改成 Material Icons Outlined 版的盾牌打勾（跟導覽列 ic_glyph_* 同一套線條風格），
+     取代舊的實心版，避免同一個 App 裡出現兩種畫風的圖示。 -->
 <vector xmlns:android="http://schemas.android.com/apk/res/android"
     android:width="20dp"
     android:height="20dp"
     android:viewportWidth="24"
     android:viewportHeight="24">
     <path
-        android:fillColor="#2196F3"
-        android:pathData="M12,1L3,5v6c0,5.55 3.84,10.74 9,12 5.16,-1.26 9,-6.45 9,-12V5l-9,-4z"/>
+        android:fillColor="#4A7FA5"
+        android:pathData="M12,1L3,5v6c0,5.55 3.84,10.74 9,12 5.16,-1.26 9,-6.45 9,-12V5l-9,-4zM19,11c0,4.52 -2.98,8.69 -7,9.93 -4.02,-1.24 -7,-5.41 -7,-9.93V6.3l7,-3.11 7,3.11V11zM7.41,11.59L6,13l4,4 8,-8 -1.41,-1.42L10,14.17z"/>
 </vector>

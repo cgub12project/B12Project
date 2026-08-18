@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- 設定頁的「文字大小」圖示。2026-08-18：原本用系統內建的 android.R.drawable.ic_menu_zoom
+     （放大鏡圖示，跟其他線條圖示完全不同風格），改成 Material Icons Outlined 的
+     format_size（大小 A 字），語意跟畫風都跟其他設定項目一致。 -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="20dp"
+    android:height="20dp"
+    android:viewportWidth="24"
+    android:viewportHeight="24">
+    <path
+        android:fillColor="#4A7FA5"
+        android:pathData="M9,4v3h5v12h3V7h5V4H9zM3,12h3v7h3v-7h3V9H3v3z"/>
+</vector>

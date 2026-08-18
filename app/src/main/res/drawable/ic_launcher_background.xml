@@ -1,4 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!-- 2026-08-18：App 圖示底色從舊的亮藍 #2563EB 換成配色規範的鋼藍，跟目前 App 畫面（狀態列、
+     Splash）用同一個顏色，避免圖示跟開啟後的畫面顏色不一致。 -->
 <shape xmlns:android="http://schemas.android.com/apk/res/android">
-    <solid android:color="#2563EB" />
+    <solid android:color="@color/steel_blue" />
 </shape>

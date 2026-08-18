@@ -235,7 +235,7 @@ class SettingsFragment : Fragment() {
             "封鎖信箱", "查看並解除已封鎖的郵件寄件人")
         setupItem(view, R.id.settingMailAccounts, R.drawable.ic_email_set,
             "已連接的信箱", "連接 Gmail/Outlook 讀取完整信件內容")
-        setupItem(view, R.id.settingFontSize, android.R.drawable.ic_menu_zoom,
+        setupItem(view, R.id.settingFontSize, R.drawable.ic_text_size_set,
             "文字大小", "目前：${FontScaleManager.currentLabel(requireContext())}")
         setupItem(view, R.id.settingLogout, R.drawable.ic_logout_set,
             getString(R.string.logout), getString(R.string.logout_sub))
@@ -374,7 +374,7 @@ class SettingsFragment : Fragment() {
             .setTitle("文字大小")
             .setSingleChoiceItems(labels, currentIndex) { dialog, which ->
                 FontScaleManager.setScale(ctx, options[which].second)
-                setupItem(view, R.id.settingFontSize, android.R.drawable.ic_menu_zoom,
+                setupItem(view, R.id.settingFontSize, R.drawable.ic_text_size_set,
                     "文字大小", "目前：${options[which].first}")
                 dialog.dismiss()
                 activity?.recreate()
