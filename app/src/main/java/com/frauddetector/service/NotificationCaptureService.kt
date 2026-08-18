@@ -141,16 +141,23 @@ class NotificationCaptureService : NotificationListenerService() {
      */
     private fun insertFromSummaryLine(appName: String, type: String, sbn: StatusBarNotification, line: String, index: Int) {
         if (line.isBlank()) return
+        // 實測發現：部分系統版本合成彙總通知的每一行時，會在最前面多包一層
+        // 「App 名稱: 」的外層前綴（例如「簡訊: 0912345678  你好」），這層前綴
+        // 不是真正的寄件者。沒剝掉的話，下面的分隔符號偵測會抓到這個前綴自帶的
+        // 冒號，誤判成「寄件者 = 簡訊」，導致完全不同號碼的訊息全部被歸成同一個
+        // 假對話（連帶風險等級、卡片顏色也會跟著混在一起）。
+        val stripped = if (line.startsWith("$appName: ")) line.removePrefix("$appName: ") else line
         val separator = when {
-            line.contains(": ") -> ": "
-            line.contains(" - ") -> " - "
+            stripped.contains(": ") -> ": "
+            stripped.contains(" - ") -> " - "
+            stripped.contains("  ") -> "  " // 剝掉外層前綴後常見「號碼␣␣內容」格式，沒有冒號可分
             else -> null
         }
         val (sender, content) = if (separator != null) {
-            val parts = line.split(separator, limit = 2)
-            Pair(parts[0].trim(), parts.getOrElse(1) { line }.trim())
+            val parts = stripped.split(separator, limit = 2)
+            Pair(parts[0].trim(), parts.getOrElse(1) { stripped }.trim())
         } else {
-            Pair(appName, line)
+            Pair(appName, stripped)
         }
         save(
             CapturedNotification(
