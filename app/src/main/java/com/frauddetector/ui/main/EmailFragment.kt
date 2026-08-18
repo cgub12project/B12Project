@@ -32,6 +32,7 @@ import com.frauddetector.service.BlockedEmailsManager
 import com.frauddetector.service.RagDetector
 import com.frauddetector.ui.SwipeToDeleteHelper
 import com.frauddetector.ui.detail.MailMessageDetailActivity
+import com.frauddetector.ui.dialog.BlockConfirmDialog
 import com.frauddetector.ui.dialog.MessageReportBottomSheet
 import com.google.android.material.chip.Chip
 import com.google.android.material.chip.ChipGroup
@@ -52,13 +53,46 @@ class EmailFragment : Fragment() {
          * 重新等一次網路查詢才有東西可看，切分頁感覺很卡。改成放在 companion object
          * （跟著 App 行程活，不跟著 Fragment 實例），切分頁回來能立刻用上次的結果先顯示，
          * 背景再視情況重新整理，不會每次都從空白開始。
+         *
+         * 2026-08-18 補上 SharedPreferences 備份：上面這個 companion object 變數只跟著
+         * App 行程活，行程被系統殺掉或使用者滑掉重開（不只是切分頁）一樣會歸零，
+         * 導致「重新點進 App、郵件分頁空白等同步」——跟 RagDetector 對話快取原本的問題
+         * 是同一類，做法也一樣：process 重啟後第一次用到時，先從 SharedPreferences
+         * 復原上次的結果，不用整個 DB schema，零風險。
          */
         private var cachedMailItems: List<MailMessageItem> = emptyList()
+        private var cachedMailItemsRestored = false
+
+        private const val MAIL_CACHE_PREFS = "email_fragment_cache"
+        private const val MAIL_CACHE_KEY = "cached_mail_items"
+
+        private fun restoreCachedMailItemsIfNeeded(context: Context) {
+            if (cachedMailItemsRestored) return
+            cachedMailItemsRestored = true
+            if (cachedMailItems.isNotEmpty()) return
+            val json = context.applicationContext
+                .getSharedPreferences(MAIL_CACHE_PREFS, Context.MODE_PRIVATE)
+                .getString(MAIL_CACHE_KEY, null) ?: return
+            try {
+                val type = object : com.google.gson.reflect.TypeToken<List<MailMessageItem>>() {}.type
+                cachedMailItems = ApiClient.gson.fromJson(json, type)
+            } catch (e: Exception) {
+                // 復原失敗就當作沒有，正常走 Pass 3 的網路同步
+            }
+        }
+
+        private fun persistCachedMailItems(context: Context, items: List<MailMessageItem>) {
+            val json = ApiClient.gson.toJson(items)
+            context.applicationContext
+                .getSharedPreferences(MAIL_CACHE_PREFS, Context.MODE_PRIVATE)
+                .edit().putString(MAIL_CACHE_KEY, json).apply()
+        }
     }
 
     private lateinit var adapter: EmailAdapter
     private lateinit var tvSyncStatus: TextView
     private lateinit var tvSubtitle: TextView
+    private lateinit var tvUnanalyzedHint: TextView
     private var currentProviderFilter = "全部"
     private val executor = Executors.newSingleThreadExecutor()
 
@@ -99,20 +133,25 @@ class EmailFragment : Fragment() {
         val rv = view.findViewById<RecyclerView>(R.id.rvEmails)
         tvSyncStatus = view.findViewById(R.id.tvMailSyncStatus)
         tvSubtitle = view.findViewById(R.id.tvEmailSubtitle)
+        tvUnanalyzedHint = view.findViewById(R.id.tvUnanalyzedHint)
         adapter = EmailAdapter(
             items = emptyList(),
             onBlock = { email ->
-                val ctx = requireContext()
-                val nowBlocked = BlockedEmailsManager.toggle(ctx, email.sender)
-                if (nowBlocked) {
-                    Toast.makeText(ctx, "已封鎖 ${email.sender}", Toast.LENGTH_SHORT).show()
-                    adapter.removeItem(email.id)
-                    // 真實郵件（有連接信箱帳號）另外呼叫後端在 Gmail 端真的建立封鎖規則；
-                    // 本機通知擷取的項目沒有對應的信箱帳號，只能停在上面的本機清單過濾
-                    if (email.id.startsWith("mail_") && email.accountEmail.isNotEmpty()) {
-                        blockSenderOnBackend(email.accountEmail, email.sender)
+                // 封鎖寄件人在 Gmail 端會真的建立過濾規則（不只是本機隱藏），
+                // 誤觸的代價比其他操作大，一律先跳確認（見 BlockConfirmDialog 的說明）
+                BlockConfirmDialog.forAccount(email.sender) {
+                    val ctx = requireContext()
+                    val nowBlocked = BlockedEmailsManager.toggle(ctx, email.sender)
+                    if (nowBlocked) {
+                        Toast.makeText(ctx, "已封鎖 ${email.sender}", Toast.LENGTH_SHORT).show()
+                        adapter.removeItem(email.id)
+                        // 真實郵件（有連接信箱帳號）另外呼叫後端在 Gmail 端真的建立封鎖規則；
+                        // 本機通知擷取的項目沒有對應的信箱帳號，只能停在上面的本機清單過濾
+                        if (email.id.startsWith("mail_") && email.accountEmail.isNotEmpty()) {
+                            blockSenderOnBackend(email.accountEmail, email.sender)
+                        }
                     }
-                }
+                }.show(childFragmentManager, "blockConfirm")
             },
             onOpenDetail = { email ->
                 val rawId = email.id.removePrefix("mail_").toIntOrNull()
@@ -139,6 +178,16 @@ class EmailFragment : Fragment() {
             onConfirmedDelete = { position -> deleteEmail(adapter.getItemAt(position)) },
             onCanceled = { position -> adapter.notifyItemChanged(position) }
         )
+
+        // 在背景執行緒排隊做完整的 loadEmails() 之前，先在主執行緒同步把上次同步結果畫出來——
+        // restoreCachedMailItemsIfNeeded 讀的是小檔案的 SharedPreferences，很快，換來的是
+        // 少一次「丟給背景執行緒排隊→查 DB→切回主執行緒」的來回，肉眼可見的空白閃一下會消失。
+        // 本機通知擷取的郵件（不是這次同步結果的那些）還是交給下面 loadEmails() 的背景流程補上。
+        val appCtx = requireContext().applicationContext
+        restoreCachedMailItemsIfNeeded(appCtx)
+        if (cachedMailItems.isNotEmpty()) {
+            publishItems(appCtx, emptyList(), cachedMailItems)
+        }
 
         // 第一次進分頁才觸發後端信箱同步（可能跑數十秒），InvalidationTracker 觸發的刷新不重複同步
         loadEmails(triggerSync = true)
@@ -310,6 +359,10 @@ class EmailFragment : Fragment() {
         // 就 detach，requireContext() 會拋例外把整個背景執行緒帶崩，進而讓 App 閃退。
         val ctx = context?.applicationContext ?: return
         executor.execute {
+            // App 行程重啟後第一次進來，先把上次同步結果從 SharedPreferences 復原回
+            // cachedMailItems，讓下面 Pass 1 不會拿到空清單墊底（見 companion object 說明）。
+            restoreCachedMailItemsIfNeeded(ctx)
+
             val db = AppDatabase.getInstance(ctx)
             val dao = db.capturedNotificationDao()
 
@@ -366,6 +419,7 @@ class EmailFragment : Fragment() {
                     if (response.isSuccessful) {
                         val mailItems = response.body()?.items ?: emptyList()
                         cachedMailItems = mailItems
+                        persistCachedMailItems(ctx, mailItems)
                         publishItems(ctx, detected, mailItems)
                     }
                 } catch (e: IOException) {
@@ -418,7 +472,11 @@ class EmailFragment : Fragment() {
             if (!isAdded) return@runOnUiThread
             adapter.updateItems(items)
             buildDynamicChips(items)
-            tvSubtitle.text = "${items.count { it.level != "safe" }} SUSPICIOUS"
+            tvSubtitle.text = "${items.count { it.level == "high" || it.level == "mid" }} SUSPICIOUS"
+
+            val unanalyzedCount = items.count { it.level == "unanalyzed" }
+            tvUnanalyzedHint.text = "$unanalyzedCount 封尚未完成分析，暫不計入安全數量"
+            tvUnanalyzedHint.visibility = if (unanalyzedCount > 0) View.VISIBLE else View.GONE
         }
     }
 }
@@ -445,9 +503,11 @@ private fun parseIsoTimestamp(iso: String): Long {
 private fun CapturedNotification.toGroupedEmailAlert(): EmailAlert {
     val sdf = SimpleDateFormat("MM/dd HH:mm", Locale.getDefault())
     val timeStr = sdf.format(Date(timestamp))
-    val level = riskLevel ?: "safe"
-    val tags = mutableListOf(app)
-    if (level != "safe" && !scamType.isNullOrBlank()) tags.add(scamType)
+    // 還沒分析完（或分析失敗）不能當「安全」——理由同 MessagesFragment 的 toGroupedAlertItem
+    val level = riskLevel ?: "unanalyzed"
+    // 標籤（來源／詐騙類型）移除（2026-08-18，跟訊息分頁同一次改版）：卡片下方標籤跟
+    // MailMessageDetailActivity 顯示的內容重複，列表上只留卡片顏色＋詳情頁再看細節。
+    val tags = emptyList<String>()
 
     return EmailAlert(
         id = "grp_${app}_${sender}",
@@ -474,8 +534,9 @@ private fun MailMessageItem.toEmailAlert(): EmailAlert {
         "—"
     }
     val providerLabel = if (provider == "gmail") "Gmail" else "Outlook"
-    val tags = mutableListOf(providerLabel)
-    if (riskLevel != "safe" && !scamType.isNullOrBlank()) tags.add(scamType)
+    // 標籤移除（見 toGroupedEmailAlert 說明）：providerLabel／scamType 在
+    // MailMessageDetailActivity 的 tvMeta／風險列已經會顯示，這裡不重複。
+    val tags = emptyList<String>()
 
     return EmailAlert(
         id = "mail_$id",
