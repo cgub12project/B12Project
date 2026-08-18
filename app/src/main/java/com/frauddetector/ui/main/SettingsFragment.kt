@@ -245,9 +245,26 @@ class SettingsFragment : Fragment() {
 
     private fun setupItem(view: View, itemId: Int, iconRes: Int, label: String, sub: String) {
         val item = view.findViewById<View>(itemId)
-        item.findViewById<ImageView>(R.id.settingsIcon).setImageResource(iconRes)
+        val iconView = item.findViewById<ImageView>(R.id.settingsIcon)
+        iconView.setImageResource(iconRes)
+        applyIconScale(iconView)
         item.findViewById<TextView>(R.id.tvSettingsLabel).text = label
         item.findViewById<TextView>(R.id.tvSettingsSub).text = sub
+    }
+
+    /**
+     * 設定頁圖示跟著「文字大小」設定等比放大／縮小（同一顆向量圖，線條相對圖示本身的
+     * 粗細比例不變，不是把線條單獨加粗）——字級選「特大」時圖示本來就該跟著醒目，
+     * 選「標準」則維持原本細緻的比例，不用另外做一套粗線版圖示。
+     */
+    private fun applyIconScale(iconView: ImageView) {
+        val baseSizePx = (34 * resources.displayMetrics.density).toInt()
+        val scale = FontScaleManager.getScale(requireContext())
+        val size = (baseSizePx * scale).toInt()
+        val params = iconView.layoutParams
+        params.width = size
+        params.height = size
+        iconView.layoutParams = params
     }
 
     private fun setupDetectionModeItem(view: View) {
