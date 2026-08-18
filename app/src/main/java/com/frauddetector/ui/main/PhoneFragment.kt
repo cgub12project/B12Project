@@ -40,6 +40,7 @@ import com.frauddetector.service.PhoneNumberUtils
 import com.frauddetector.service.PhoneSyncManager
 import com.frauddetector.service.toCachedPhone
 import com.frauddetector.ui.detail.PhoneDetailActivity
+import com.frauddetector.ui.dialog.BlockConfirmDialog
 import com.frauddetector.ui.dialog.ReportBottomSheet
 import retrofit2.Call
 import retrofit2.Callback
@@ -86,11 +87,15 @@ class PhoneFragment : Fragment() {
                 startActivity(intent)
             },
             onBlock = { phone ->
-                val nowBlocked = BlockedNumbersManager.toggle(requireContext(), phone.number)
-                if (nowBlocked) {
-                    Toast.makeText(requireContext(), "已封鎖 ${phone.number}", Toast.LENGTH_SHORT).show()
-                    adapter.removeItem(phone.id)
-                }
+                // 這個入口只會是「加入封鎖」——封鎖後該號碼就從列表移除了，不可能在這裡解封，
+                // 所以一律先跳確認（見 BlockConfirmDialog 的說明）
+                BlockConfirmDialog.forNumber(phone.number) {
+                    val nowBlocked = BlockedNumbersManager.toggle(requireContext(), phone.number)
+                    if (nowBlocked) {
+                        Toast.makeText(requireContext(), "已封鎖 ${phone.number}", Toast.LENGTH_SHORT).show()
+                        adapter.removeItem(phone.id)
+                    }
+                }.show(childFragmentManager, "blockConfirm")
             },
             onReport = { phone ->
                 ReportBottomSheet.newInstance(phone.number).show(childFragmentManager, "report")

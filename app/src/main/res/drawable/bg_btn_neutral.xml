@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- 2026-08-17：電話詳情頁四顆操作按鈕改用同一個中性底。
+     原本封鎖／回報是實心銹紅／赤陶底，新的設計稿圖示本身就是彩色的
+     （紅圈白叉、橘色警示三角），壓在同色實心底上會整個看不見，
+     所以底色統一退成米白卡片，語意交給圖示的顏色表達。 -->
+<shape xmlns:android="http://schemas.android.com/apk/res/android">
+    <solid android:color="@color/card" />
+    <stroke android:width="1dp" android:color="#33C8C4C0" />
+    <corners android:radius="10dp" />
+</shape>

@@ -128,6 +128,16 @@
     <string name="share">分享</string>
     <string name="more">更多</string>
 
+    <!-- 列表卡片內容標籤（8/17 改版）。群組會改成發話者名字，見 MessagesFragment -->
+    <string name="msg_content_label">訊息內容:</string>
+    <string name="mail_content_label">郵件內容:</string>
+
+    <!-- 封鎖確認 Dialog（8/17 新增） -->
+    <string name="block_confirm_account_title">確定要封鎖此帳號嗎？</string>
+    <string name="block_confirm_account_msg">你將不會再收到此帳號傳送的訊息或通知</string>
+    <string name="block_confirm_number_title">確定要封鎖此號碼嗎？</string>
+    <string name="block_confirm_number_msg">你將不會再收到此號碼的來電與通知</string>
+
     <!-- Report Full -->
     <string name="report_fraud_title">回報詐騙</string>
     <string name="fraud_type_section">詐騙類型</string>

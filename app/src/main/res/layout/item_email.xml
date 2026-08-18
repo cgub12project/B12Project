@@ -1,10 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- Reusable list item for emails, with expand-in-place block/report panel -->
+<!-- 郵件列表卡片（8/17 改版）：版面與配色規則跟 item_message.xml 完全一致，
+     差別只在多了一個就地展開的操作面板。所有文字顏色同樣由 EmailAdapter
+     依卡片風險底色設定，這裡不寫死。
+
+     名稱那一行放的是「主旨」（設計稿指定），寄件人退到上面的來源行。 -->
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginBottom="8dp"
+    android:layout_marginBottom="10dp"
     android:orientation="vertical">
 
     <LinearLayout
@@ -12,17 +16,20 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        android:padding="12dp"
-        android:gravity="center_vertical"
+        android:padding="14dp"
+        android:gravity="top"
         android:clickable="true"
         android:focusable="true">
 
         <!-- Avatar -->
         <ImageView
             android:id="@+id/ivAvatar"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
-            android:src="@android:drawable/sym_action_chat"
+            android:layout_width="44dp"
+            android:layout_height="44dp"
+            android:layout_marginTop="2dp"
+            android:padding="7dp"
+            android:scaleType="fitCenter"
+            android:src="@drawable/ic_glyph_mail"
             android:contentDescription="Avatar" />
 
         <!-- Content -->
@@ -31,23 +38,21 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:orientation="vertical"
-            android:layout_marginStart="11dp">
+            android:layout_marginStart="12dp">
 
-            <!-- Row 1: Sender + Time -->
+            <!-- Row 1: 寄件人 + 時間 -->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
-                android:gravity="center_vertical"
-                android:layout_marginBottom="2dp">
+                android:gravity="center_vertical">
 
                 <TextView
-                    android:id="@+id/tvItemName"
+                    android:id="@+id/tvItemSource"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:textSize="13sp"
-                    android:textStyle="bold"
+                    android:textSize="11sp"
                     android:singleLine="true"
                     android:ellipsize="end" />
 
@@ -56,29 +61,40 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:textSize="11sp"
-                    android:textColor="@color/lbl3"
-                    android:layout_marginStart="4dp" />
+                    android:layout_marginStart="6dp" />
             </LinearLayout>
 
-            <!-- Subject -->
+            <!-- 主旨。太長一律省略號，不換行 -->
             <TextView
-                android:id="@+id/tvItemSource"
+                android:id="@+id/tvItemName"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:textSize="11sp"
-                android:textColor="#8C8480"
-                android:layout_marginBottom="3dp" />
+                android:layout_marginTop="1dp"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                android:singleLine="true"
+                android:ellipsize="end" />
 
-            <!-- Preview -->
+            <TextView
+                android:id="@+id/tvItemContentLabel"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="2dp"
+                android:text="@string/mail_content_label"
+                android:textSize="11sp"
+                android:singleLine="true"
+                android:ellipsize="end" />
+
+            <!-- 內容預覽 -->
             <TextView
                 android:id="@+id/tvItemMsg"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="1dp"
                 android:textSize="13sp"
-                android:textColor="@color/lbl2"
-                android:singleLine="true"
+                android:maxLines="2"
                 android:ellipsize="end"
-                android:layout_marginBottom="5dp" />
+                android:layout_marginBottom="6dp" />
 
             <!-- Tags Row — chipSpacingVertical 縮小，理由同 item_message.xml -->
             <com.google.android.material.chip.ChipGroup
@@ -89,7 +105,8 @@
         </LinearLayout>
     </LinearLayout>
 
-    <!-- Expand-in-place action panel（點擊列表項目後往下展開，封鎖這個寄件人／查看完整內容） -->
+    <!-- Expand-in-place action panel（點擊列表項目後往下展開，封鎖這個寄件人／查看完整內容）
+         圖示與電話頁使用同一組 drawable，維持全 App 一致 -->
     <LinearLayout
         android:id="@+id/expandPanel"
         android:layout_width="match_parent"
@@ -142,7 +159,7 @@
             android:contentDescription="回報此寄件人為詐騙"
             android:focusable="true"
             android:scaleType="fitCenter"
-            android:src="@android:drawable/ic_dialog_alert"
+            android:src="@drawable/ic_action_report"
             android:visibility="gone" />
     </LinearLayout>
 </LinearLayout>

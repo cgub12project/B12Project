@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- 底部導覽列的圖示與文字著色：選取＝鋼藍，未選取＝暖灰。
+     bottom_nav_menu 的訊息/郵件圖示是「黑色字形＋alpha」的可著色遮罩
+     （見 drawable-nodpi/ic_glyph_*.png），必須靠這個 selector 才會上色。 -->
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:color="@color/steel_blue" android:state_checked="true" />
+    <item android:color="@color/warm_grey" />
+</selector>

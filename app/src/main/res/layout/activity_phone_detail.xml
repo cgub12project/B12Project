@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- 13. 電話詳情 -->
+<!-- 13. 電話詳情（8/17 改版：配色與四顆操作圖示改用設計稿版本） -->
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/bg"
     android:orientation="vertical">
 
     <!-- Header -->
@@ -11,9 +12,9 @@
         android:layout_height="wrap_content"
         android:orientation="vertical"
         android:padding="16dp"
-        android:background="#FDFAF4">
+        android:background="@color/card">
 
-        <!-- Back -->
+        <!-- Back（維持跟其他詳情頁一樣的「‹ 返回…」樣式） -->
         <LinearLayout
             android:id="@+id/btnBackToPhoneList"
             android:layout_width="wrap_content"
@@ -21,6 +22,10 @@
             android:orientation="horizontal"
             android:gravity="center_vertical"
             android:layout_marginBottom="10dp"
+            android:paddingTop="4dp"
+            android:paddingBottom="4dp"
+            android:paddingEnd="8dp"
+            android:background="?attr/selectableItemBackground"
             android:clickable="true"
             android:focusable="true">
 
@@ -36,7 +41,7 @@
                 android:layout_marginStart="6dp"
                 android:text="@string/back_to_phone_list"
                 android:textSize="11sp"
-                android:textColor="#4A7FA5" />
+                android:textColor="@color/steel_blue" />
         </LinearLayout>
 
         <!-- Phone Number -->
@@ -47,6 +52,7 @@
             android:text="+886-800-XXX-XXX"
             android:textSize="22sp"
             android:textStyle="bold"
+            android:textColor="@color/warm_grey"
             android:layout_marginBottom="6dp" />
 
         <!-- Risk Badge -->
@@ -57,7 +63,7 @@
             android:text="@string/fraud"
             android:textSize="10sp"
             android:textStyle="bold"
-            android:textColor="#FFFFFF"
+            android:textColor="@color/on_risk_title"
             android:paddingStart="12dp"
             android:paddingEnd="12dp"
             android:paddingTop="4dp"
@@ -70,13 +76,13 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="⚠ 非常規台灣電話格式"
-            android:textColor="#C46B4A"
+            android:textColor="@color/risk_mid"
             android:textSize="12sp"
             android:textStyle="bold"
             android:layout_marginBottom="12dp"
             android:visibility="gone" />
 
-        <!-- Stats Row -->
+        <!-- Stats Row（設計稿：舉報次數＝銹紅、最近舉報＝赤陶、詐騙類型＝暖灰） -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -106,7 +112,7 @@
                     android:layout_height="wrap_content"
                     android:text="@string/report_count"
                     android:textSize="9sp"
-                    android:textColor="#8C8480" />
+                    android:textColor="@color/warm_grey" />
             </LinearLayout>
 
             <LinearLayout
@@ -132,7 +138,7 @@
                     android:layout_height="wrap_content"
                     android:text="@string/last_report"
                     android:textSize="9sp"
-                    android:textColor="#8C8480" />
+                    android:textColor="@color/warm_grey" />
             </LinearLayout>
 
             <LinearLayout
@@ -150,18 +156,20 @@
                     android:layout_height="wrap_content"
                     android:text="假冒政府機關"
                     android:textSize="10sp"
-                    android:textStyle="bold" />
+                    android:textStyle="bold"
+                    android:textColor="@color/warm_grey" />
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/fraud_type"
                     android:textSize="9sp"
-                    android:textColor="#8C8480" />
+                    android:textColor="@color/warm_grey" />
             </LinearLayout>
         </LinearLayout>
 
-        <!-- Action Buttons Row -->
+        <!-- Action Buttons Row（四顆共用中性米白底，語意交給彩色圖示；
+             圖示與電話列表展開面板、郵件展開面板為同一組 drawable） -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -176,21 +184,23 @@
                 android:gravity="center"
                 android:padding="11dp"
                 android:layout_marginEnd="6dp"
-                android:background="@drawable/bg_btn_call"
+                android:background="@drawable/bg_btn_neutral"
                 android:clickable="true"
                 android:focusable="true">
 
                 <ImageView
-                    android:layout_width="20dp"
-                    android:layout_height="20dp"
-                    android:src="@android:drawable/sym_action_call"
-                    android:contentDescription="Call" />
+                    android:layout_width="26dp"
+                    android:layout_height="26dp"
+                    android:scaleType="fitCenter"
+                    android:src="@drawable/ic_action_dial"
+                    android:contentDescription="@string/dial" />
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/dial"
                     android:textSize="9sp"
+                    android:textColor="@color/warm_grey"
                     android:layout_marginTop="5dp" />
             </LinearLayout>
 
@@ -203,21 +213,23 @@
                 android:gravity="center"
                 android:padding="11dp"
                 android:layout_marginEnd="6dp"
-                android:background="@drawable/bg_btn_block"
+                android:background="@drawable/bg_btn_neutral"
                 android:clickable="true"
                 android:focusable="true">
 
                 <ImageView
-                    android:layout_width="20dp"
-                    android:layout_height="20dp"
-                    android:src="@android:drawable/ic_menu_close_clear_cancel"
-                    android:contentDescription="Block" />
+                    android:layout_width="26dp"
+                    android:layout_height="26dp"
+                    android:scaleType="fitCenter"
+                    android:src="@drawable/ic_action_block"
+                    android:contentDescription="@string/block" />
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/block"
                     android:textSize="9sp"
+                    android:textColor="@color/warm_grey"
                     android:layout_marginTop="5dp" />
             </LinearLayout>
 
@@ -230,21 +242,23 @@
                 android:gravity="center"
                 android:padding="11dp"
                 android:layout_marginEnd="6dp"
-                android:background="@drawable/bg_btn_report"
+                android:background="@drawable/bg_btn_neutral"
                 android:clickable="true"
                 android:focusable="true">
 
                 <ImageView
-                    android:layout_width="20dp"
-                    android:layout_height="20dp"
-                    android:src="@android:drawable/ic_dialog_alert"
-                    android:contentDescription="Report" />
+                    android:layout_width="26dp"
+                    android:layout_height="26dp"
+                    android:scaleType="fitCenter"
+                    android:src="@drawable/ic_action_report"
+                    android:contentDescription="@string/report" />
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/report"
                     android:textSize="9sp"
+                    android:textColor="@color/warm_grey"
                     android:layout_marginTop="5dp" />
             </LinearLayout>
 
@@ -256,21 +270,23 @@
                 android:orientation="vertical"
                 android:gravity="center"
                 android:padding="11dp"
-                android:background="@drawable/bg_btn_share"
+                android:background="@drawable/bg_btn_neutral"
                 android:clickable="true"
                 android:focusable="true">
 
                 <ImageView
-                    android:layout_width="20dp"
-                    android:layout_height="20dp"
-                    android:src="@android:drawable/ic_menu_share"
-                    android:contentDescription="Share" />
+                    android:layout_width="26dp"
+                    android:layout_height="26dp"
+                    android:scaleType="fitCenter"
+                    android:src="@drawable/ic_action_share"
+                    android:contentDescription="@string/share" />
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/share"
                     android:textSize="9sp"
+                    android:textColor="@color/warm_grey"
                     android:layout_marginTop="5dp" />
             </LinearLayout>
         </LinearLayout>

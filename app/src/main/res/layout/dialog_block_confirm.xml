@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- 封鎖確認 Dialog（8/17 新增）。封鎖是使用者不容易自己發現要去哪裡復原的動作，
+     加一層確認避免誤觸；解除封鎖不走這裡（見 BlockConfirmDialog 的說明）。 -->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@drawable/bg_dialog_cream"
+    android:orientation="vertical"
+    android:gravity="center_horizontal"
+    android:paddingStart="24dp"
+    android:paddingEnd="24dp"
+    android:paddingTop="28dp"
+    android:paddingBottom="22dp">
+
+    <ImageView
+        android:layout_width="52dp"
+        android:layout_height="52dp"
+        android:scaleType="fitCenter"
+        android:src="@drawable/ic_action_block"
+        android:contentDescription="@string/block" />
+
+    <TextView
+        android:id="@+id/tvBlockConfirmTitle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="18dp"
+        android:text="@string/block_confirm_account_title"
+        android:textSize="17sp"
+        android:textStyle="bold"
+        android:textColor="@color/lbl"
+        android:gravity="center" />
+
+    <TextView
+        android:id="@+id/tvBlockConfirmMsg"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:text="@string/block_confirm_account_msg"
+        android:textSize="13sp"
+        android:textColor="@color/warm_grey"
+        android:gravity="center"
+        android:lineSpacingMultiplier="1.35" />
+
+    <!-- 被封鎖的對象（帳號/寄件人/號碼）。呼叫端沒帶就整行隱藏 -->
+    <TextView
+        android:id="@+id/tvBlockConfirmTarget"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:textSize="13sp"
+        android:textStyle="bold"
+        android:textColor="@color/lbl"
+        android:gravity="center"
+        android:singleLine="true"
+        android:ellipsize="end"
+        android:visibility="gone" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="24dp"
+        android:orientation="horizontal">
+
+        <TextView
+            android:id="@+id/btnBlockCancel"
+            android:layout_width="0dp"
+            android:layout_height="52dp"
+            android:layout_weight="1"
+            android:layout_marginEnd="9dp"
+            android:background="@drawable/bg_btn_pill_cancel"
+            android:gravity="center"
+            android:text="@string/cancel"
+            android:textSize="15sp"
+            android:textStyle="bold"
+            android:textColor="@color/card"
+            android:clickable="true"
+            android:focusable="true" />
+
+        <TextView
+            android:id="@+id/btnBlockConfirm"
+            android:layout_width="0dp"
+            android:layout_height="52dp"
+            android:layout_weight="1"
+            android:layout_marginStart="9dp"
+            android:background="@drawable/bg_btn_pill_danger"
+            android:gravity="center"
+            android:text="@string/block"
+            android:textSize="15sp"
+            android:textStyle="bold"
+            android:textColor="@color/on_risk_title"
+            android:clickable="true"
+            android:focusable="true" />
+    </LinearLayout>
+</LinearLayout>

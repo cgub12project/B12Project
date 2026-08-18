@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- 封鎖確認 Dialog 的卡片底（米白、大圓角）。DialogFragment 的視窗底預設是
+     系統的白色圓角，跟暖色系配色對不上，所以自己畫一張並把視窗底設成透明。 -->
+<shape xmlns:android="http://schemas.android.com/apk/res/android">
+    <solid android:color="@color/card" />
+    <corners android:radius="20dp" />
+</shape>

@@ -1,22 +1,30 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- Reusable list item for messages/emails -->
+<!-- 訊息/郵件共用的列表卡片（8/17 改版）
+
+     版面順序依設計稿：來源 + 時間 → 名稱 → 內容標籤 → 內容預覽 → 標籤。
+     整張卡的底色由 Adapter 依風險等級決定（米白/赤陶/銹紅），因此這裡不寫死
+     任何文字顏色——文字色同樣由 Adapter 依卡片底色配對，寫在 XML 會被蓋掉還造成誤解。 -->
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="horizontal"
-    android:padding="12dp"
-    android:layout_marginBottom="8dp"
-    android:gravity="center_vertical"
+    android:padding="14dp"
+    android:layout_marginBottom="10dp"
+    android:gravity="top"
     android:clickable="true"
     android:focusable="true">
 
-    <!-- Avatar -->
+    <!-- Avatar：圓底顏色與字形著色都由 Adapter 設定（安全＝鋼藍底白字形，
+         詐騙＝米白底、字形用卡片本身的風險色） -->
     <ImageView
         android:id="@+id/ivAvatar"
-        android:layout_width="40dp"
-        android:layout_height="40dp"
-        android:src="@android:drawable/sym_action_chat"
+        android:layout_width="44dp"
+        android:layout_height="44dp"
+        android:layout_marginTop="2dp"
+        android:padding="7dp"
+        android:scaleType="fitCenter"
+        android:src="@drawable/ic_glyph_message"
         android:contentDescription="Avatar" />
 
     <!-- Content -->
@@ -25,24 +33,22 @@
         android:layout_height="wrap_content"
         android:layout_weight="1"
         android:orientation="vertical"
-        android:layout_marginStart="11dp">
+        android:layout_marginStart="12dp">
 
-        <!-- Row 1: Name + Time -->
+        <!-- Row 1: 來源 + 時間 -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
-            android:gravity="center_vertical"
-            android:layout_marginBottom="2dp">
+            android:gravity="center_vertical">
 
             <TextView
-                android:id="@+id/tvItemName"
+                android:id="@+id/tvItemSource"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="LINE 群組：台灣投資達人"
-                android:textSize="13sp"
-                android:textStyle="bold"
+                android:text="LINE · 群組 · 4則訊息"
+                android:textSize="11sp"
                 android:singleLine="true"
                 android:ellipsize="end" />
 
@@ -50,33 +56,45 @@
                 android:id="@+id/tvItemTime"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="08:23"
+                android:text="08/10 09:11"
                 android:textSize="11sp"
-                android:textColor="@color/lbl3"
-                android:layout_marginStart="4dp" />
+                android:layout_marginStart="6dp" />
         </LinearLayout>
 
-        <!-- Source -->
+        <!-- 名稱（郵件分頁放的是主旨）。太長一律省略號，不換行 -->
         <TextView
-            android:id="@+id/tvItemSource"
+            android:id="@+id/tvItemName"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="陳大富 · 可疑帳號"
-            android:textSize="11sp"
-            android:textColor="#8C8480"
-            android:layout_marginBottom="3dp" />
+            android:layout_marginTop="1dp"
+            android:text="投資理財交流群"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            android:singleLine="true"
+            android:ellipsize="end" />
 
-        <!-- Message Preview -->
+        <!-- 內容標籤：群組顯示發話者名字（例如「陳大富:」），其餘顯示「訊息內容:」 -->
+        <TextView
+            android:id="@+id/tvItemContentLabel"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="2dp"
+            android:text="訊息內容:"
+            android:textSize="11sp"
+            android:singleLine="true"
+            android:ellipsize="end" />
+
+        <!-- 內容預覽 -->
         <TextView
             android:id="@+id/tvItemMsg"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="哥，上次那個台幣計畫你考慮了嗎..."
+            android:layout_marginTop="1dp"
+            android:text="歡迎！先匯5萬元保證金到822-XXXX"
             android:textSize="13sp"
-            android:textColor="@color/lbl2"
-            android:singleLine="true"
+            android:maxLines="2"
             android:ellipsize="end"
-            android:layout_marginBottom="5dp" />
+            android:layout_marginBottom="6dp" />
 
         <!-- Tags Row — chipSpacingVertical 縮小到 2dp（預設較大，字體調到「特大」時標籤
              換到第二排會跟第一排隔太開，見使用者黑箱測試回報） -->

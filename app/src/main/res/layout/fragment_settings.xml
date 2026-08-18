@@ -70,7 +70,7 @@
                     android:layout_height="wrap_content"
                     android:text="@string/plan_pro"
                     android:textSize="9sp"
-                    android:textColor="@color/gold"
+                    android:textColor="@color/dusty_terracotta"
                     android:textStyle="bold"
                     android:background="@drawable/bg_plan_badge"
                     android:paddingStart="10dp"

@@ -114,7 +114,8 @@
                     <ImageView
                         android:layout_width="44dp"
                         android:layout_height="44dp"
-                        android:src="@android:drawable/sym_action_chat"
+                        android:src="@drawable/ic_glyph_message"
+                        android:tint="@color/steel_blue"
                         android:contentDescription="LINE" />
 
                     <TextView
@@ -142,7 +143,8 @@
                     <ImageView
                         android:layout_width="44dp"
                         android:layout_height="44dp"
-                        android:src="@android:drawable/sym_action_chat"
+                        android:src="@drawable/ic_glyph_message"
+                        android:tint="@color/steel_blue"
                         android:contentDescription="WhatsApp" />
 
                     <TextView
@@ -170,7 +172,8 @@
                     <ImageView
                         android:layout_width="44dp"
                         android:layout_height="44dp"
-                        android:src="@android:drawable/sym_action_chat"
+                        android:src="@drawable/ic_glyph_message"
+                        android:tint="@color/steel_blue"
                         android:contentDescription="Messenger" />
 
                     <TextView
@@ -198,7 +201,8 @@
                     <ImageView
                         android:layout_width="44dp"
                         android:layout_height="44dp"
-                        android:src="@android:drawable/sym_action_email"
+                        android:src="@drawable/ic_glyph_message"
+                        android:tint="@color/steel_blue"
                         android:contentDescription="SMS" />
 
                     <TextView

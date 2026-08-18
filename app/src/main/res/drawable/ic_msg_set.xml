@@ -1,10 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<vector xmlns:android="http://schemas.android.com/apk/res/android"
-    android:width="20dp"
-    android:height="20dp"
-    android:viewportWidth="24"
-    android:viewportHeight="24">
-    <path
-        android:fillColor="#2196F3"
-        android:pathData="M20,2H4C2.9,2 2,2.9 2,4v18l4,-4h14c1.1,0 2,-0.9 2,-2V4C22,2.9 21.1,2 20,2z"/>
-</vector>
+<!-- 設定頁的「訊息」圖示。2026-08-17 起改用 8/17 設計稿那顆統一的對話框字形，
+     跟底部導覽列、訊息列表頭像是同一個來源檔，只是這裡固定著色成鋼藍。 -->
+<bitmap xmlns:android="http://schemas.android.com/apk/res/android"
+    android:src="@drawable/ic_glyph_message"
+    android:tint="@color/steel_blue"
+    android:gravity="fill" />

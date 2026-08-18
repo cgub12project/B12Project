@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- 封鎖確認 Dialog 的「取消」按鈕：淺灰膠囊（配色規範的停用/次要元素色） -->
+<shape xmlns:android="http://schemas.android.com/apk/res/android">
+    <solid android:color="@color/grey_light" />
+    <corners android:radius="26dp" />
+</shape>

@@ -109,6 +109,18 @@
         android:paddingBottom="8dp"
         android:visibility="gone" />
 
+    <!-- 未分析提示條：有尚未完成分析（或分析失敗）的郵件時才顯示，見 EmailFragment.publishItems -->
+    <TextView
+        android:id="@+id/tvUnanalyzedHint"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textSize="11sp"
+        android:textColor="@color/warm_grey"
+        android:paddingStart="16dp"
+        android:paddingEnd="16dp"
+        android:paddingBottom="8dp"
+        android:visibility="gone" />
+
     <!-- Section Header -->
     <TextView
         android:layout_width="match_parent"

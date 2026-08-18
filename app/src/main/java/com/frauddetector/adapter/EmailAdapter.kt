@@ -6,6 +6,10 @@
  * 本 Adapter 負責在 [EmailFragment] 中渲染可疑郵件警報列表。
  * 每個項目顯示：郵件圖示、寄件人、主旨、郵件預覽、風險標籤。
  *
+ * 2026-08-17 改版：卡片版面與配色跟訊息分頁統一（見 [RiskCardStyle]），
+ * 且**主旨放在名稱那一行、寄件人退到上面的來源行**——郵件是靠主旨辨識的，
+ * 寄件人常常是一長串偽冒地址。主旨過長一律省略號、不換行。
+ *
  * 點擊項目本身會就地展開一個操作面板：封鎖這個寄件人（所有項目都有）、
  * 查看完整內容／回報此寄件人為詐騙（只有透過信箱連接讀到的真實郵件才有，見 [onOpenDetail]／
  * [onReport]——真實 email 地址本身就是唯一識別碼，沒有社群帳號回報那種同名誤合併風險）。
@@ -15,8 +19,6 @@
  */
 package com.frauddetector.adapter
 
-import android.graphics.Color
-import android.graphics.drawable.GradientDrawable
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -26,7 +28,7 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.frauddetector.R
 import com.frauddetector.data.EmailAlert
-import com.google.android.material.chip.Chip
+import com.frauddetector.ui.RiskCardStyle
 import com.google.android.material.chip.ChipGroup
 
 class EmailAdapter(
@@ -46,6 +48,7 @@ class EmailAdapter(
         val tvName: TextView = view.findViewById(R.id.tvItemName)
         val tvTime: TextView = view.findViewById(R.id.tvItemTime)
         val tvSource: TextView = view.findViewById(R.id.tvItemSource)
+        val tvContentLabel: TextView = view.findViewById(R.id.tvItemContentLabel)
         val tvMsg: TextView = view.findViewById(R.id.tvItemMsg)
         val chipGroup: ChipGroup = view.findViewById(R.id.chipGroupTags)
         val row: View = view.findViewById(R.id.emailRow)
@@ -62,11 +65,11 @@ class EmailAdapter(
 
     override fun onBindViewHolder(holder: VH, position: Int) {
         val item = filteredItems[position]
-        val dp = holder.itemView.resources.displayMetrics.density
 
-        holder.tvName.text = item.sender
+        // 名稱那一行放主旨、來源那一行放寄件人（跟訊息分頁的「名稱＝對話名、來源＝平台」對齊）
+        holder.tvName.text = item.subject
         holder.tvTime.text = item.time
-        holder.tvSource.text = item.subject
+        holder.tvSource.text = item.sender
         holder.tvMsg.text = item.preview
 
         // Expand-in-place action panel（手風琴式，同時只展開一筆，封鎖/回報這個寄件人）
@@ -86,64 +89,19 @@ class EmailAdapter(
         holder.btnReport.visibility = if (isRealMail) View.VISIBLE else View.GONE
         holder.btnReport.setOnClickListener { onReport(item) }
 
-        val riskColor = when (item.level) {
-            "high" -> Color.parseColor("#A63D2F")
-            "mid" -> Color.parseColor("#C46B4A")
-            else -> Color.parseColor("#7A9E7E")
-        }
-
-        // Card background with left border（左側貼合不留圓角，右側維持圓角）
-        val rightRadius = 14f * dp
-        val cardBg = GradientDrawable().apply {
-            setColor(Color.parseColor("#FDFAF4"))
-            cornerRadii = floatArrayOf(0f, 0f, rightRadius, rightRadius, rightRadius, rightRadius, 0f, 0f)
-        }
-        holder.itemView.background = cardBg
-        holder.itemView.foreground = object : android.graphics.drawable.Drawable() {
-            override fun draw(canvas: android.graphics.Canvas) {
-                val paint = android.graphics.Paint().apply { color = riskColor }
-                val pad = 3f * dp
-                canvas.drawRect(0f, 0f, pad, bounds.height().toFloat(), paint)
-            }
-            override fun setAlpha(a: Int) {}
-            override fun setColorFilter(cf: android.graphics.ColorFilter?) {}
-            @Deprecated("Deprecated in Java")
-            override fun getOpacity() = android.graphics.PixelFormat.TRANSLUCENT
-        }
-
-        // Avatar
-        val avatarBg = GradientDrawable().apply {
-            shape = GradientDrawable.RECTANGLE
-            cornerRadius = 12f * dp
-            setColor(Color.parseColor("#1A4A7FA5"))
-        }
-        holder.ivAvatar.background = avatarBg
-        holder.ivAvatar.setImageResource(android.R.drawable.sym_action_email)
-        holder.ivAvatar.setColorFilter(Color.parseColor("#4A7FA5"))
-
-        // Tags
-        holder.chipGroup.removeAllViews()
-        item.tags.forEach { tag ->
-            val chip = Chip(holder.chipGroup.context).apply {
-                text = tag
-                textSize = 10f
-                isClickable = false
-                chipMinHeight = 0f
-                chipStartPadding = 4f
-                chipEndPadding = 4f
-                val tagColor = when (item.level) {
-                    "high" -> Color.parseColor("#A63D2F")
-                    "mid" -> Color.parseColor("#C46B4A")
-                    else -> Color.parseColor("#7A9E7E")
-                }
-                setTextColor(tagColor)
-                chipBackgroundColor = android.content.res.ColorStateList.valueOf(
-                    Color.argb(25, Color.red(tagColor), Color.green(tagColor), Color.blue(tagColor))
-                )
-                chipStrokeWidth = 0f
-            }
-            holder.chipGroup.addView(chip)
-        }
+        // 整張卡依風險上色。展開的操作面板在卡片外層，跟著同一張卡的底色走。
+        val palette = RiskCardStyle.of(item.level)
+        RiskCardStyle.applyCard(holder.itemView, palette)
+        RiskCardStyle.applyAvatar(holder.ivAvatar, palette)
+        RiskCardStyle.applyText(
+            palette,
+            title = holder.tvName,
+            source = holder.tvSource,
+            time = holder.tvTime,
+            contentLabel = holder.tvContentLabel,
+            body = holder.tvMsg
+        )
+        RiskCardStyle.applyChips(holder.chipGroup, palette, item.tags)
     }
 
     override fun getItemCount() = filteredItems.size

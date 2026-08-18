@@ -32,6 +32,7 @@ import com.frauddetector.network.PhoneDetailResponse
 import com.frauddetector.network.TokenManager
 import com.frauddetector.service.BlockedNumbersManager
 import com.frauddetector.service.TaiwanPhoneFormat
+import com.frauddetector.ui.dialog.BlockConfirmDialog
 import com.frauddetector.ui.dialog.ReportBottomSheet
 import com.frauddetector.ui.dialog.ResultDialog
 import retrofit2.Call
@@ -71,13 +72,13 @@ class PhoneDetailActivity : BaseActivity() {
         }
 
         findViewById<LinearLayout>(R.id.btnBlock).setOnClickListener {
-            val nowBlocked = BlockedNumbersManager.toggle(this, phoneNumber)
-            ResultDialog.newInstance(
-                true,
-                if (nowBlocked) "封鎖成功" else "已取消封鎖",
-                if (nowBlocked) "號碼已加入本機封鎖名單，往後不會出現在電話頁列表中。"
-                else "號碼已從本機封鎖名單移除。"
-            ).show(supportFragmentManager, "result")
+            // 加入封鎖先跳確認；解除封鎖是復原動作，直接執行（見 BlockConfirmDialog 的說明）
+            if (BlockedNumbersManager.isBlocked(this, phoneNumber)) {
+                applyBlockToggle()
+            } else {
+                BlockConfirmDialog.forNumber(phoneNumber) { applyBlockToggle() }
+                    .show(supportFragmentManager, "blockConfirm")
+            }
         }
 
         findViewById<LinearLayout>(R.id.btnReport).setOnClickListener {
@@ -93,6 +94,16 @@ class PhoneDetailActivity : BaseActivity() {
         }
 
         loadDetail()
+    }
+
+    private fun applyBlockToggle() {
+        val nowBlocked = BlockedNumbersManager.toggle(this, phoneNumber)
+        ResultDialog.newInstance(
+            true,
+            if (nowBlocked) "封鎖成功" else "已取消封鎖",
+            if (nowBlocked) "號碼已加入本機封鎖名單，往後不會出現在電話頁列表中。"
+            else "號碼已從本機封鎖名單移除。"
+        ).show(supportFragmentManager, "result")
     }
 
     private fun loadDetail() {
@@ -112,13 +123,22 @@ class PhoneDetailActivity : BaseActivity() {
                     } else {
                         val msg = ApiClient.parseError(response.errorBody()?.string())
                         Toast.makeText(this@PhoneDetailActivity, "查無此號碼資料：$msg", Toast.LENGTH_SHORT).show()
+                        showLoadError()
                     }
                 }
 
                 override fun onFailure(call: Call<PhoneDetailResponse>, t: Throwable) {
                     Toast.makeText(this@PhoneDetailActivity, "網路錯誤：${t.message}", Toast.LENGTH_SHORT).show()
+                    showLoadError()
                 }
             })
+    }
+
+    /** 讀取失敗時，把版面上的 XML 佔位假資料（2,847 / 2 小時前 / 假冒政府機關）清成「—」，避免誤認為真實資料 */
+    private fun showLoadError() {
+        findViewById<TextView>(R.id.tvReportCount).text = "—"
+        findViewById<TextView>(R.id.tvLastReport).text = "—"
+        findViewById<TextView>(R.id.tvFraudType).text = "—"
     }
 
     private fun bindDetail(data: PhoneDetailResponse) {

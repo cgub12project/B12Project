@@ -1,19 +1,24 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <!-- 訊息/郵件圖示取自 8/17 設計稿的鋼藍圓形徽章，只保留裡面的白色字形做成
+         可著色遮罩（不加圓底），這樣才做得出選取／未選取的顏色切換，
+         視覺重量也跟電話、設定兩個分頁一致。著色見 res/color/nav_item_tint.xml -->
     <item
         android:id="@+id/nav_messages"
-        android:icon="@android:drawable/sym_action_chat"
+        android:icon="@drawable/ic_glyph_message"
         android:title="@string/tab_messages" />
     <item
         android:id="@+id/nav_email"
-        android:icon="@android:drawable/sym_action_email"
+        android:icon="@drawable/ic_glyph_mail"
         android:title="@string/tab_email" />
+    <!-- 電話／設定原本是系統的實心話筒與扳手，跟上面兩顆線條字形放在一起風格不一致，
+         2026-08-17 一併換成同一套 Material Icons Outlined（見 ic_glyph_phone.xml 的說明） -->
     <item
         android:id="@+id/nav_phone"
-        android:icon="@android:drawable/sym_action_call"
+        android:icon="@drawable/ic_glyph_phone"
         android:title="@string/tab_phone" />
     <item
         android:id="@+id/nav_settings"
-        android:icon="@android:drawable/ic_menu_preferences"
+        android:icon="@drawable/ic_glyph_settings"
         android:title="@string/tab_settings" />
 </menu>

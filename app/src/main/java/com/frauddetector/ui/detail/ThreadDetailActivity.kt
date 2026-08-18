@@ -103,7 +103,9 @@ class ThreadDetailActivity : BaseActivity() {
             val convRisk = RagDetector.detectConversationRisk(this, conversationKey, messages)
             val conversationExplanation = convRisk
             val hasDetection = convRisk != null
-            val riskLevel = convRisk?.riskLevel ?: "safe"
+            // 尚未偵測完成（或偵測失敗）不能當成「安全」——對防詐 App 是危險預設值，
+            // 真正的詐騙訊息會在後端掛掉時被畫成安全的卡片。改用獨立的「未分析」狀態。
+            val riskLevel = convRisk?.riskLevel ?: "unanalyzed"
             val scamType = convRisk?.scamType
             val confidence = convRisk?.confidence ?: 0.0
 
@@ -132,6 +134,7 @@ class ThreadDetailActivity : BaseActivity() {
                 val (pillText, pillBg) = when (riskLevel) {
                     "high" -> "高危" to R.drawable.bg_risk_pill_high
                     "mid" -> "可疑" to R.drawable.bg_risk_pill_mid
+                    "unanalyzed" -> "未分析" to R.drawable.bg_risk_pill_unanalyzed
                     else -> "安全" to R.drawable.bg_risk_pill_safe
                 }
                 tvRiskPill.text = pillText

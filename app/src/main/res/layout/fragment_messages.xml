@@ -175,6 +175,18 @@
             android:textColor="@color/risk_safe"
             android:padding="8dp"
             android:background="@drawable/bg_monitoring_bar" />
+
+        <!-- 未分析提示條：有尚未完成分析（或分析失敗）的訊息時才顯示，見 MessagesFragment.updateStats -->
+        <TextView
+            android:id="@+id/tvUnanalyzedHint"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:textSize="10sp"
+            android:textColor="@color/warm_grey"
+            android:padding="8dp"
+            android:background="@drawable/bg_unanalyzed_bar"
+            android:visibility="gone" />
     </LinearLayout>
 
     <!-- Filter Chips (horizontal scroll) -->

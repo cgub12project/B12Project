@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- 封鎖確認 Dialog 的「封鎖」按鈕：銹紅膠囊（配色規範的「偵測到詐騙與錯誤狀態」色） -->
+<shape xmlns:android="http://schemas.android.com/apk/res/android">
+    <solid android:color="@color/risk_high" />
+    <corners android:radius="26dp" />
+</shape>
