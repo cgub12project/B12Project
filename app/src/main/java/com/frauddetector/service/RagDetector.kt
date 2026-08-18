@@ -25,6 +25,19 @@ object RagDetector {
     fun detectAndCache(context: Context, notification: CapturedNotification): CapturedNotification {
         if (notification.riskLevel != null) return notification
 
+        if (DetectionModePreferences.selectedMode(context) == DetectionModePreferences.Mode.LOCAL) {
+            val body = LocalModelDetector.detect(context, notification.content) ?: return notification
+            val reason = body.reasons.firstOrNull()
+            AppDatabase.getInstance(context).capturedNotificationDao()
+                .updateRisk(notification.id, body.riskLevel, body.scamType, reason, body.confidence)
+            return notification.copy(
+                riskLevel = body.riskLevel,
+                scamType = body.scamType,
+                aiReason = reason,
+                confidence = body.confidence
+            )
+        }
+
         val token = TokenManager(context).accessToken
         if (token.isNullOrEmpty()) return notification
 
@@ -119,11 +132,18 @@ object RagDetector {
             }
         }
 
-        val token = TokenManager(context).accessToken
-        if (token.isNullOrEmpty()) return null
-
         val text = buildConversationText(messages, limit)
         if (text.isBlank()) return null
+
+        if (DetectionModePreferences.selectedMode(context) == DetectionModePreferences.Mode.LOCAL) {
+            return LocalModelDetector.detect(context, text)?.also {
+                conversationCache[conversationKey] = fingerprint to it
+                persistConversationEntry(context, conversationKey, fingerprint, it)
+            }
+        }
+
+        val token = TokenManager(context).accessToken
+        if (token.isNullOrEmpty()) return null
 
         return try {
             val response = ApiClient.ragApi.detect("Bearer $token", RagDetectRequest(text)).execute()
@@ -170,6 +190,9 @@ object RagDetector {
      */
     fun detectLive(context: Context, content: String): RagDetectResponse? {
         if (content.isBlank()) return null
+        if (DetectionModePreferences.selectedMode(context) == DetectionModePreferences.Mode.LOCAL) {
+            return LocalModelDetector.detect(context, content)
+        }
         val token = TokenManager(context).accessToken
         if (token.isNullOrEmpty()) return null
 

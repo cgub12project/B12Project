@@ -7,8 +7,6 @@ import java.io.File
 object DetectionModePreferences {
     private const val PREFS_NAME = "detection_mode"
     private const val KEY_MODE = "selected_mode"
-    // Set to true only when the JNI inference runtime is packaged and used by RagDetector.
-    private const val LOCAL_INFERENCE_ENABLED = false
     const val LOCAL_MODEL_FILE_NAME = "flash-v4.1.gguf"
 
     enum class Mode { CLOUD, LOCAL }
@@ -34,5 +32,5 @@ object DetectionModePreferences {
 
     /** A local mode must never be presented as ready before a readable model is present. */
     fun isLocalModeReady(context: Context): Boolean =
-        LOCAL_INFERENCE_ENABLED && localModelFile(context).isFile && localModelFile(context).canRead()
+        LocalModelDetector.isAvailable(context)
 }
