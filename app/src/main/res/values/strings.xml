@@ -76,6 +76,19 @@
 
     <!-- Settings -->
     <string name="settings_title">設定</string>
+    <string name="ai_detection_section">AI 判斷</string>
+    <string name="detection_mode">AI 判斷模式</string>
+    <string name="detection_mode_cloud">目前：雲端模式（建議）</string>
+    <string name="detection_mode_local">目前：地端模式（隱私優先）</string>
+    <string name="detection_mode_dialog_title">選擇 AI 判斷模式</string>
+    <string name="detection_mode_cloud_option">雲端模式（建議）</string>
+    <string name="detection_mode_local_option">地端模式（隱私優先）</string>
+    <string name="detection_mode_cloud_description">內容會傳送至後端進行較完整的判斷。</string>
+    <string name="detection_mode_local_description">內容只在手機上分析，不會傳送至後端；判斷品質可能低於雲端。</string>
+    <string name="local_model_not_ready_title">地端模型尚未下載</string>
+    <string name="local_model_not_ready_message">地端模式需要額外下載約 1.9 GB 的模型，且目前驗證碼等常見訊息可能被誤判。模型下載功能尚在準備中，現在仍會維持雲端模式。</string>
+    <string name="local_model_download_later">知道了</string>
+
     <string name="monitoring_section">監控設定</string>
     <string name="msg_monitoring">訊息即時監控</string>
     <string name="msg_monitoring_sub">LINE、簡訊、WhatsApp</string>

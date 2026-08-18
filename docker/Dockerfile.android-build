@@ -1,0 +1,20 @@
+FROM eclipse-temurin:17-jdk-jammy
+
+ARG ANDROID_COMMANDLINE_TOOLS=11076708
+ENV ANDROID_HOME=/opt/android-sdk
+ENV ANDROID_SDK_ROOT=/opt/android-sdk
+ENV PATH="${PATH}:${ANDROID_HOME}/cmdline-tools/latest/bin:${ANDROID_HOME}/platform-tools"
+
+RUN apt-get update \
+    && apt-get install --no-install-recommends -y ca-certificates unzip wget \
+    && rm -rf /var/lib/apt/lists/* \
+    && mkdir -p "${ANDROID_HOME}/cmdline-tools" \
+    && wget -q "https://dl.google.com/android/repository/commandlinetools-linux-${ANDROID_COMMANDLINE_TOOLS}_latest.zip" -O /tmp/android-tools.zip \
+    && unzip -q /tmp/android-tools.zip -d "${ANDROID_HOME}/cmdline-tools" \
+    && mv "${ANDROID_HOME}/cmdline-tools/cmdline-tools" "${ANDROID_HOME}/cmdline-tools/latest" \
+    && rm /tmp/android-tools.zip \
+    && yes | sdkmanager --licenses > /dev/null \
+    && sdkmanager "platform-tools" "platforms;android-34" "build-tools;34.0.0"
+
+WORKDIR /workspace
+ENTRYPOINT ["./gradlew"]

@@ -38,6 +38,7 @@ import com.frauddetector.network.TokenManager
 import com.frauddetector.network.UserOut
 import com.frauddetector.network.UserSettingsOut
 import com.frauddetector.network.UserSettingsUpdateRequest
+import com.frauddetector.service.DetectionModePreferences
 import com.frauddetector.service.FontScaleManager
 import com.frauddetector.service.PermissionHelper
 import com.frauddetector.ui.detail.BlockedEmailsActivity
@@ -237,6 +238,7 @@ class SettingsFragment : Fragment() {
             "已連接的信箱", "連接 Gmail/Outlook 讀取完整信件內容")
         setupItem(view, R.id.settingFontSize, R.drawable.ic_text_size_set,
             "文字大小", "目前：${FontScaleManager.currentLabel(requireContext())}")
+        setupDetectionModeItem(view)
         setupItem(view, R.id.settingLogout, R.drawable.ic_logout_set,
             getString(R.string.logout), getString(R.string.logout_sub))
     }
@@ -246,6 +248,23 @@ class SettingsFragment : Fragment() {
         item.findViewById<ImageView>(R.id.settingsIcon).setImageResource(iconRes)
         item.findViewById<TextView>(R.id.tvSettingsLabel).text = label
         item.findViewById<TextView>(R.id.tvSettingsSub).text = sub
+    }
+
+    private fun setupDetectionModeItem(view: View) {
+        val mode = DetectionModePreferences.selectedMode(requireContext())
+        setupItem(
+            view,
+            R.id.settingDetectionMode,
+            R.drawable.ic_shield_set,
+            getString(R.string.detection_mode),
+            getString(
+                if (mode == DetectionModePreferences.Mode.LOCAL) {
+                    R.string.detection_mode_local
+                } else {
+                    R.string.detection_mode_cloud
+                }
+            )
+        )
     }
 
     /** 設定各設定項目的點擊事件（更改密碼、隱私、登出、快速登入） */
@@ -280,6 +299,10 @@ class SettingsFragment : Fragment() {
 
         view.findViewById<View>(R.id.settingFontSize).setOnClickListener {
             showFontSizeDialog(view)
+        }
+
+        view.findViewById<View>(R.id.settingDetectionMode).setOnClickListener {
+            showDetectionModeDialog(view)
         }
 
         view.findViewById<View>(R.id.settingLogout).setOnClickListener {
@@ -341,6 +364,41 @@ class SettingsFragment : Fragment() {
                 ).show()
             }
         }
+    }
+
+    private fun showDetectionModeDialog(view: View) {
+        val ctx = requireContext()
+        val selected = DetectionModePreferences.selectedMode(ctx)
+        val choices = arrayOf(
+            getString(R.string.detection_mode_cloud_option),
+            getString(R.string.detection_mode_local_option),
+        )
+        val checkedItem = if (selected == DetectionModePreferences.Mode.LOCAL) 1 else 0
+
+        AlertDialog.Builder(ctx)
+            .setTitle(R.string.detection_mode_dialog_title)
+            .setSingleChoiceItems(choices, checkedItem) { dialog, which ->
+                if (which == 0) {
+                    DetectionModePreferences.selectMode(ctx, DetectionModePreferences.Mode.CLOUD)
+                    setupDetectionModeItem(view)
+                    Toast.makeText(ctx, R.string.detection_mode_cloud_description, Toast.LENGTH_LONG).show()
+                    dialog.dismiss()
+                } else if (DetectionModePreferences.isLocalModeReady(ctx)) {
+                    DetectionModePreferences.selectMode(ctx, DetectionModePreferences.Mode.LOCAL)
+                    setupDetectionModeItem(view)
+                    Toast.makeText(ctx, R.string.detection_mode_local_description, Toast.LENGTH_LONG).show()
+                    dialog.dismiss()
+                } else {
+                    dialog.dismiss()
+                    AlertDialog.Builder(ctx)
+                        .setTitle(R.string.local_model_not_ready_title)
+                        .setMessage(R.string.local_model_not_ready_message)
+                        .setPositiveButton(R.string.local_model_download_later, null)
+                        .show()
+                }
+            }
+            .setNegativeButton(R.string.cancel, null)
+            .show()
     }
 
     private fun doLogout() {

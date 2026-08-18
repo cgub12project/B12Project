@@ -97,6 +97,23 @@
         <!-- 文字大小 -->
         <include layout="@layout/item_settings_nav"
             android:id="@+id/settingFontSize" />
+        <!-- 預設雲端；地端會等模型下載與本機推論完成才可開啟。 -->
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/ai_detection_section"
+            android:textSize="11sp"
+            android:textColor="@color/lbl3"
+            android:letterSpacing="0.08"
+            android:textAllCaps="true"
+            android:paddingStart="16dp"
+            android:paddingTop="16dp"
+            android:paddingBottom="8dp" />
+
+        <include layout="@layout/item_settings_nav"
+            android:id="@+id/settingDetectionMode" />
+
+
 
         <!-- 監控設定 Section -->
         <TextView
