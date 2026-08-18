@@ -1,0 +1,102 @@
+FLASH App — 請後端協助：地端模型私有下載部署
+日期：2026-08-18
+對象：後端／部署負責人
+
+一、目的與範圍
+============================================================
+Android App 已完成 arm64 地端 llama.cpp 推論原型。模型不會包入 APK，使用者選擇
+「地端模式」後，才下載模型到手機並在手機本機推論；訊息／郵件內容不會傳到後端。
+
+這次請協助的是「私有、安全、可長期維護的模型分發」，不是要在遠端跑模型推論服務。
+請不要把模型接到既有 /rag/detect 的推論流程，也不要以 Cloudflare Quick Tunnel 提供下載；
+模型下載需要穩定的 HTTPS 網域與可長期維護的部署位置。
+
+二、待部署檔案
+============================================================
+來源：D:\專題輕量化模型\flash-v4.1.gguf
+遠端檔名：flash-v4.1.gguf
+大小：1,929,902,464 bytes（約 1.93 GB）
+SHA-256：497857a75365ee0daaea7fe353fa9a8a77208b0ec9233de03b90be36875b20e9
+模型格式：GGUF（Qwen2 3.1B Q4_K_M）
+
+建議遠端至少保留 10 GB 可用空間，預留未來模型更新、暫存與回滾版本。
+
+三、建議架構（首選）
+============================================================
+請在長期維護的遠端主機／VPS 上，以 Nginx 或 Caddy 提供 HTTPS 靜態檔案傳輸，
+並由既有後端 API 先驗證使用者登入狀態。
+
+    Android App
+        │ Bearer access token
+        ▼
+    既有後端：GET /api/v1/local-model/manifest
+        │ 驗證使用者後提供版本資訊與下載路徑／短效 URL
+        ▼
+    Nginx/Caddy 靜態分發 flash-v4.1.gguf（支援 Range）
+
+不要讓 Android APK 持有任何伺服器 SSH 密碼、模型儲存目錄密碼、永久下載 token，
+也不要把模型檔設為可匿名列目錄或永久公開網址。
+
+四、後端 API 契約（請協助實作或確認）
+============================================================
+1. GET /api/v1/local-model/manifest
+   - 身分驗證：沿用 App 現有 Authorization: Bearer <access token>。
+   - 未登入：401；無權限：403。
+   - 成功時回傳範例：
+
+     {
+       "version": "4.1",
+       "file_name": "flash-v4.1.gguf",
+       "size_bytes": 1929902464,
+       "sha256": "497857a75365ee0daaea7fe353fa9a8a77208b0ec9233de03b90be36875b20e9",
+       "download_url": "https://models.example.com/private/flash-v4.1.gguf?...",
+       "expires_at": "2026-08-19T12:00:00Z"
+     }
+
+   - download_url 請使用短效、不可猜測的 URL 或簽章；建議有效期 24 小時，
+     以容納 1.93 GB 的慢速／中斷續傳下載。
+   - 未來更換模型時只需調整 version、size_bytes、sha256 與 URL，不要覆蓋舊版
+     直到新版已穩定。
+
+2. 模型下載端點
+   - 必須 HTTPS，使用穩定的正式網域，不使用 Quick Tunnel。
+   - 必須支援 HTTP Range：Android 以 Range 續傳時應回 206 Partial Content，並帶有
+     Accept-Ranges: bytes、Content-Range、Content-Length。
+   - 應支援 HEAD，方便 App 確認大小／版本；下載回應建議帶 ETag 與 Last-Modified。
+   - Content-Type 可為 application/octet-stream；Content-Disposition 請使用 attachment。
+   - 禁止匿名目錄列出、禁止把下載 token 寫入存取日誌、設定合理的限速與 rate limit。
+   - 模型檔只應透過受保護路徑提供；直接請求原始檔案路徑必須為 401／403。
+
+五、Nginx／後端整合建議
+============================================================
+大檔請由 Nginx/Caddy 直接串流，避免 Python／Node 後端把 1.93 GB 整個讀進記憶體。
+可採下列任一方式：
+
+A. 後端驗證後回傳短效簽章 URL，由 Nginx 驗證簽章再提供靜態檔案。
+B. 下載請求先經後端驗證，驗證成功後以 Nginx X-Accel-Redirect 導向 internal 靜態路徑。
+C. Nginx auth_request 向既有後端做輕量權限檢查，確認後直接由 Nginx 送檔。
+
+重點：驗證層可以是後端，但 1.93 GB 的檔案傳輸本體不應由應用程式框架緩衝或重組。
+
+六、驗收條件
+============================================================
+[ ] 無 Authorization 或過期簽章時，manifest／下載端點回 401 或 403。
+[ ] 合法使用者可取得 manifest，且欄位與第三節格式一致。
+[ ] 模型完整下載後 SHA-256 完全等於本文件第二節。
+[ ] 以 Range: bytes=0-1048575 測試時回 206，並可從中斷位置續傳。
+[ ] 下載期間重新啟動 App 後可續傳，不必從 0 bytes 再開始。
+[ ] 模型下載完成後，Android App 仍可在離線狀態載入本機模型。
+[ ] 伺服器重啟、網域更新後仍維持同一正式 HTTPS 下載入口。
+
+七、Android 端後續由前端／App 負責
+============================================================
+- 呼叫 manifest、顯示模型大小／版本與 Wi-Fi 提示。
+- 支援開始、暫停、斷點續傳、失敗重試與刪除模型。
+- 完成後在 App 私有 noBackupFilesDir/models/ 下保存 flash-v4.1.gguf。
+- 驗證 SHA-256 成功後才啟用「地端模式」。
+- 地端模式絕不 fallback 將內容送回雲端。
+
+八、重要限制
+============================================================
+私有下載可防止未授權者直接取得模型；但模型一旦下載到使用者手機，無法做到絕對
+防複製／防外流。此設計保護的是分發入口與存取權限，並非 DRM。
