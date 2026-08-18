@@ -253,13 +253,14 @@ class SettingsFragment : Fragment() {
     }
 
     /**
-     * 設定頁圖示跟著「文字大小」設定等比放大／縮小（同一顆向量圖，線條相對圖示本身的
-     * 粗細比例不變，不是把線條單獨加粗）——字級選「特大」時圖示本來就該跟著醒目，
-     * 選「標準」則維持原本細緻的比例，不用另外做一套粗線版圖示。
+     * 設定頁圖示跟著「文字大小」設定等比放大／縮小（同一顆圖，線條相對圖示本身的粗細
+     * 比例不變，不是把線條單獨加粗）。放大幅度上限鎖在「大」（1.2x）——「特大」文字是
+     * 1.5x，圖示如果照這個倍率一起放會佔太多版面，實測會「放太大」，所以圖示最多只跟到
+     * 「大」的視覺尺寸，文字仍然照使用者選的倍率放到「特大」，兩者不用綁死同一個倍率。
      */
     private fun applyIconScale(iconView: ImageView) {
         val baseSizePx = (34 * resources.displayMetrics.density).toInt()
-        val scale = FontScaleManager.getScale(requireContext())
+        val scale = FontScaleManager.getScale(requireContext()).coerceAtMost(FontScaleManager.SCALE_LARGE)
         val size = (baseSizePx * scale).toInt()
         val params = iconView.layoutParams
         params.width = size
