@@ -26,9 +26,16 @@ object LocalModelDetector {
         val confidence_score: Double? = null,
     )
 
+    /**
+     * 這台裝置能不能跑地端推論——原生程式庫只編了 arm64-v8a。
+     *
+     * 跟「模型檔在不在」分開判斷：不支援的裝置連 1.9 GB 都不該下載，下載完也不能
+     * 切成地端模式（切過去每則訊息都會變成「未分析」）。
+     */
+    fun isDeviceSupported(): Boolean = Build.SUPPORTED_ABIS.any { it == "arm64-v8a" }
+
     fun isAvailable(context: Context): Boolean =
-        Build.SUPPORTED_ABIS.any { it == "arm64-v8a" } &&
-            DetectionModePreferences.localModelFile(context).canRead()
+        isDeviceSupported() && DetectionModePreferences.localModelFile(context).canRead()
 
     fun detect(context: Context, content: String): RagDetectResponse? {
         if (content.isBlank() || !isAvailable(context)) return null

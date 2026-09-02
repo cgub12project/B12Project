@@ -14,6 +14,7 @@ package com.frauddetector.ui.main
 
 import android.content.Context
 import android.content.Intent
+import android.os.Build
 import android.os.Bundle
 import android.text.InputType
 import android.view.LayoutInflater
@@ -42,6 +43,7 @@ import com.frauddetector.network.UserSettingsUpdateRequest
 import com.frauddetector.network.LocalModelManifest
 import com.frauddetector.service.DetectionModePreferences
 import com.frauddetector.service.FontScaleManager
+import com.frauddetector.service.LocalModelDetector
 import com.frauddetector.service.LocalModelDownloader
 import com.frauddetector.service.PermissionHelper
 import com.frauddetector.ui.detail.BlockedEmailsActivity
@@ -290,9 +292,13 @@ class SettingsFragment : Fragment() {
     }
 
     /** 把 bytes 換成給使用者看的 GB／MB 文字（模型是 1.9 GB 等級，不需要更小的單位）。 */
+    /**
+     * 一律用十進位（1 GB = 1000 MB）。需求書寫的 1.93 GB、下載提示寫的「約 1.9 GB」
+     * 都是十進位，這裡若用 1024 進位會變成 1.80 GB，同一個檔案出現兩種大小。
+     */
     private fun formatBytes(bytes: Long): String = when {
-        bytes >= 1024L * 1024 * 1024 -> String.format("%.2f GB", bytes / 1024.0 / 1024 / 1024)
-        else -> String.format("%.0f MB", bytes / 1024.0 / 1024)
+        bytes >= 1_000_000_000L -> String.format("%.2f GB", bytes / 1_000_000_000.0)
+        else -> String.format("%.0f MB", bytes / 1_000_000.0)
     }
 
     /** 設定各設定項目的點擊事件（更改密碼、隱私、登出、快速登入） */
@@ -416,6 +422,10 @@ class SettingsFragment : Fragment() {
                     setupDetectionModeItem(view)
                     Toast.makeText(ctx, R.string.detection_mode_local_description, Toast.LENGTH_LONG).show()
                     dialog.dismiss()
+                } else if (!LocalModelDetector.isDeviceSupported()) {
+                    // 原生程式庫只有 arm64：這台裝置下載完也跑不動，不要讓使用者白花 1.9 GB
+                    dialog.dismiss()
+                    showLocalModelUnsupportedDialog()
                 } else {
                     // 還沒下載模型：改成直接引導下載（2026-09-02 後端已上線
                     // GET /api/v1/local-model/manifest 與簽章下載端點），不再只是說「準備中」
@@ -536,6 +546,12 @@ class SettingsFragment : Fragment() {
                                 progressBar.progress = percent
                                 tvDetail.text = formatBytes(done) + " / " + formatBytes(total) + "（" + percent + "%）"
                             }
+                            LocalModelDownloader.Phase.RECONNECTING -> {
+                                // 斷線後自動續傳中：讓使用者知道進度沒有歸零，不用重按
+                                tvStatus.setText(R.string.local_model_reconnecting)
+                                progressBar.isIndeterminate = true
+                                tvDetail.text = formatBytes(done) + " / " + formatBytes(total)
+                            }
                             LocalModelDownloader.Phase.VERIFYING -> {
                                 tvStatus.setText(R.string.local_model_verifying)
                                 progressBar.isIndeterminate = true
@@ -552,10 +568,16 @@ class SettingsFragment : Fragment() {
                 dialog.dismiss()
                 when (outcome) {
                     is LocalModelDownloader.Outcome.Success -> {
-                        // 校驗通過才會走到這裡，此時切成地端模式才是安全的
-                        DetectionModePreferences.selectMode(ctx, DetectionModePreferences.Mode.LOCAL)
-                        setupDetectionModeItem(view)
-                        Toast.makeText(ctx, R.string.local_model_download_success, Toast.LENGTH_LONG).show()
+                        // 校驗通過才會走到這裡，此時切成地端模式才是安全的。
+                        // 但裝置不支援 arm64 時模型檔再正確也載入不了，切過去會讓每則
+                        // 訊息都變成「未分析」——寧可留在雲端模式並說清楚原因。
+                        if (DetectionModePreferences.isLocalModeReady(ctx)) {
+                            DetectionModePreferences.selectMode(ctx, DetectionModePreferences.Mode.LOCAL)
+                            setupDetectionModeItem(view)
+                            Toast.makeText(ctx, R.string.local_model_download_success, Toast.LENGTH_LONG).show()
+                        } else {
+                            showLocalModelUnsupportedDialog()
+                        }
                     }
                     is LocalModelDownloader.Outcome.Cancelled ->
                         Toast.makeText(ctx, R.string.local_model_download_cancelled, Toast.LENGTH_LONG).show()
@@ -568,6 +590,16 @@ class SettingsFragment : Fragment() {
                 }
             }
         }.start()
+    }
+
+    /** 原生程式庫只有 arm64-v8a，其他 ABI（例如 x86_64 模擬器）無法使用地端模式。 */
+    private fun showLocalModelUnsupportedDialog() {
+        val abi = Build.SUPPORTED_ABIS.firstOrNull() ?: "unknown"
+        AlertDialog.Builder(requireContext())
+            .setTitle(R.string.local_model_unsupported_title)
+            .setMessage(getString(R.string.local_model_unsupported_message, abi))
+            .setPositiveButton(R.string.local_model_download_later, null)
+            .show()
     }
 
     private fun confirmDeleteLocalModel(view: View) {

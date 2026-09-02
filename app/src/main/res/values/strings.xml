@@ -96,9 +96,12 @@
     <!-- %1$s 已下載大小 -->
     <string name="local_model_download_resume">已下載 %1$s，這次會從中斷處繼續。</string>
     <string name="local_model_downloading">下載模型中…</string>
+    <string name="local_model_reconnecting">連線中斷，重新連線並從中斷處續傳…</string>
     <string name="local_model_verifying">驗證模型完整性中（SHA-256）…</string>
     <string name="local_model_download_success">地端模型已就緒，已切換為地端模式</string>
     <string name="local_model_download_cancelled">已停止下載，已下載的部分會保留，下次可以續傳</string>
+    <string name="local_model_unsupported_title">這台裝置不支援地端模式</string>
+    <string name="local_model_unsupported_message">地端推論需要 arm64 處理器，這台裝置是 %1$s，沒有可用的原生程式庫，下載模型後也無法在本機判斷，因此維持雲端模式。</string>
     <string name="local_model_delete">刪除地端模型</string>
     <string name="local_model_delete_confirm">刪除後會回到雲端模式，之後要再用地端模式必須重新下載約 1.9 GB。確定刪除嗎？</string>
     <string name="local_model_deleted">已刪除地端模型，並切換回雲端模式</string>

@@ -31,8 +31,19 @@ object LocalModelDownloader {
 
     private const val BUFFER_SIZE = 256 * 1024
 
-    /** 下載階段，給 UI 顯示「下載中」與「驗證中」兩種不同的等待狀態。 */
-    enum class Phase { DOWNLOADING, VERIFYING }
+    /**
+     * 連續幾次「完全沒有前進」就放棄。
+     *
+     * 只要有下載到東西就把計數歸零：1.93 GB 在行動網路上本來就會斷好幾次，
+     * 每斷一次就把使用者丟回失敗對話框等於下載不完。
+     */
+    private const val MAX_STALLED_ATTEMPTS = 5
+
+    /** 連線總次數上限，避免伺服器每次只吐幾個 byte 時無限重連。 */
+    private const val MAX_ATTEMPTS = 100
+
+    /** 下載階段，給 UI 顯示「下載中」「重新連線中」「驗證中」三種等待狀態。 */
+    enum class Phase { DOWNLOADING, RECONNECTING, VERIFYING }
 
     sealed class Outcome {
         /** 下載完成、SHA-256 核對通過、已改名成正式檔案。 */
@@ -114,9 +125,16 @@ object LocalModelDownloader {
 
         var current = manifest
         var refreshedSignature = false
+        // 連續沒有進度的次數，以及最後一次的中斷原因（真的放棄時要顯示給使用者）
+        var stalledAttempts = 0
+        var attempts = 0
+        var lastError: String? = null
 
         while (true) {
             if (isCancelled()) return Outcome.Cancelled
+            if (attempts++ >= MAX_ATTEMPTS) {
+                return Outcome.Failure(lastError ?: "下載重試次數過多，請稍後再試")
+            }
 
             // 舊版模型留下的暫存檔比這次要下載的還大，續傳只會拼出壞檔案，直接重來
             if (partFile.exists() && partFile.length() > current.sizeBytes) partFile.delete()
@@ -174,8 +192,10 @@ object LocalModelDownloader {
                     }
                 }
             } catch (e: Exception) {
-                Log.e(TAG, "model download failed", e)
-                return Outcome.Failure("下載中斷：${e.message ?: "網路錯誤"}。已下載的部分會保留，可以再按一次繼續。")
+                // 不直接收掉：連線斷在半路是 1.93 GB 下載的常態，記下原因後回到迴圈用
+                // Range 從斷點續傳，真的連續幾次都沒進度才放棄。
+                Log.w(TAG, "model download interrupted, will retry", e)
+                lastError = "下載中斷：${describeError(e)}。已下載的部分會保留，可以再按一次繼續。"
             }
 
             if (authExpired) {
@@ -195,12 +215,22 @@ object LocalModelDownloader {
                 continue
             }
 
-            // 連線正常結束但檔案還沒滿：多半是中途斷線，回到迴圈用 Range 從斷點續傳。
-            // 但如果這一輪一個 byte 都沒前進，再重試也只會原地空轉，直接當失敗收掉。
+            // 這一輪結束（正常收尾或中途斷線）但檔案還沒滿：回到迴圈用 Range 續傳。
             if (partFile.length() >= current.sizeBytes) break
-            if (partFile.length() <= startAt) {
-                return Outcome.Failure("下載沒有進度，請確認網路後重試")
+            if (partFile.length() > startAt) {
+                stalledAttempts = 0
+            } else {
+                // 一個 byte 都沒前進，再重試也可能只是原地空轉，給幾次機會就收掉
+                stalledAttempts++
+                if (stalledAttempts >= MAX_STALLED_ATTEMPTS) {
+                    return Outcome.Failure(lastError ?: "下載沒有進度，請確認網路後重試")
+                }
             }
+
+            onProgress(Phase.RECONNECTING, partFile.length(), current.sizeBytes)
+            // 退避等待：連續失敗時拉長間隔，免得沒訊號時瘋狂重連把電吃光
+            val backoffMs = 2000L shl minOf(stalledAttempts, 3)
+            if (!waitBeforeRetry(backoffMs, isCancelled)) return Outcome.Cancelled
         }
 
         if (partFile.length() != current.sizeBytes) {
@@ -221,6 +251,24 @@ object LocalModelDownloader {
         }
         DetectionModePreferences.rememberDownloadedModel(context, current.fileName, current.version)
         return Outcome.Success
+    }
+
+    /** 把常見的網路例外翻成使用者看得懂的中文（原本會直接把 "timeout" 印出來）。 */
+    private fun describeError(e: Exception): String = when (e) {
+        is java.net.SocketTimeoutException -> "連線逾時"
+        is java.net.UnknownHostException -> "找不到伺服器"
+        is javax.net.ssl.SSLException -> "連線加密失敗"
+        else -> e.message ?: "網路錯誤"
+    }
+
+    /** 等待重試，期間仍然可以取消。@return false 代表使用者按了取消。 */
+    private fun waitBeforeRetry(millis: Long, isCancelled: () -> Boolean): Boolean {
+        val deadline = System.currentTimeMillis() + millis
+        while (System.currentTimeMillis() < deadline) {
+            if (isCancelled()) return false
+            Thread.sleep(200)
+        }
+        return !isCancelled()
     }
 
     private fun partFile(context: Context, manifest: LocalModelManifest): File =
