@@ -88,7 +88,7 @@ class MessagesFragment : Fragment() {
             val parts = item.id.removePrefix("grp_").split("_", limit = 2)
             if (parts.size == 2) {
                 val (app, conversationKey) = parts
-                val isGroup = item.tags.contains("群組")
+                val isGroup = item.isGroup
                 val intent = Intent(requireContext(), ThreadDetailActivity::class.java).apply {
                     putExtra(ThreadDetailActivity.EXTRA_APP, app)
                     putExtra(ThreadDetailActivity.EXTRA_SENDER, if (isGroup) "" else conversationKey)
@@ -206,7 +206,7 @@ class MessagesFragment : Fragment() {
         val parts = item.id.removePrefix("grp_").split("_", limit = 2)
         if (parts.size == 2) {
             val (app, conversationKey) = parts
-            val isGroup = item.tags.contains("群組")
+            val isGroup = item.isGroup
             executor.execute {
                 val dao = AppDatabase.getInstance(ctx).capturedNotificationDao()
                 if (isGroup) dao.deleteGroupConversation(app, conversationKey)
@@ -342,6 +342,7 @@ private fun CapturedNotification.toGroupedAlertItem(
         app = app,
         tags = tags,
         threadId = "",
-        speaker = if (groupName.isNotEmpty()) sender else ""
+        speaker = if (groupName.isNotEmpty()) sender else "",
+        isGroup = groupName.isNotEmpty()
     )
 }
