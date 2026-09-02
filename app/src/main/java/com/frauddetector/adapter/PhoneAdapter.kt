@@ -9,7 +9,9 @@
  * 點擊項目本身會就地展開一個操作面板（封鎖／回報／撥號／更多），
  * 同時間只會有一筆展開（手風琴式），點「更多」才會導向 [PhoneDetailActivity]。
  *
- * 支援即時搜尋篩選：[filter] 方法依號碼或類型過濾列表。
+ * 支援兩種篩選，兩者可同時生效（見 [applyFilters]）：
+ * - [filter]：依號碼或類型的關鍵字
+ * - [filterByLevel]：依風險等級（高危／可疑／安全），對應電話分頁上方的篩選 Chips
  */
 package com.frauddetector.adapter
 
@@ -23,6 +25,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.frauddetector.R
 import com.frauddetector.data.PhoneRecord
 import com.frauddetector.service.TaiwanPhoneFormat
+import com.frauddetector.ui.RiskFilterChips
 
 class PhoneAdapter(
     private var items: List<PhoneRecord>,
@@ -34,6 +37,8 @@ class PhoneAdapter(
 
     private var filteredItems = items.toList()
     private var expandedId: String? = null
+    private var currentQuery = ""
+    private var currentLevel = RiskFilterChips.LEVEL_ALL
 
     class VH(view: View) : RecyclerView.ViewHolder(view) {
         val tvNum: TextView = view.findViewById(R.id.tvPhoneNum)
@@ -95,14 +100,33 @@ class PhoneAdapter(
     override fun getItemCount() = filteredItems.size
 
     fun filter(query: String) {
-        filteredItems = if (query.isBlank()) items
-        else items.filter { it.number.contains(query) || it.type.contains(query) }
-        notifyDataSetChanged()
+        currentQuery = query.trim()
+        applyFilters()
     }
 
+    /** @param level [RiskFilterChips.LEVEL_ALL] 或 "high"/"mid"/"safe" */
+    fun filterByLevel(level: String) {
+        currentLevel = level
+        applyFilters()
+    }
+
+    /**
+     * 重新載入資料時保留使用者目前選的風險等級——列表會因為搜尋、通話紀錄重讀、
+     * 背景同步而更新好幾次，每次都把篩選重置回「全部」會很煩人。
+     */
     fun updateItems(newItems: List<PhoneRecord>) {
         items = newItems
-        filteredItems = items.toList()
+        applyFilters()
+    }
+
+    private fun applyFilters() {
+        filteredItems = items
+            .filter { currentLevel == RiskFilterChips.LEVEL_ALL || it.riskLevel == currentLevel }
+            .filter {
+                currentQuery.isEmpty() ||
+                    it.number.contains(currentQuery) ||
+                    it.type.contains(currentQuery)
+            }
         notifyDataSetChanged()
     }
 

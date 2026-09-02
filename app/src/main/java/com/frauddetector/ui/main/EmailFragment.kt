@@ -20,6 +20,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.room.InvalidationTracker
 import com.frauddetector.R
+import com.frauddetector.ui.RiskFilterChips
 import com.frauddetector.adapter.EmailAdapter
 import com.frauddetector.data.EmailAlert
 import com.frauddetector.db.AppDatabase
@@ -34,7 +35,6 @@ import com.frauddetector.ui.SwipeToDeleteHelper
 import com.frauddetector.ui.detail.MailMessageDetailActivity
 import com.frauddetector.ui.dialog.BlockConfirmDialog
 import com.frauddetector.ui.dialog.MessageReportBottomSheet
-import com.google.android.material.chip.Chip
 import com.google.android.material.chip.ChipGroup
 import java.io.IOException
 import java.text.SimpleDateFormat
@@ -93,7 +93,8 @@ class EmailFragment : Fragment() {
     private lateinit var tvSyncStatus: TextView
     private lateinit var tvSubtitle: TextView
     private lateinit var tvUnanalyzedHint: TextView
-    private var currentProviderFilter = "全部"
+    /** 目前選取的風險等級篩選（見 [RiskFilterChips]），列表刷新時要沿用 */
+    private var currentRiskFilter = RiskFilterChips.LEVEL_ALL
     private val executor = Executors.newSingleThreadExecutor()
 
     // 即時刷新：同 MessagesFragment，captured_notifications 表有任何寫入就 debounce 重新載入
@@ -313,37 +314,19 @@ class EmailFragment : Fragment() {
         }
     }
 
-    /** 根據實際資料動態產生郵件供應商篩選 Chips */
-    private fun buildDynamicChips(items: List<EmailAlert>) {
-        val chipGroup = view?.findViewById<ChipGroup>(R.id.chipGroupProvider) ?: return
-        chipGroup.removeAllViews()
-
-        val chipAll = Chip(requireContext()).apply {
-            text = "全部"
-            isCheckable = true
-            isChecked = currentProviderFilter == "全部"
-        }
-        chipGroup.addView(chipAll)
-
-        // 即時刷新會重建整個 ChipGroup，用 currentProviderFilter 還原原本選取的 chip
-        val providers = items.map { it.provider }.distinct().sorted()
-        providers.forEach { provider ->
-            val chip = Chip(requireContext()).apply {
-                text = provider
-                isCheckable = true
-                isChecked = provider == currentProviderFilter
-            }
-            chipGroup.addView(chip)
-        }
-
-        chipGroup.setOnCheckedStateChangeListener { _, checkedIds ->
-            currentProviderFilter = if (checkedIds.isEmpty() || checkedIds.first() == chipAll.id) {
-                "全部"
-            } else {
-                val selectedChip = chipGroup.findViewById<Chip>(checkedIds.first())
-                selectedChip?.text?.toString() ?: "全部"
-            }
-            adapter.filterByProvider(currentProviderFilter)
+    /**
+     * 風險等級篩選 Chips（跟電話分頁共用 [RiskFilterChips] 的樣式）。
+     * 未分析的郵件不列入任何一個等級，也因此不會被「安全」篩選誤收進去。
+     */
+    private fun buildRiskChips(items: List<EmailAlert>) {
+        val chipGroup = view?.findViewById<ChipGroup>(R.id.chipGroupEmailRisk) ?: return
+        RiskFilterChips.render(
+            chipGroup,
+            counts = items.groupingBy { it.level }.eachCount(),
+            selectedLevel = currentRiskFilter
+        ) { level ->
+            currentRiskFilter = level
+            adapter.filterByLevel(level)
         }
     }
 
@@ -471,7 +454,7 @@ class EmailFragment : Fragment() {
         activity?.runOnUiThread {
             if (!isAdded) return@runOnUiThread
             adapter.updateItems(items)
-            buildDynamicChips(items)
+            buildRiskChips(items)
             tvSubtitle.text = "${items.count { it.level == "high" || it.level == "mid" }} SUSPICIOUS"
 
             val unanalyzedCount = items.count { it.level == "unanalyzed" }

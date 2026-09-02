@@ -12,6 +12,8 @@
         android:layout_height="0dp"
         android:layout_weight="1" />
 
+    <!-- 導覽列只用 icon 表示、不顯示分頁文字（2026-09-02 會議決議）。
+         menu 裡的 title 保留著沒刪：那是 TalkBack 朗讀與長按提示用的，不會畫在畫面上 -->
     <com.google.android.material.bottomnavigation.BottomNavigationView
         android:id="@+id/bottomNav"
         android:layout_width="match_parent"
@@ -20,6 +22,6 @@
         app:elevation="0dp"
         app:itemIconTint="@color/nav_item_tint"
         app:itemTextColor="@color/nav_item_tint"
-        app:labelVisibilityMode="labeled"
+        app:labelVisibilityMode="unlabeled"
         app:menu="@menu/bottom_nav_menu" />
 </LinearLayout>

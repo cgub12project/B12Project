@@ -26,6 +26,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.frauddetector.R
 import com.frauddetector.adapter.PhoneAdapter
 import com.frauddetector.data.PhoneRecord
+import com.google.android.material.chip.ChipGroup
 import com.frauddetector.db.AppDatabase
 import com.frauddetector.db.CachedPhone
 import com.frauddetector.network.ApiClient
@@ -37,8 +38,10 @@ import com.frauddetector.service.BlockedNumbersManager
 import com.frauddetector.service.CallLogHelper
 import com.frauddetector.service.CallRecord
 import com.frauddetector.service.PhoneNumberUtils
+import com.frauddetector.service.PhoneStatsFormat
 import com.frauddetector.service.PhoneSyncManager
 import com.frauddetector.service.toCachedPhone
+import com.frauddetector.ui.RiskFilterChips
 import com.frauddetector.ui.detail.PhoneDetailActivity
 import com.frauddetector.ui.dialog.BlockConfirmDialog
 import com.frauddetector.ui.dialog.ReportBottomSheet
@@ -57,6 +60,8 @@ class PhoneFragment : Fragment() {
 
     private lateinit var adapter: PhoneAdapter
     private lateinit var tvOfflineBanner: TextView
+    /** 目前選取的風險等級篩選（見 [RiskFilterChips]），列表重新載入時要沿用 */
+    private var currentRiskFilter = RiskFilterChips.LEVEL_ALL
     private val searchHandler = Handler(Looper.getMainLooper())
     private var pendingSearch: Runnable? = null
     private val executor = Executors.newSingleThreadExecutor()
@@ -224,7 +229,7 @@ class PhoneFragment : Fragment() {
 
         activity?.runOnUiThread {
             if (!isAdded) return@runOnUiThread
-            adapter.updateItems(records)
+            publishRecords(records)
             if (offline) {
                 tvOfflineBanner.text = "⚠ 目前無網路，部分號碼的風險資料可能不是最新"
                 tvOfflineBanner.visibility = View.VISIBLE
@@ -253,7 +258,7 @@ class PhoneFragment : Fragment() {
                         val records = items
                             .filterNot { BlockedNumbersManager.isBlocked(ctx, it.phoneNumber) }
                             .map { it.toPhoneRecord() }
-                        adapter.updateItems(records)
+                        publishRecords(records)
 
                         executor.execute {
                             val dao = AppDatabase.getInstance(ctx).cachedPhoneDao()
@@ -292,10 +297,27 @@ class PhoneFragment : Fragment() {
                 if (records.isEmpty()) {
                     Toast.makeText(ctx, "網路連線失敗，本機也查無這支號碼的資料", Toast.LENGTH_SHORT).show()
                 }
-                adapter.updateItems(records)
+                publishRecords(records)
                 tvOfflineBanner.text = "⚠ 網路連線失敗，顯示離線快取資料（${formatCacheAge(lastSync)}）"
                 tvOfflineBanner.visibility = View.VISIBLE
             }
+        }
+    }
+
+    /**
+     * 列表資料更新的單一出口：更新 Adapter，並用同一份資料重畫風險篩選 Chips
+     * （Chip 上要顯示各等級的筆數，資料一變就得跟著重算）。
+     */
+    private fun publishRecords(records: List<PhoneRecord>) {
+        adapter.updateItems(records)
+        val chipGroup = view?.findViewById<ChipGroup>(R.id.chipGroupPhoneRisk) ?: return
+        RiskFilterChips.render(
+            chipGroup,
+            counts = records.groupingBy { it.riskLevel }.eachCount(),
+            selectedLevel = currentRiskFilter
+        ) { level ->
+            currentRiskFilter = level
+            adapter.filterByLevel(level)
         }
     }
 
@@ -315,8 +337,8 @@ class PhoneFragment : Fragment() {
         riskLevel = cached?.riskLevel ?: "safe",
         riskLabel = riskLabelOf(cached?.riskLevel ?: "safe"),
         type = cached?.fraudType ?: "尚無回報資料",
-        count = (cached?.reportCount ?: 0).toString(),
-        lastReport = cached?.lastReportedAt?.take(10) ?: "—",
+        count = PhoneStatsFormat.reportCount(cached?.reportCount ?: 0),
+        lastReport = PhoneStatsFormat.reportDate(cached?.lastReportedAt),
         reports = emptyList()
     )
 
@@ -326,8 +348,8 @@ class PhoneFragment : Fragment() {
         riskLevel = riskLevel,
         riskLabel = riskLabelOf(riskLevel),
         type = fraudType ?: "未分類",
-        count = reportCount.toString(),
-        lastReport = lastReportedAt?.take(10) ?: "—",
+        count = PhoneStatsFormat.reportCount(reportCount),
+        lastReport = PhoneStatsFormat.reportDate(lastReportedAt),
         reports = emptyList()
     )
 
@@ -346,8 +368,8 @@ class PhoneFragment : Fragment() {
         riskLevel = riskLevel,
         riskLabel = riskLabelOf(riskLevel),
         type = fraudType ?: "未分類",
-        count = reportCount.toString(),
-        lastReport = lastReportedAt?.take(10) ?: "—",
+        count = PhoneStatsFormat.reportCount(reportCount),
+        lastReport = PhoneStatsFormat.reportDate(lastReportedAt),
         reports = emptyList()
     )
 

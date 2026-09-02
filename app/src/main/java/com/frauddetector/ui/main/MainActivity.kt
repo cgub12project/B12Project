@@ -19,9 +19,11 @@ class MainActivity : BaseActivity() {
 
         // 導覽列 icon 預設固定 24dp，不會跟著文字大小設定縮放（FontScaleManager 只透過
         // Configuration.fontScale 動 sp 文字），這裡另外依同一個倍率手動調整 icon 尺寸，
-        // 避免字體調到「特大」時文字變大但 icon 沒變、視覺比例失衡
+        // 避免字體調到「特大」時文字變大但 icon 沒變、視覺比例失衡。
+        // 2026-09-02 拿掉分頁文字後，icon 基準從 24dp 放大到 26dp——導覽列高度沒變，
+        // 原本被文字佔掉的空間空出來，維持 24dp 會顯得整排 icon 浮在中間偏小
         val iconScale = FontScaleManager.getScale(this)
-        val baseIconSizePx = (24 * resources.displayMetrics.density).toInt()
+        val baseIconSizePx = (26 * resources.displayMetrics.density).toInt()
         bottomNav.itemIconSize = (baseIconSizePx * iconScale).toInt()
 
         if (savedInstanceState == null) {

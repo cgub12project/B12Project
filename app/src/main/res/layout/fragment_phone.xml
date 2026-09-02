@@ -73,6 +73,24 @@
             android:singleLine="true" />
     </LinearLayout>
 
+    <!-- 風險等級篩選（高危／可疑／安全），Chips 由 PhoneFragment 交給 RiskFilterChips 產生 -->
+    <HorizontalScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:scrollbars="none"
+        android:paddingStart="16dp"
+        android:paddingEnd="16dp"
+        android:layout_marginBottom="12dp">
+
+        <com.google.android.material.chip.ChipGroup
+            android:id="@+id/chipGroupPhoneRisk"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:singleLine="true"
+            app:singleSelection="true"
+            xmlns:app="http://schemas.android.com/apk/res-auto" />
+    </HorizontalScrollView>
+
     <!-- Offline Cache Banner -->
     <TextView
         android:id="@+id/tvPhoneOfflineBanner"

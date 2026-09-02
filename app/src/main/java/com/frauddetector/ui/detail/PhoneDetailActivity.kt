@@ -30,6 +30,7 @@ import com.frauddetector.data.CommunityReport
 import com.frauddetector.network.ApiClient
 import com.frauddetector.network.PhoneDetailResponse
 import com.frauddetector.network.TokenManager
+import com.frauddetector.service.PhoneStatsFormat
 import com.frauddetector.service.BlockedNumbersManager
 import com.frauddetector.service.TaiwanPhoneFormat
 import com.frauddetector.ui.dialog.BlockConfirmDialog
@@ -143,7 +144,8 @@ class PhoneDetailActivity : BaseActivity() {
 
     private fun bindDetail(data: PhoneDetailResponse) {
         lastFraudType = data.fraudType ?: "未分類"
-        lastReportCount = data.reportCount.toString()
+        // 統計方塊只有三分之一畫面寬，四位數以上的舉報次數會折行把方塊撐高
+        lastReportCount = PhoneStatsFormat.reportCount(data.reportCount)
 
         val riskLabel = when (data.riskLevel) {
             "high" -> "詐騙"
@@ -164,7 +166,8 @@ class PhoneDetailActivity : BaseActivity() {
         }
 
         findViewById<TextView>(R.id.tvReportCount).text = lastReportCount
-        findViewById<TextView>(R.id.tvLastReport).text = data.lastReportedAt?.take(10) ?: "—"
+        // 完整日期（2026-08-30）在這個寬度會折成兩行，同年只顯示月日
+        findViewById<TextView>(R.id.tvLastReport).text = PhoneStatsFormat.reportDate(data.lastReportedAt)
         findViewById<TextView>(R.id.tvFraudType).text = lastFraudType
 
         val reports = data.reports.map {

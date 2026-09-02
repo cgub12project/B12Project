@@ -15,7 +15,8 @@
  * [onReport]——真實 email 地址本身就是唯一識別碼，沒有社群帳號回報那種同名誤合併風險）。
  * 同時間只會有一筆展開（手風琴式），跟 [PhoneAdapter] 的互動模式一致。
  *
- * 支援依郵件供應商篩選：[filterByProvider]（全部/Gmail/Outlook）。
+ * 支援兩種篩選，同時生效（見 [applyFilters]）：[filterByQuery]（寄件者／主旨／內文關鍵字）
+ * 與 [filterByLevel]（風險等級）。供應商（Gmail／Outlook）篩選已於 2026-09-02 移除。
  */
 package com.frauddetector.adapter
 
@@ -29,6 +30,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.frauddetector.R
 import com.frauddetector.data.EmailAlert
 import com.frauddetector.ui.RiskCardStyle
+import com.frauddetector.ui.RiskFilterChips
 import com.google.android.material.chip.ChipGroup
 
 class EmailAdapter(
@@ -39,8 +41,8 @@ class EmailAdapter(
 ) : RecyclerView.Adapter<EmailAdapter.VH>() {
 
     private var filteredItems = items.toList()
-    private var currentProvider = "全部"
     private var currentQuery = ""
+    private var currentLevel = RiskFilterChips.LEVEL_ALL
     private var expandedId: String? = null
 
     class VH(view: View) : RecyclerView.ViewHolder(view) {
@@ -106,13 +108,14 @@ class EmailAdapter(
 
     override fun getItemCount() = filteredItems.size
 
-    fun filterByProvider(provider: String) {
-        currentProvider = provider
+    fun filterByQuery(query: String) {
+        currentQuery = query.trim()
         applyFilters()
     }
 
-    fun filterByQuery(query: String) {
-        currentQuery = query.trim()
+    /** @param level [RiskFilterChips.LEVEL_ALL] 或 "high"/"mid"/"safe" */
+    fun filterByLevel(level: String) {
+        currentLevel = level
         applyFilters()
     }
 
@@ -122,7 +125,7 @@ class EmailAdapter(
      */
     private fun applyFilters() {
         val newItems = items
-            .filter { currentProvider == "全部" || it.provider == currentProvider }
+            .filter { currentLevel == RiskFilterChips.LEVEL_ALL || it.level == currentLevel }
             .filter {
                 currentQuery.isEmpty() ||
                     it.sender.contains(currentQuery, ignoreCase = true) ||

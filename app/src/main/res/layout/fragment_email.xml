@@ -78,7 +78,8 @@
             android:singleLine="true" />
     </LinearLayout>
 
-    <!-- Provider Tabs -->
+    <!-- 風險等級篩選（高危／可疑／安全），Chips 由 EmailFragment 交給 RiskFilterChips 產生。
+         原本這一排還有「來源（Gmail／Outlook）」篩選，2026-09-02 依使用者要求移除 -->
     <HorizontalScrollView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -88,11 +89,11 @@
         android:layout_marginBottom="12dp">
 
         <com.google.android.material.chip.ChipGroup
-            android:id="@+id/chipGroupProvider"
+            android:id="@+id/chipGroupEmailRisk"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            app:singleLine="true"
             app:singleSelection="true" />
-        <!-- Chips 由 EmailFragment 動態產生 -->
     </HorizontalScrollView>
 
     <!-- Mail Sync Status -->
