@@ -86,8 +86,22 @@
     <string name="detection_mode_cloud_description">內容會傳送至後端進行較完整的判斷。</string>
     <string name="detection_mode_local_description">內容只在手機上分析，不會傳送至後端；判斷品質可能低於雲端。</string>
     <string name="local_model_not_ready_title">地端模型尚未下載</string>
-    <string name="local_model_not_ready_message">地端模式需要額外下載約 1.9 GB 的模型，且目前驗證碼等常見訊息可能被誤判。模型下載功能尚在準備中，現在仍會維持雲端模式。</string>
-    <string name="local_model_download_later">知道了</string>
+    <string name="local_model_not_ready_message">地端模式需要額外下載約 1.9 GB 的模型，建議連上 Wi-Fi 再下載。下載完成前仍會維持雲端模式；另外請注意，地端模型目前可能把驗證碼等常見訊息誤判為詐騙。</string>
+    <string name="local_model_download_later">稍後再說</string>
+    <string name="local_model_download_now">下載模型</string>
+    <string name="local_model_manifest_loading">取得模型資訊中…</string>
+    <string name="local_model_download_title">下載地端模型</string>
+    <!-- %1$s 版本、%2$s 檔案大小、%3$s 續傳說明（沒有已下載的部分時為空字串） -->
+    <string name="local_model_download_confirm">模型版本 %1$s，檔案大小 %2$s。%3$s\n\n下載期間請保持 App 開啟並盡量使用 Wi-Fi；中途離開可以再回來從中斷處續傳。</string>
+    <!-- %1$s 已下載大小 -->
+    <string name="local_model_download_resume">已下載 %1$s，這次會從中斷處繼續。</string>
+    <string name="local_model_downloading">下載模型中…</string>
+    <string name="local_model_verifying">驗證模型完整性中（SHA-256）…</string>
+    <string name="local_model_download_success">地端模型已就緒，已切換為地端模式</string>
+    <string name="local_model_download_cancelled">已停止下載，已下載的部分會保留，下次可以續傳</string>
+    <string name="local_model_delete">刪除地端模型</string>
+    <string name="local_model_delete_confirm">刪除後會回到雲端模式，之後要再用地端模式必須重新下載約 1.9 GB。確定刪除嗎？</string>
+    <string name="local_model_deleted">已刪除地端模型，並切換回雲端模式</string>
 
     <string name="monitoring_section">監控設定</string>
     <string name="msg_monitoring">訊息即時監控</string>

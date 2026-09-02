@@ -26,4 +26,21 @@ interface RagApi {
         @Header("Authorization") token: String,
         @Body body: RagDetectRequest
     ): Call<RagDetectResponse>
+
+    /**
+     * 偵測整段對話：風險判斷 + 目前演進到哪個詐騙階段
+     * （接觸建立／培養信任／鋪陳誘餌／索取財物／收尾拖延）。
+     *
+     * 後端不儲存任何對話內容，上次的階段要由 App 自己保存後放進
+     * [RagDetectConversationRequest.previousStage] 回傳，階段才不會因為舊訊息滑出
+     * 視窗而倒退。
+     *
+     * @param token JWT 存取權杖，格式為 "Bearer {access_token}"
+     * @param body [RagDetectConversationRequest] 由舊到新排列的對話訊息 + 上次階段
+     */
+    @POST("api/v1/rag/detect-conversation")
+    fun detectConversation(
+        @Header("Authorization") token: String,
+        @Body body: RagDetectConversationRequest
+    ): Call<RagDetectConversationResponse>
 }

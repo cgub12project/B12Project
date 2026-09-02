@@ -188,6 +188,21 @@
         android:paddingEnd="16dp"
         android:paddingBottom="6dp" />
 
+    <!-- 詐騙階段提示條：POST /rag/detect-conversation 判斷這段對話演進到哪個階段
+         （接觸建立／培養信任／鋪陳誘餌／索取財物／收尾拖延），只有判定出階段時才顯示 -->
+    <TextView
+        android:id="@+id/tvScamStage"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginBottom="10dp"
+        android:padding="8dp"
+        android:background="@drawable/bg_stage_bar"
+        android:textSize="11sp"
+        android:textColor="@color/deep_rust"
+        android:visibility="gone" />
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

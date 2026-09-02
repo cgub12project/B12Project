@@ -5,6 +5,9 @@ import android.util.Log
 import com.frauddetector.db.AppDatabase
 import com.frauddetector.db.CapturedNotification
 import com.frauddetector.network.ApiClient
+import com.frauddetector.network.ConversationMessage
+import com.frauddetector.network.RagDetectConversationRequest
+import com.frauddetector.network.RagDetectConversationResponse
 import com.frauddetector.network.RagDetectRequest
 import com.frauddetector.network.RagDetectResponse
 import com.frauddetector.network.TokenManager
@@ -206,6 +209,115 @@ object RagDetector {
             }
         } catch (e: Exception) {
             Log.e(TAG, "single message detect failed", e)
+            null
+        }
+    }
+
+    /**
+     * 取得一則判斷結果的 0-100 風險評分：後端有給校準過的 risk_score 就直接用
+     * （2026-09-02 後端新增，是可以直接當機率解讀的校準值），沒有才退回舊的
+     * risk_level + confidence 換算（見 [computeMessageRiskScore]）。
+     *
+     * 沒有 risk_score 的情況有兩種，都是真的會發生、不是防禦性寫法：後端校準表缺漏
+     * 或與目前模型不符時會回 null；地端模式的判斷完全在手機上做，本來就沒有這個值。
+     */
+    fun riskScoreOf(response: RagDetectResponse): Int {
+        response.riskScore?.let { return (it.coerceIn(0.0, 1.0) * 100).toInt() }
+        return computeMessageRiskScore(response.riskLevel, response.confidence)
+    }
+
+    /** 對話階段判斷結果的持久化快取（key 為 conversationKey），跟風險快取分開存。 */
+    private const val STAGE_CACHE_PREFS = "rag_conversation_stage"
+
+    private fun stageCachePrefs(context: Context) =
+        context.applicationContext.getSharedPreferences(STAGE_CACHE_PREFS, Context.MODE_PRIVATE)
+
+    private data class PersistedStageEntry(
+        val fingerprint: String,
+        val response: RagDetectConversationResponse
+    )
+
+    private fun loadPersistedStageEntry(context: Context, conversationKey: String): PersistedStageEntry? {
+        val json = stageCachePrefs(context).getString(conversationKey, null) ?: return null
+        return try {
+            ApiClient.gson.fromJson(json, PersistedStageEntry::class.java)
+        } catch (e: Exception) {
+            Log.w(TAG, "failed to parse persisted stage cache for $conversationKey", e)
+            null
+        }
+    }
+
+    /**
+     * 這個對話上一次判定出來的詐騙階段（沒有判過就是 null）。
+     * 呼叫 [detectConversationStage] 時會自動當成 previous_stage 帶回後端。
+     */
+    fun lastKnownStage(context: Context, conversationKey: String): String? =
+        loadPersistedStageEntry(context, conversationKey)?.response?.stage
+
+    /**
+     * 判斷這個對話演進到哪個詐騙階段（接觸建立／培養信任／鋪陳誘餌／索取財物／收尾拖延），
+     * 呼叫 2026-09-02 後端新增的 POST /rag/detect-conversation。
+     *
+     * 跟 [detectConversationRisk] 的分工：風險等級仍以 detectConversationRisk（把整個
+     * 對話視窗串接成一段文字丟 /rag/detect）為準——那條路徑已用真實案例驗證過能抓到
+     * 「群組裡多人互相佐證同一套話術」這種只看最後一句看不出來的模式，而
+     * /rag/detect-conversation 的偵測部分只看「最後一則對方訊息」，涵蓋範圍比較窄。
+     * 這支函式只取它獨有的階段欄位，所以呼叫端應該只在對話已經被判定有風險時才呼叫，
+     * 不要每個對話都多打一次 API。
+     *
+     * 後端不儲存對話內容，階段的連續性靠 App 自己保存上次結果（[lastKnownStage]）
+     * 並以 previous_stage 帶回去，否則舊訊息滑出視窗後階段會倒退。
+     *
+     * 地端模式直接回 null：地端模型沒有階段判斷能力，而地端模式的承諾就是內容不外傳，
+     * 絕不為了補這個欄位偷偷把對話送到雲端。
+     *
+     * @param conversationKey 對話識別碼（例如 "$app|$groupName"），與風險快取共用同一組 key
+     * @return null 代表沒有訊息、地端模式、未登入或呼叫失敗
+     */
+    fun detectConversationStage(
+        context: Context,
+        conversationKey: String,
+        messages: List<CapturedNotification>,
+        limit: Int = 15
+    ): RagDetectConversationResponse? {
+        if (messages.isEmpty()) return null
+        if (DetectionModePreferences.selectedMode(context) == DetectionModePreferences.Mode.LOCAL) return null
+
+        val fingerprint = "${messages.size}:${messages.maxOf { it.id }}"
+        val persisted = loadPersistedStageEntry(context, conversationKey)
+        if (persisted != null && persisted.fingerprint == fingerprint) return persisted.response
+
+        // 通知側錄與簡訊收件匣抓得到的都是「對方傳進來的」訊息，所以 sender 一律 them。
+        // 後端單則上限 4000 字，超過就截斷，避免整包請求被 422 擋掉。
+        val payload = messages
+            .sortedByDescending { it.timestamp }
+            .take(limit)
+            .sortedBy { it.timestamp }
+            .mapNotNull { message ->
+                message.content.trim().takeIf { it.isNotEmpty() }
+                    ?.let { ConversationMessage(sender = "them", text = it.take(4000)) }
+            }
+        if (payload.isEmpty()) return null
+
+        val token = TokenManager(context).accessToken
+        if (token.isNullOrEmpty()) return null
+
+        return try {
+            val response = ApiClient.ragApi.detectConversation(
+                "Bearer $token",
+                RagDetectConversationRequest(payload, previousStage = persisted?.response?.stage)
+            ).execute()
+            if (response.isSuccessful) {
+                response.body()?.also {
+                    val json = ApiClient.gson.toJson(PersistedStageEntry(fingerprint, it))
+                    stageCachePrefs(context).edit().putString(conversationKey, json).apply()
+                }
+            } else {
+                Log.w(TAG, "conversation stage detect failed: HTTP ${response.code()}")
+                null
+            }
+        } catch (e: Exception) {
+            Log.e(TAG, "conversation stage detect failed", e)
             null
         }
     }

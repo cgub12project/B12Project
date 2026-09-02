@@ -22,6 +22,7 @@ import android.view.ViewGroup
 import android.widget.EditText
 import android.widget.ImageView
 import android.widget.LinearLayout
+import android.widget.ProgressBar
 import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
@@ -38,8 +39,10 @@ import com.frauddetector.network.TokenManager
 import com.frauddetector.network.UserOut
 import com.frauddetector.network.UserSettingsOut
 import com.frauddetector.network.UserSettingsUpdateRequest
+import com.frauddetector.network.LocalModelManifest
 import com.frauddetector.service.DetectionModePreferences
 import com.frauddetector.service.FontScaleManager
+import com.frauddetector.service.LocalModelDownloader
 import com.frauddetector.service.PermissionHelper
 import com.frauddetector.ui.detail.BlockedEmailsActivity
 import com.frauddetector.ui.detail.BlockedNumbersActivity
@@ -53,6 +56,7 @@ import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 import java.util.concurrent.Executors
+import java.util.concurrent.atomic.AtomicBoolean
 
 /**
  * 設定 Fragment，顯示個人資料與系統設定項目。
@@ -285,6 +289,12 @@ class SettingsFragment : Fragment() {
         )
     }
 
+    /** 把 bytes 換成給使用者看的 GB／MB 文字（模型是 1.9 GB 等級，不需要更小的單位）。 */
+    private fun formatBytes(bytes: Long): String = when {
+        bytes >= 1024L * 1024 * 1024 -> String.format("%.2f GB", bytes / 1024.0 / 1024 / 1024)
+        else -> String.format("%.0f MB", bytes / 1024.0 / 1024)
+    }
+
     /** 設定各設定項目的點擊事件（更改密碼、隱私、登出、快速登入） */
     private fun setupClickListeners(view: View) {
         view.findViewById<View>(R.id.settingChangePassword).setOnClickListener {
@@ -407,12 +417,172 @@ class SettingsFragment : Fragment() {
                     Toast.makeText(ctx, R.string.detection_mode_local_description, Toast.LENGTH_LONG).show()
                     dialog.dismiss()
                 } else {
+                    // 還沒下載模型：改成直接引導下載（2026-09-02 後端已上線
+                    // GET /api/v1/local-model/manifest 與簽章下載端點），不再只是說「準備中」
                     dialog.dismiss()
                     AlertDialog.Builder(ctx)
                         .setTitle(R.string.local_model_not_ready_title)
                         .setMessage(R.string.local_model_not_ready_message)
-                        .setPositiveButton(R.string.local_model_download_later, null)
+                        .setPositiveButton(R.string.local_model_download_now) { _, _ ->
+                            loadLocalModelManifest(view)
+                        }
+                        .setNegativeButton(R.string.local_model_download_later, null)
                         .show()
+                }
+            }
+            .setNegativeButton(R.string.cancel, null)
+            .apply {
+                // 已經下載過才提供刪除（1.9 GB 佔空間，使用者要拿得回來）
+                if (DetectionModePreferences.isLocalModeReady(ctx)) {
+                    setNeutralButton(R.string.local_model_delete) { _, _ -> confirmDeleteLocalModel(view) }
+                }
+            }
+            .show()
+    }
+
+    /**
+     * 取得地端模型的 manifest（版本／大小／SHA-256／短效簽章網址）後，再讓使用者確認是否下載。
+     * 後端還沒把模型檔部署上去時會回 503，[LocalModelDownloader.fetchManifest] 已翻成中文訊息。
+     */
+    private fun loadLocalModelManifest(view: View) {
+        val ctx = requireContext().applicationContext
+        val loading = AlertDialog.Builder(requireContext())
+            .setMessage(R.string.local_model_manifest_loading)
+            .setCancelable(false)
+            .create()
+        loading.show()
+
+        executor.execute {
+            val result = LocalModelDownloader.fetchManifest(ctx)
+            activity?.runOnUiThread {
+                if (!isAdded) return@runOnUiThread
+                loading.dismiss()
+                when (result) {
+                    is LocalModelDownloader.ManifestResult.Failed ->
+                        AlertDialog.Builder(requireContext())
+                            .setTitle(R.string.local_model_download_title)
+                            .setMessage(result.message)
+                            .setPositiveButton(R.string.local_model_download_later, null)
+                            .show()
+                    is LocalModelDownloader.ManifestResult.Loaded ->
+                        confirmLocalModelDownload(view, result.manifest)
+                }
+            }
+        }
+    }
+
+    private fun confirmLocalModelDownload(view: View, manifest: LocalModelManifest) {
+        val ctx = requireContext()
+        val downloaded = LocalModelDownloader.downloadedBytes(ctx, manifest)
+        val resumeText = if (downloaded > 0) {
+            getString(R.string.local_model_download_resume, formatBytes(downloaded))
+        } else {
+            ""
+        }
+        AlertDialog.Builder(ctx)
+            .setTitle(R.string.local_model_download_title)
+            .setMessage(
+                getString(
+                    R.string.local_model_download_confirm,
+                    manifest.version,
+                    formatBytes(manifest.sizeBytes),
+                    resumeText
+                )
+            )
+            .setPositiveButton(R.string.local_model_download_now) { _, _ ->
+                runLocalModelDownload(view, manifest)
+            }
+            .setNegativeButton(R.string.cancel, null)
+            .show()
+    }
+
+    /**
+     * 實際下載：進度對話框 + 可取消（取消只是停下來，已下載的部分保留給下次續傳）。
+     *
+     * 下載跑在自己的 Thread 而不是 [executor]：executor 是單執行緒，1.9 GB 的下載會把
+     * 設定頁其他背景工作（個人資料、設定開關同步）整個卡住。
+     */
+    private fun runLocalModelDownload(view: View, manifest: LocalModelManifest) {
+        val ctx = requireContext().applicationContext
+        val content = LayoutInflater.from(requireContext())
+            .inflate(R.layout.dialog_local_model_download, null)
+        val tvStatus = content.findViewById<TextView>(R.id.tvDownloadStatus)
+        val tvDetail = content.findViewById<TextView>(R.id.tvDownloadDetail)
+        val progressBar = content.findViewById<ProgressBar>(R.id.pbDownload)
+        tvStatus.setText(R.string.local_model_downloading)
+        tvDetail.text = ""
+
+        val cancelled = AtomicBoolean(false)
+        val dialog = AlertDialog.Builder(requireContext())
+            .setTitle(R.string.local_model_download_title)
+            .setView(content)
+            .setCancelable(false)
+            .setNegativeButton(R.string.cancel) { _, _ -> cancelled.set(true) }
+            .create()
+        dialog.show()
+
+        Thread {
+            val outcome = LocalModelDownloader.download(
+                ctx,
+                manifest,
+                onProgress = { phase, done, total ->
+                    activity?.runOnUiThread {
+                        if (!isAdded) return@runOnUiThread
+                        when (phase) {
+                            LocalModelDownloader.Phase.DOWNLOADING -> {
+                                tvStatus.setText(R.string.local_model_downloading)
+                                val percent = if (total > 0) (done * 100 / total).toInt() else 0
+                                progressBar.isIndeterminate = false
+                                progressBar.progress = percent
+                                tvDetail.text = formatBytes(done) + " / " + formatBytes(total) + "（" + percent + "%）"
+                            }
+                            LocalModelDownloader.Phase.VERIFYING -> {
+                                tvStatus.setText(R.string.local_model_verifying)
+                                progressBar.isIndeterminate = true
+                                tvDetail.text = ""
+                            }
+                        }
+                    }
+                },
+                isCancelled = { cancelled.get() }
+            )
+
+            activity?.runOnUiThread {
+                if (!isAdded) return@runOnUiThread
+                dialog.dismiss()
+                when (outcome) {
+                    is LocalModelDownloader.Outcome.Success -> {
+                        // 校驗通過才會走到這裡，此時切成地端模式才是安全的
+                        DetectionModePreferences.selectMode(ctx, DetectionModePreferences.Mode.LOCAL)
+                        setupDetectionModeItem(view)
+                        Toast.makeText(ctx, R.string.local_model_download_success, Toast.LENGTH_LONG).show()
+                    }
+                    is LocalModelDownloader.Outcome.Cancelled ->
+                        Toast.makeText(ctx, R.string.local_model_download_cancelled, Toast.LENGTH_LONG).show()
+                    is LocalModelDownloader.Outcome.Failure ->
+                        AlertDialog.Builder(requireContext())
+                            .setTitle(R.string.local_model_download_title)
+                            .setMessage(outcome.message)
+                            .setPositiveButton(R.string.local_model_download_later, null)
+                            .show()
+                }
+            }
+        }.start()
+    }
+
+    private fun confirmDeleteLocalModel(view: View) {
+        val ctx = requireContext().applicationContext
+        AlertDialog.Builder(requireContext())
+            .setTitle(R.string.local_model_delete)
+            .setMessage(R.string.local_model_delete_confirm)
+            .setPositiveButton(R.string.local_model_delete) { _, _ ->
+                executor.execute {
+                    DetectionModePreferences.deleteLocalModel(ctx)
+                    activity?.runOnUiThread {
+                        if (!isAdded) return@runOnUiThread
+                        setupDetectionModeItem(view)
+                        Toast.makeText(ctx, R.string.local_model_deleted, Toast.LENGTH_LONG).show()
+                    }
                 }
             }
             .setNegativeButton(R.string.cancel, null)

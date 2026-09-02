@@ -13,6 +13,7 @@ import com.frauddetector.R
 import com.frauddetector.adapter.ChatBubbleAdapter
 import com.frauddetector.db.AppDatabase
 // import com.frauddetector.network.ApiClient // 帳號回報/帳號分數查詢暫停用，見下方相關註解
+import com.frauddetector.network.RagDetectConversationResponse
 import com.frauddetector.network.RagDetectResponse
 // import com.frauddetector.network.TokenManager // 同上
 import com.frauddetector.service.RagDetector
@@ -102,25 +103,34 @@ class ThreadDetailActivity : BaseActivity() {
             val conversationKey = "$app|${if (isGroup) groupName else sender}"
             val convRisk = RagDetector.detectConversationRisk(this, conversationKey, messages)
             val conversationExplanation = convRisk
-            val hasDetection = convRisk != null
+
+            // 詐騙階段（2026-09-02 後端新增的 POST /rag/detect-conversation）：判斷這段
+            // 對話走到「接觸建立／培養信任／鋪陳誘餌／索取財物／收尾拖延」的哪一步。
+            // 只有在對話已經被判定有風險、或這個對話先前判過階段（階段一旦開始就要持續
+            // 追蹤，不能因為最近幾則變普通聊天就當作沒事）時才多打這一次 API，安全的對話
+            // 不用為了一個不會顯示的欄位多等一次網路來回。
+            val hasEarlierStage = RagDetector.lastKnownStage(this, conversationKey) != null
+            val stageResult = if (convRisk != null &&
+                (convRisk.riskLevel == "high" || convRisk.riskLevel == "mid" || hasEarlierStage)
+            ) {
+                RagDetector.detectConversationStage(this, conversationKey, messages)
+            } else {
+                null
+            }
             // 尚未偵測完成（或偵測失敗）不能當成「安全」——對防詐 App 是危險預設值，
             // 真正的詐騙訊息會在後端掛掉時被畫成安全的卡片。改用獨立的「未分析」狀態。
             val riskLevel = convRisk?.riskLevel ?: "unanalyzed"
             val scamType = convRisk?.scamType
-            val confidence = convRisk?.confidence ?: 0.0
 
-            // 「風險評分」欄位：一律顯示「近期對話風險評分」（risk_level+confidence 換算，
-            // 即時、只反映最近視窗，見 RagDetector.computeMessageRiskScore 的說明）。
+            // 「風險評分」欄位：一律顯示「近期對話風險評分」（即時、只反映最近視窗）。
             // 原本這裡會優先顯示 fetchAccountRiskScore() 查到的「帳號風險評分」，但那個
             // 分數來自 suspect_accounts，而後端目前只用 (platform, 顯示名稱) 判斷帳號是否
             // 相同，同名不同人會被誤判成同一筆、風險分數互相污染（見 dev-notes 問題16）。
             // 在後端修好帳號比對邏輯之前，這裡先停用帳號分數、固定顯示對話分數，
             // 避免使用者看到一個可能屬於「同名但不相關的另一個帳號」的錯誤分數。
-            val scoreText: String = if (hasDetection) {
-                RagDetector.computeMessageRiskScore(riskLevel, confidence).toString()
-            } else {
-                "--"
-            }
+            // 分數優先用後端 2026-09-02 新增的校準值 risk_score，沒有才用 risk_level +
+            // confidence 換算（見 RagDetector.riskScoreOf）。
+            val scoreText: String = convRisk?.let { RagDetector.riskScoreOf(it).toString() } ?: "--"
             val scoreLabelRes: Int = R.string.conversation_risk_score_label
 
             runOnUiThread {
@@ -140,12 +150,22 @@ class ThreadDetailActivity : BaseActivity() {
                 tvRiskPill.text = pillText
                 tvRiskPill.setBackgroundResource(pillBg)
 
+                // 詐騙階段提示條：判定得出階段才顯示（非詐騙且沒有前次階段時後端回 null）
+                val tvScamStage = findViewById<TextView>(R.id.tvScamStage)
+                val stageBarText = stageResult?.let { buildStageBarText(it) }
+                if (stageBarText != null) {
+                    tvScamStage.text = stageBarText
+                    tvScamStage.visibility = View.VISIBLE
+                } else {
+                    tvScamStage.visibility = View.GONE
+                }
+
                 // 整體對話判斷按鈕：不分群組或私訊，只要成功取得判斷結果就顯示
                 val btnGroupExplanation = findViewById<View>(R.id.btnGroupExplanation)
                 if (conversationExplanation != null) {
                     btnGroupExplanation.visibility = View.VISIBLE
                     btnGroupExplanation.setOnClickListener {
-                        showConversationExplanationDialog(conversationExplanation)
+                        showConversationExplanationDialog(conversationExplanation, stageResult)
                     }
                 } else {
                     btnGroupExplanation.visibility = View.GONE
@@ -186,12 +206,51 @@ class ThreadDetailActivity : BaseActivity() {
      * 資料直接沿用載入對話時已經呼叫過的 [RagDetector.detectConversationRisk] 結果，
      * 不會因為使用者點這顆按鈕而再多打一次 API。
      */
-    private fun showConversationExplanationDialog(response: RagDetectResponse) {
+    private fun showConversationExplanationDialog(
+        response: RagDetectResponse,
+        stage: RagDetectConversationResponse?
+    ) {
+        val message = buildString {
+            append(buildExplanationMessage(response))
+            append(buildStageSection(stage))
+        }
         AlertDialog.Builder(this)
             .setTitle("整體對話判斷")
-            .setMessage(buildExplanationMessage(response))
+            .setMessage(message)
             .setPositiveButton("關閉", null)
             .show()
+    }
+
+    /**
+     * 階段提示條的文字：「詐騙階段：索取財物」＋（有的話）對方下一步的預警。
+     *
+     * stage_model 為 "stage-rule" 代表後端的階段模型當下不可用、是用關鍵詞規則加上次
+     * 階段推估出來的（實測 2026-09-02 後端一律走這條），信心值只有 0.3，所以標上
+     * 「推估」讓使用者知道這個階段不是模型看完對話判的。
+     */
+    private fun buildStageBarText(stage: RagDetectConversationResponse): String? {
+        val label = stage.stageLabel?.takeIf { it.isNotBlank() } ?: return null
+        val suffix = if (stage.stageModel == "stage-rule") "（推估）" else ""
+        return buildString {
+            append("詐騙階段：$label$suffix")
+            stage.nextStepWarning?.takeIf { it.isNotBlank() }?.let { append("\n對方下一步：$it") }
+        }
+    }
+
+    /** 「整體對話判斷」彈窗裡的階段段落，沒有階段結果時回空字串（彈窗維持原樣）。 */
+    private fun buildStageSection(stage: RagDetectConversationResponse?): String {
+        val label = stage?.stageLabel?.takeIf { it.isNotBlank() } ?: return ""
+        val suffix = if (stage.stageModel == "stage-rule") "（推估）" else ""
+        return buildString {
+            append("\n\n詐騙階段：$label$suffix")
+            val stageReasons = stage.stageReasons.filter { it.isNotBlank() }
+            if (stageReasons.isNotEmpty()) {
+                append("\n" + stageReasons.joinToString("\n") { "• $it" })
+            }
+            stage.nextStepWarning?.takeIf { it.isNotBlank() }?.let {
+                append("\n\n對方下一步可能會：\n$it")
+            }
+        }
     }
 
     /**

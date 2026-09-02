@@ -160,6 +160,16 @@ object ApiClient {
     val userApi: UserApi by lazy { retrofit.create(UserApi::class.java) }
 
     /**
+     * 地端模型下載 API 介面（懶載入）。
+     *
+     * 只用來取 manifest（版本、大小、SHA-256、短效簽章網址）；模型檔本體由
+     * [com.frauddetector.service.LocalModelDownloader] 用自己的 OkHttp 客戶端串流下載，
+     * 不共用這裡的客戶端——[okHttp] 掛了 BODY 等級的日誌攔截器，1.93 GB 的回應
+     * 會被整包讀進記憶體寫進 logcat。
+     */
+    val localModelApi: LocalModelApi by lazy { retrofit.create(LocalModelApi::class.java) }
+
+    /**
      * 從 Retrofit errorBody 解析錯誤訊息。
      *
      * FastAPI 後端回傳的錯誤格式有兩種：
