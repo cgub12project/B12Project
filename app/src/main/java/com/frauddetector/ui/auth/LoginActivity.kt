@@ -79,13 +79,6 @@ class LoginActivity : BaseActivity() {
             })
         }
 
-        // Skip login (testing)
-        findViewById<View>(R.id.btnSkipLogin).setOnClickListener {
-            TokenManager(this).clear()
-            startActivity(Intent(this, MainActivity::class.java))
-            finish()
-        }
-
         // Register
         findViewById<TextView>(R.id.tvGoRegister).setOnClickListener {
             startActivity(Intent(this, RegisterActivity::class.java))
