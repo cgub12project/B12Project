@@ -231,7 +231,7 @@ class PhoneFragment : Fragment() {
             if (!isAdded) return@runOnUiThread
             publishRecords(records)
             if (offline) {
-                tvOfflineBanner.text = "⚠ 目前無網路，部分號碼的風險資料可能不是最新"
+                tvOfflineBanner.text = "⚠ 無法連線伺服器，部分號碼的風險資料可能不是最新"
                 tvOfflineBanner.visibility = View.VISIBLE
             } else {
                 tvOfflineBanner.visibility = View.GONE

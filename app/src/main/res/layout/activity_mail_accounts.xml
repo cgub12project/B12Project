@@ -46,15 +46,18 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:layout_marginEnd="8dp"
             android:text="連接 Gmail" />
 
+        <!-- 連接 Outlook：後端尚未設定 OUTLOOK_CLIENT_ID / SECRET，點下去只會拿到
+             「尚未設定，無法連接 Outlook」的錯誤，先隱藏避免造成誤解。後端補上設定後
+             把 visibility 拿掉、並還原 MailAccountsActivity 裡的點擊事件即可。 -->
         <com.google.android.material.button.MaterialButton
             android:id="@+id/btnConnectOutlook"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:layout_marginStart="8dp"
+            android:visibility="gone"
             android:text="連接 Outlook" />
     </LinearLayout>
 

@@ -81,6 +81,15 @@ class NotificationCaptureService : NotificationListenerService() {
         val mapping = APP_MAP[sbn.packageName] ?: return
         val (appName, type) = mapping
 
+        // 常駐／前景服務通知不是訊息，一律跳過。
+        // 2026-09-16 實測：Android 訊息 App 會發一則「Messages is doing work in the
+        // background」的前景服務通知，它有 text 沒有 title，會通過下面的空白檢查，
+        // 被當成一則寄件者空白的簡訊存進 DB（在列表上是一張沒有標題的安全卡片）。
+        // 這類通知的共同特徵是帶 FLAG_ONGOING_EVENT／FLAG_FOREGROUND_SERVICE，
+        // 而真正的訊息通知不會帶這兩個旗標，所以用它們過濾是安全的。
+        val ongoingFlags = Notification.FLAG_ONGOING_EVENT or Notification.FLAG_FOREGROUND_SERVICE
+        if (sbn.notification.flags and ongoingFlags != 0) return
+
         val extras = sbn.notification.extras ?: return
 
         // 摘要通知（例如 Gmail 短時間內收到很多信，系統把它們合併成一則「N 封新郵件」的

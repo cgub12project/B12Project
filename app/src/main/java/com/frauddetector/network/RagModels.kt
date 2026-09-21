@@ -101,7 +101,8 @@ data class RagDetectConversationResponse(
     /**
      * 階段判定來源：LLM 模型名稱／"stage-rule"（階段模型不可用，改用關鍵詞規則與前次
      * 階段推估，信心值偏低）／"stage-unavailable"（判不出來）。
-     * 2026-09-02 實測後端目前一律回 stage-rule，UI 會據此標示「推估」。
+     * 2026-09-02、2026-09-15 兩次實測後端都回 stage-rule；UI 據此隱藏後端的
+     * 規則推估理由（見 ThreadDetailActivity.buildStageSection），只顯示階段本身。
      */
     @SerializedName("stage_model") val stageModel: String? = null
 )

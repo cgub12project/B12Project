@@ -224,15 +224,14 @@ class ThreadDetailActivity : BaseActivity() {
     /**
      * 階段提示條的文字：「詐騙階段：索取財物」＋（有的話）對方下一步的預警。
      *
-     * stage_model 為 "stage-rule" 代表後端的階段模型當下不可用、是用關鍵詞規則加上次
-     * 階段推估出來的（實測 2026-09-02 後端一律走這條），信心值只有 0.3，所以標上
-     * 「推估」讓使用者知道這個階段不是模型看完對話判的。
+     * stage_model 為 "stage-rule" 代表後端的階段模型當下不可用、階段是用關鍵詞規則
+     * 加上次階段推得的（2026-09-02、2026-09-15 兩次實測後端都走這條）。此處只顯示
+     * 階段本身，不再附註判定來源——那是後端的內部狀態，對使用者沒有意義。
      */
     private fun buildStageBarText(stage: RagDetectConversationResponse): String? {
         val label = stage.stageLabel?.takeIf { it.isNotBlank() } ?: return null
-        val suffix = if (stage.stageModel == "stage-rule") "（推估）" else ""
         return buildString {
-            append("詐騙階段：$label$suffix")
+            append("詐騙階段：$label")
             stage.nextStepWarning?.takeIf { it.isNotBlank() }?.let { append("\n對方下一步：$it") }
         }
     }
@@ -240,10 +239,16 @@ class ThreadDetailActivity : BaseActivity() {
     /** 「整體對話判斷」彈窗裡的階段段落，沒有階段結果時回空字串（彈窗維持原樣）。 */
     private fun buildStageSection(stage: RagDetectConversationResponse?): String {
         val label = stage?.stageLabel?.takeIf { it.isNotBlank() } ?: return ""
-        val suffix = if (stage.stageModel == "stage-rule") "（推估）" else ""
         return buildString {
-            append("\n\n詐騙階段：$label$suffix")
-            val stageReasons = stage.stageReasons.filter { it.isNotBlank() }
+            append("\n\n詐騙階段：$label")
+            // 後端階段 LLM 沒啟用時（stage_model = "stage-rule"）回的理由是「階段模型無法判定，
+            // 依關鍵詞規則與前次階段推估」這類描述後端內部狀態的文字，對使用者沒有意義，
+            // 只顯示階段本身即可。
+            val stageReasons = if (stage.stageModel == "stage-rule") {
+                emptyList()
+            } else {
+                stage.stageReasons.filter { it.isNotBlank() }
+            }
             if (stageReasons.isNotEmpty()) {
                 append("\n" + stageReasons.joinToString("\n") { "• $it" })
             }

@@ -100,7 +100,7 @@ interface CapturedNotificationDao {
     fun getSmsHistoryCount(): Int
 
     /** 檢查開發者測試資料是否已插入過，避免長按重複插入造成重複列 */
-    @Query("SELECT COUNT(*) FROM captured_notifications WHERE app = 'LINE' AND sender = '陳大富' AND packageName = 'jp.naver.line.android' AND content LIKE '%投資顧問陳大富%'")
+    @Query("SELECT COUNT(*) FROM captured_notifications WHERE app = 'LINE' AND packageName = 'jp.naver.line.android' AND content LIKE '%富邦證券投顧的專員王建宏%'")
     fun getTestDataCount(): Int
 
     /**

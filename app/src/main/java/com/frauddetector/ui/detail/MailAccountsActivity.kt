@@ -50,7 +50,8 @@ class MailAccountsActivity : BaseActivity() {
         }
 
         findViewById<View>(R.id.btnConnectGmail).setOnClickListener { connect("gmail") }
-        findViewById<View>(R.id.btnConnectOutlook).setOnClickListener { connect("outlook") }
+        // 連接 Outlook 的按鈕已於版面中隱藏（後端沒有設定 OUTLOOK_CLIENT_ID，連不上），
+        // connect("outlook") 這條路徑本身仍然可用，後端補上設定後接回來即可。
     }
 
     /** 從瀏覽器授權完成、或中斷連接跳回來後，畫面回到前景時重新整理一次清單 */

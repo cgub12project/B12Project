@@ -241,7 +241,7 @@ class SettingsFragment : Fragment() {
         setupItem(view, R.id.settingBlockedEmails, R.drawable.ic_email_set,
             "封鎖信箱", "查看並解除已封鎖的郵件寄件人")
         setupItem(view, R.id.settingMailAccounts, R.drawable.ic_email_set,
-            "已連接的信箱", "連接 Gmail/Outlook 讀取完整信件內容")
+            "已連接的信箱", "連接 Gmail 讀取完整信件內容")
         setupItem(view, R.id.settingFontSize, R.drawable.ic_text_size_set,
             "文字大小", "目前：${FontScaleManager.currentLabel(requireContext())}")
         setupDetectionModeItem(view)
@@ -826,48 +826,66 @@ class SettingsFragment : Fragment() {
             val now = System.currentTimeMillis()
             val hour = 3600_000L
 
+            // 種子資料內容說明（2026-09-16 重寫，用於第三次報告的展示影片）：
+            // · 每一段話術都先用 POST /rag/detect 實際送後端跑過，確認判出來的等級與詐騙類型
+            //   符合預期才寫進來（後端對「有社交佐證但沒有具體金錢要求」的訊息判斷不穩定，
+            //   詳見 2026-09-16 的 dev-note）。
+            // · 四個等級都要有：高危（假投資私訊、群組多人佐證、兩則釣魚簡訊）、
+            //   可疑（假交友鋪陳）、安全（正常對話、電信帳單通知）。
+            // · 不放 WhatsApp／IG 等我們沒有實際驗證過的來源，避免簡報時被質疑。
             val testData = listOf(
-                // ── LINE 私訊 ──
-                CapturedNotification(app = "LINE", sender = "陳大富", content = "你好，我是投資顧問陳大富，最近有個很好的投資機會想跟你分享",
-                    timestamp = now - 48 * hour, type = "message", packageName = "jp.naver.line.android"),
-                CapturedNotification(app = "LINE", sender = "陳大富", content = "我們的平台年化報酬率超過30%，目前已有上千位客戶加入",
-                    timestamp = now - 47 * hour, type = "message", packageName = "jp.naver.line.android"),
-                CapturedNotification(app = "LINE", sender = "陳大富", content = "只要先匯入5萬元就能開始操作，我會手把手教你",
-                    timestamp = now - 24 * hour, type = "message", packageName = "jp.naver.line.android"),
-                CapturedNotification(app = "LINE", sender = "陳大富", content = "這是我今天的獲利截圖，你看看，一天就賺了8萬",
-                    timestamp = now - 23 * hour, type = "message", packageName = "jp.naver.line.android"),
-                CapturedNotification(app = "LINE", sender = "陳大富", content = "趕快把握機會，名額有限喔！匯款帳號：812-XXXXXXXX",
+                // ── LINE 私訊①：假投資，已進展到索取財物（實測 high／假投資詐騙／stage=extraction）──
+                CapturedNotification(app = "LINE", sender = "王建宏 投資專員", content = "您好，我是富邦證券投顧的專員王建宏，先前您有留過聯絡資料",
+                    timestamp = now - 50 * hour, type = "message", packageName = "jp.naver.line.android"),
+                CapturedNotification(app = "LINE", sender = "王建宏 投資專員", content = "目前有一檔穩健型 ETF 配息方案，年化報酬約 18%",
+                    timestamp = now - 49 * hour, type = "message", packageName = "jp.naver.line.android"),
+                CapturedNotification(app = "LINE", sender = "王建宏 投資專員", content = "附上近三個月的客戶對帳單供您參考",
+                    timestamp = now - 27 * hour, type = "message", packageName = "jp.naver.line.android"),
+                CapturedNotification(app = "LINE", sender = "王建宏 投資專員", content = "開戶需先匯入 3 萬元作為啟動資金，由專員協助操作",
+                    timestamp = now - 26 * hour, type = "message", packageName = "jp.naver.line.android"),
+                CapturedNotification(app = "LINE", sender = "王建宏 投資專員", content = "本方案今日截止，請匯至 國泰世華 013-2915-0011-8342，完成後回覆帳號末五碼",
                     timestamp = now - 2 * hour, type = "message", packageName = "jp.naver.line.android"),
 
-                // ── LINE 群組 ──
-                // 群組整體風險判斷是把視窗內訊息串接後一次送給後端 AI（見 RagDetector.detectConversationRisk），
-                // 最後一則訊息務必包含明確的金錢/急迫性字眼——實測過後端對「只有社交佐證、沒有具體要求」
-                // 的訊息（例如原本這裡的「新人報到，請問要怎麼開始？」）會給出自相矛盾的結果
-                // （reasons 寫「這是典型的投資詐騙手法」，但 risk_level 卻判成 safe），這是後端 AI 模型
-                // 本身的判斷問題，手機端無法修正，只能靠調整種子資料內容避開。
-                CapturedNotification(app = "LINE", sender = "Jessica", content = "大家快看老師的分析，今天又賺翻了！",
-                    timestamp = now - 10 * hour, type = "message", packageName = "jp.naver.line.android", groupName = "投資理財交流群"),
-                CapturedNotification(app = "LINE", sender = "小美", content = "我跟著操作已經賺了20萬，真的很感謝老師",
-                    timestamp = now - 9 * hour, type = "message", packageName = "jp.naver.line.android", groupName = "投資理財交流群"),
-                CapturedNotification(app = "LINE", sender = "阿明", content = "新人報到！請問要怎麼開始？",
-                    timestamp = now - 6 * hour, type = "message", packageName = "jp.naver.line.android", groupName = "投資理財交流群"),
-                CapturedNotification(app = "LINE", sender = "投資老師", content = "歡迎！先匯5萬元保證金到822-XXXXXXXX，我馬上幫你開通帳號，名額有限把握機會",
-                    timestamp = now - 5 * hour, type = "message", packageName = "jp.naver.line.android", groupName = "投資理財交流群"),
+                // ── LINE 私訊②：假交友鋪陳，還沒開口要錢（實測 mid／交友(情感詐騙)）──
+                // 這段刻意停在「鋪陳」，對照組①說明同一套話術在不同階段的風險差異。
+                CapturedNotification(app = "LINE", sender = "Amy Chen", content = "您好，看到您在社團的留言才加您好友",
+                    timestamp = now - 20 * hour, type = "message", packageName = "jp.naver.line.android"),
+                CapturedNotification(app = "LINE", sender = "Amy Chen", content = "想跟您交流一下理財的心得",
+                    timestamp = now - 19 * hour, type = "message", packageName = "jp.naver.line.android"),
+                CapturedNotification(app = "LINE", sender = "Amy Chen", content = "我自己是跟著一位老師操作，兩個月下來還算穩定",
+                    timestamp = now - 18 * hour, type = "message", packageName = "jp.naver.line.android"),
+                CapturedNotification(app = "LINE", sender = "Amy Chen", content = "平台介面很簡單，之後我可以教您怎麼看盤",
+                    timestamp = now - 8 * hour, type = "message", packageName = "jp.naver.line.android"),
+                CapturedNotification(app = "LINE", sender = "Amy Chen", content = "您可以先觀察幾天，不用急著決定",
+                    timestamp = now - 7 * hour, type = "message", packageName = "jp.naver.line.android"),
+
+                // ── LINE 群組：多人輪流佐證同一套話術（實測 high／假投資詐騙／stage=extraction）──
+                // 這是「對話整體判斷」最有說服力的例子：單看任何一則都不足以判定，串接後才看得出來。
+                CapturedNotification(app = "LINE", sender = "助理 小林", content = "老師今日推薦的個股已漲停，跟單的會員請回報獲利",
+                    timestamp = now - 12 * hour, type = "message", packageName = "jp.naver.line.android", groupName = "股市研究交流群"),
+                CapturedNotification(app = "LINE", sender = "陳先生", content = "本週跟單獲利約 15 萬，感謝老師",
+                    timestamp = now - 11 * hour, type = "message", packageName = "jp.naver.line.android", groupName = "股市研究交流群"),
+                CapturedNotification(app = "LINE", sender = "李小姐", content = "新加入，請問如何跟單？",
+                    timestamp = now - 6 * hour, type = "message", packageName = "jp.naver.line.android", groupName = "股市研究交流群"),
+                CapturedNotification(app = "LINE", sender = "助理 小林", content = "新會員請先匯 5 萬元保證金至 兆豐 017-0231-8890-2265，開通後即可跟單，今日名額有限",
+                    timestamp = now - 5 * hour, type = "message", packageName = "jp.naver.line.android", groupName = "股市研究交流群"),
+
+                // ── LINE 私訊③：正常對話（實測 safe）──
+                CapturedNotification(app = "LINE", sender = "專題組員 小張", content = "明天 meeting 改到下午兩點",
+                    timestamp = now - 4 * hour, type = "message", packageName = "jp.naver.line.android"),
+                CapturedNotification(app = "LINE", sender = "專題組員 小張", content = "記得把測試計劃書帶來給教授簽名",
+                    timestamp = now - 3 * hour, type = "message", packageName = "jp.naver.line.android"),
 
                 // ── 簡訊 ── packageName 用 test_seed_sms 而非 sms_history，
                 // 避免跟 SmsHelper 真實簡訊匯入的防重複判斷（getSmsHistoryCount）搞混
-                CapturedNotification(app = "簡訊", sender = "0900-000-123", content = "【台灣銀行】您的帳戶有異常交易，請立即點擊連結驗證身份：https://tw-bank.cc/verify",
-                    timestamp = now - 6 * hour, type = "message", packageName = "test_seed_sms"),
-                CapturedNotification(app = "簡訊", sender = "0912-345-678", content = "恭喜您中獎100萬元！請於三日內回撥領取，逾期作廢。",
+                CapturedNotification(app = "簡訊", sender = "0968-421-337", content = "【中華郵政】您的包裹因地址不完整無法投遞，請於 24 小時內至 post-tw.cc/re 更新",
+                    timestamp = now - 9 * hour, type = "message", packageName = "test_seed_sms"),
+                CapturedNotification(app = "簡訊", sender = "0911-510-515", content = "【監理服務網】您有一筆交通罰鍰逾期未繳，請速至 mvdis-tw.com 查詢",
                     timestamp = now - 30 * hour, type = "message", packageName = "test_seed_sms"),
-                CapturedNotification(app = "簡訊", sender = "中華電信", content = "您的本期帳單金額為 $498，繳費期限 07/15。",
-                    timestamp = now - 72 * hour, type = "message", packageName = "test_seed_sms"),
-
-                // ── WhatsApp ──
-                CapturedNotification(app = "WhatsApp", sender = "Unknown +44-7911-123456", content = "Hi, I found your number online. I have a great business opportunity for you.",
-                    timestamp = now - 12 * hour, type = "message", packageName = "com.whatsapp"),
-                CapturedNotification(app = "WhatsApp", sender = "Unknown +44-7911-123456", content = "You can earn $5000 per day from home! Just invest $200 to start.",
-                    timestamp = now - 11 * hour, type = "message", packageName = "com.whatsapp")
+                // 正常的電信帳單通知（實測 safe）。原本的寫法帶「繳費期限 07/15」會被後端判成
+                // mid／假冒警詐騙，改成下面這個說法才穩定判為安全。
+                CapturedNotification(app = "簡訊", sender = "中華電信", content = "【中華電信】您 9 月份帳單已出帳，金額 499 元，可至各門市或官網繳納",
+                    timestamp = now - 72 * hour, type = "message", packageName = "test_seed_sms")
 
                 // 郵件（Gmail/Outlook）測試種子資料已移除：現在郵件頁改用真實信箱連接
                 // （Gmail/Outlook API）取得資料，不再需要假資料展示
