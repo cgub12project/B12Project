@@ -30,3 +30,9 @@ readMe參考檔案/
 # Dev notes (local only)
 .claude/
 dev-notes/
+
+# 第三次報告工作檔（影片素材、剪輯中間檔、推甄素材）— 正式交付檔在 大四上第一次簡報/
+第三次報告影片素材/
+portfolio_assets/
+ADMISSION_*.md
+tmp/

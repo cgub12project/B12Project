@@ -5,7 +5,9 @@
 ![Room](https://img.shields.io/badge/Room-2.6.1-orange)
 ![Version](https://img.shields.io/badge/Version-6.1-orange)
 
-**Fraud Locator And Scam Hunter** — 一款 AI 驅動的 Android 詐騙防護 App。透過通知監聽即時擷取 LINE、簡訊、WhatsApp 等通訊軟體的來訊，結合 Gmail 信箱同步與通話紀錄，交由後端 AI 引擎分析詐騙風險；並提供「地端模式」讓訊息內容完全不離開手機。
+**Fraud Locator And Scam Hunter** — 一款 AI 驅動的 Android 詐騙防護 App。透過通知監聽即時擷取 LINE、簡訊等通訊軟體的來訊，結合 Gmail 信箱同步與通話紀錄，交由後端 AI 引擎分析詐騙風險；並提供「地端模式」讓訊息內容完全不離開手機。
+
+> **想快速了解這個系統能做什麼？** 先看 [大四上第一次簡報／5 分鐘操作展示影片](大四上第一次簡報/F.L.A.S.H._第三次專題報告_簡報影片.mp4)，章節時間碼見 [該目錄的 README](大四上第一次簡報/README.md)；測試計畫書在同一目錄。
 
 ## 目錄
 
@@ -318,10 +320,10 @@ App 端共串接 **9 組 API 介面、33 個端點**。所有需授權的端點�
 > **後端位址**（開發測試用）
 >
 > ```
-> https://prep-gregory-madrid-replacing.trycloudflare.com
+> https://classical-holder-robertson-disk.trycloudflare.com
 > ```
 >
-> - 互動式 API 文件：[`/docs`](https://prep-gregory-madrid-replacing.trycloudflare.com/docs)（Swagger UI）
+> - 互動式 API 文件：[`/docs`](https://classical-holder-robertson-disk.trycloudflare.com/docs)（Swagger UI）
 > - OpenAPI 規格：`/openapi.json` — 後端共提供 **35 條路徑、53 個資料模型**，App 端使用其中 31 條
 > - 健康檢查：`/health`
 >
@@ -390,9 +392,10 @@ B12Project/
 ├── settings.gradle.kts
 ├── gradle/                      # Gradle Wrapper
 ├── docs/                        # 設計文件書
-├── presentations/               # 書面報告 PDF
 ├── uml/                         # UML 分析圖
-├── 專題報告影片/                 # 簡報影片
+├── 大三下第一次簡報/             # 第一次書面報告
+├── 大三下第二次簡報/             # 第二次書面報告、簡報影片
+├── 大四上第一次簡報/             # 第三次：操作展示影片、測試計畫書
 ├── release/
 │   └── app-debug.apk            # 可執行檔
 ├── docker/
@@ -540,10 +543,11 @@ cd B12Project
 |---|------|------|------|
 | 1 | 原始程式碼（含完整註解） | [`app/src/`](app/src/) | 84 個 Kotlin 原始碼 ＋ 41 個 XML 佈局檔，皆附中文註解 |
 | 2 | 可執行檔案 + 安裝說明 | [`release/app-debug.apk`](release/app-debug.apk)、[`INSTALL.md`](INSTALL.md) | Debug APK ＋ 安裝、執行、測試說明 |
-| 3 | 書面報告文件 | [`presentations/`](presentations/)、[`docs/`](docs/) | 第一次、第二次書面報告與設計文件書 |
+| 3 | 書面報告文件 | [`大三下第一次簡報/`](大三下第一次簡報/)、[`大三下第二次簡報/`](大三下第二次簡報/)、[`docs/`](docs/) | 第一次、第二次書面報告與設計文件書 |
 | 4 | UML 分析文件 | [`uml/`](uml/) | 使用案例圖、活動圖、類別圖、概念模型、詞彙表 |
-| 5 | 簡報影片 | [`專題報告影片/`](專題報告影片/) | 第二次報告簡報影片 |
+| 5 | 簡報影片 | [`大三下第二次簡報/`](大三下第二次簡報/)、[`大四上第一次簡報/`](大四上第一次簡報/) | 第二次報告簡報影片、第三次報告操作展示影片（5 分鐘，含旁白字幕） |
 | 6 | README.md | 本文件 | 專題完整說明文件 |
+| 7 | 測試計畫書 | [`大四上第一次簡報/`](大四上第一次簡報/) | 大四上測試計畫書（PDF＋Word） |
 
 ---
 
