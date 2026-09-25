@@ -1,0 +1,30 @@
+# Python 快取與編譯檔
+__pycache__/
+.pytest_cache/
+*.py[cod]
+*.egg-info/
+.eggs/
+build/
+dist/
+
+# 虛擬環境
+.venv/
+venv/
+env/
+
+# 環境變數（含機密，勿提交）。範本是 .env.example，那份要進版控。
+.env
+
+# ChromaDB 向量資料庫與 RAG Worker 狀態
+chroma_data/
+rag_worker_state.json
+
+# 模型快取（HuggingFace 下載的 BGE-M3）
+.cache/
+
+# IDE
+.idea/
+.vscode/
+
+# 微調產出
+models/

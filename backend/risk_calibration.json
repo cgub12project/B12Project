@@ -1,0 +1,64 @@
+{
+  "model": "flash_v6",
+  "embedding_model": "google/embeddinggemma-300m",
+  "gate_top_n": 3,
+  "gate_similarity": 0.35,
+  "eval_file": "eval/eval_v6_maxlen.jsonl",
+  "eval_samples": 1983,
+  "fitted_at": "2026-09-25",
+  "smoothing": 1.0,
+  "cells": [
+    {
+      "decided_by": "gate",
+      "predicted": 0,
+      "n": 890,
+      "scam": 20,
+      "risk": 0.0235
+    },
+    {
+      "decided_by": "gate",
+      "predicted": 1,
+      "n": 644,
+      "scam": 631,
+      "risk": 0.9783
+    },
+    {
+      "decided_by": "llm",
+      "predicted": 0,
+      "n": 99,
+      "scam": 12,
+      "risk": 0.1287,
+      "coef": {
+        "features": [
+          "scam_share",
+          "topmean"
+        ],
+        "intercept": -2.151246,
+        "weights": [
+          1.055111,
+          -0.166224
+        ],
+        "n": 99
+      }
+    },
+    {
+      "decided_by": "llm",
+      "predicted": 1,
+      "n": 350,
+      "scam": 323,
+      "risk": 0.9205,
+      "coef": {
+        "features": [
+          "scam_share",
+          "topmean"
+        ],
+        "intercept": 0.236773,
+        "weights": [
+          2.426441,
+          1.491058
+        ],
+        "n": 350
+      }
+    }
+  ]
+}

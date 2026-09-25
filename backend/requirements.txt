@@ -1,0 +1,42 @@
+fastapi>=0.111.0
+uvicorn[standard]>=0.30.0
+
+sqlalchemy>=2.0.30
+aiomysql>=0.2.0
+alembic>=1.13.0
+greenlet>=3.0.0
+
+pydantic>=2.7.0
+pydantic-settings>=2.3.0
+email-validator>=2.1.0
+
+PyJWT>=2.8.0
+bcrypt>=4.1.0
+# 信箱 refresh_token 的對稱加密（Fernet）
+cryptography>=42.0.0
+
+httpx>=0.27.0
+
+aiosmtplib>=3.0.0
+
+torch>=2.3.0
+FlagEmbedding>=1.2.10
+# sentence-transformers 後端：支援 BGE-M3 以外的嵌入模型（Qwen3-Embedding、gte、E5 等）
+sentence-transformers>=3.0.0
+chromadb>=0.5.0
+
+pytest>=8.2.0
+pytest-asyncio>=0.23.0
+aiosqlite>=0.20.0
+
+# 資料管線專用（scripts/ 用得到，app/ 執行時不需要）：
+# 帶座標的 OCR——LINE 截圖裡的發送者就是泡泡的左右位置，需要文字框的座標才判得出來
+rapidocr-onnxruntime>=1.3.0
+# OCR 模型是簡繁混合訓練的，實測 1.6% 的字被輸出成簡體，轉回台灣用字
+opencc-python-reimplemented>=0.1.7
+
+# 微調專用（scripts/train_stage_lora.py + merge_stage_lora.py；app/ 執行時不需要）：
+# QLoRA＝4-bit 量化的權重上掛 LoRA。6 GiB 的卡放不下 bf16 的 3B，這不是選項而是前提。
+peft>=0.15.0
+bitsandbytes>=0.45.0
+accelerate>=1.0.0
